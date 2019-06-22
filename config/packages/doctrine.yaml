@@ -7,6 +7,10 @@ doctrine:
         default_table_options:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
+        types:
+            BugPriorityType:    App\DBAL\Types\BugPriorityType
+            BugStatusType:      App\DBAL\Types\BugStatusType
+
 
         url: '%env(resolve:DATABASE_URL)%'
     orm:
