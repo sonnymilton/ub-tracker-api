@@ -13,11 +13,14 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Project
  *
  * @ORM\Entity(repositoryClass="App\Repository\ProjectRepository")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Project
 {
@@ -27,6 +30,9 @@ class Project
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_list", "project_details"})
      */
     protected $id;
 
@@ -34,6 +40,9 @@ class Project
      * @var string
      *
      * @ORM\Column()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_list", "project_details"})
      */
     protected $title;
 
@@ -41,17 +50,33 @@ class Project
      * @var ArrayCollection|Tracker[]
      *
      * @ORM\OneToMany(targetEntity="Tracker", mappedBy="project", cascade={"persist", "remove"})
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $trackers;
+
+    /**
+     * @var \DateTimeImmutable
+     *
+     * @ORM\Column(type="datetime_immutable")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_list", "project_details"})
+     */
+    protected $createdAt;
 
     /**
      * Project constructor.
      *
      * @param string $title
+     *
+     * @throws \Exception
      */
     public function __construct(string $title)
     {
         $this->title = $title;
+        $this->createdAt = new \DateTimeImmutable();
         $this->trackers = new ArrayCollection();
     }
 
@@ -77,6 +102,14 @@ class Project
     public function getTrackers()
     {
         return $this->trackers;
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     /**
