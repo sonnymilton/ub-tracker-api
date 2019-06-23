@@ -77,6 +77,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "exsyst/swagger": {
+        "version": "v0.4.1"
+    },
     "fesor/request-objects": {
         "version": "v0.3.0"
     },
@@ -154,6 +157,28 @@
             "config/packages/prod/jms_serializer.yaml"
         ]
     },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "config/packages/nelmio_api_doc.yaml",
+            "config/routes/nelmio_api_doc.yaml"
+        ]
+    },
+    "phpdocumentor/reflection-common": {
+        "version": "1.0.1"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "4.3.1"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "0.4.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -162,6 +187,9 @@
     },
     "psr/log": {
         "version": "1.1.0"
+    },
+    "symfony/asset": {
+        "version": "v4.3.1"
     },
     "symfony/cache": {
         "version": "v4.3.1"
@@ -246,7 +274,13 @@
     "symfony/http-kernel": {
         "version": "v4.3.1"
     },
+    "symfony/inflector": {
+        "version": "v4.3.1"
+    },
     "symfony/mime": {
+        "version": "v4.3.1"
+    },
+    "symfony/options-resolver": {
         "version": "v4.3.1"
     },
     "symfony/polyfill-intl-idn": {
@@ -260,6 +294,12 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.11.0"
+    },
+    "symfony/process": {
+        "version": "v4.3.1"
+    },
+    "symfony/property-info": {
+        "version": "v4.3.1"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -282,6 +322,23 @@
     "symfony/translation-contracts": {
         "version": "v1.1.2"
     },
+    "symfony/twig-bridge": {
+        "version": "v4.3.1"
+    },
+    "symfony/twig-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "369b5b29dc52b2c190002825ae7ec24ab6f962dd"
+        },
+        "files": [
+            "config/packages/twig.yaml",
+            "config/routes/dev/twig.yaml",
+            "templates/base.html.twig"
+        ]
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {
@@ -298,10 +355,25 @@
     "symfony/var-exporter": {
         "version": "v4.3.1"
     },
+    "symfony/web-server-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
+        }
+    },
     "symfony/yaml": {
         "version": "v4.3.1"
     },
     "twig/twig": {
         "version": "v2.11.3"
+    },
+    "webmozart/assert": {
+        "version": "1.4.0"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.14"
     }
 }
