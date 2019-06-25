@@ -64,6 +64,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
+        "symfony/var-dumper": "4.3.*",
         "symfony/web-server-bundle": "4.3.*"
     }
 }
