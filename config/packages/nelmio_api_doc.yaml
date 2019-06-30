@@ -4,6 +4,15 @@ nelmio_api_doc:
             title: Bugtracker api
             description: Bugtracker api
             version: 1.0.0
+        securityDefinitions:
+            Token:
+                type: apiKey
+                description: Access token
+                name: X-AUTH-TOKEN
+                in: header
+
+        security:
+            - Token: []
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
