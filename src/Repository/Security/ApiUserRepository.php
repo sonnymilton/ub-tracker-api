@@ -26,7 +26,7 @@ class ApiUserRepository extends EntityRepository
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getUserByToken(string $token): ApiUser
+    public function getUserByToken(string $token): ?ApiUser
     {
         $qb = $this->createQueryBuilder('o');
 

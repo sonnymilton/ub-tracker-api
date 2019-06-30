@@ -140,12 +140,14 @@ class ApiUser implements UserInterface
     }
 
     /**
+     * @param string $token
+     *
      * @return bool
      *
      * @throws \Exception
      */
-    public function isTokenActive(): bool
+    public function validateToken(string $token): bool
     {
-        return $this->token->getExpiresAt() > new \DateTimeImmutable();
+        return $this->token->getExpiresAt() >= new \DateTimeImmutable() && $token == $this->token->getValue();
     }
 }

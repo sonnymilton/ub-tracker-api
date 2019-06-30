@@ -55,7 +55,7 @@ class ApiToken
     /**
      * @return \DateTimeImmutable
      */
-    public function getExpiresAt(): string
+    public function getExpiresAt(): \DateTimeImmutable
     {
         return $this->expiresAt;
     }
