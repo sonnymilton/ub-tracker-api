@@ -62,7 +62,9 @@ class Project
      * @ORM\Column(type="datetime_immutable")
      *
      * @JMS\Expose()
+     * @JMS\Type("DateTimeImmutable")
      * @JMS\Groups(groups={"project_list", "project_details"})
+     *
      */
     protected $createdAt;
 
