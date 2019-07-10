@@ -12,12 +12,15 @@ namespace App\Entity\Security;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class ApiUser
  *
  * @ORM\Entity(repositoryClass="App\Repository\Security\ApiUserRepository")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class ApiUser implements UserInterface
 {
@@ -27,6 +30,9 @@ class ApiUser implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_details"})
      */
     protected $id;
 
@@ -34,6 +40,9 @@ class ApiUser implements UserInterface
      * @var string
      *
      * @ORM\Column(unique=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_details", "user_list"})
      */
     protected $username;
 
@@ -41,6 +50,9 @@ class ApiUser implements UserInterface
      * @var string
      *
      * @ORM\Column(unique=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_details"})
      */
     protected $email;
 
@@ -55,6 +67,8 @@ class ApiUser implements UserInterface
      * @var array
      *
      * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @JMS\Groups(groups={"user_details"})
      */
     protected $roles;
 
@@ -69,8 +83,19 @@ class ApiUser implements UserInterface
      * @var ApiToken
      *
      * @ORM\Embedded(class="App\Entity\Security\ApiToken")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_auth"})
+     * @JMS\Type(ApiToken::class)
      */
     protected $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(nullable=true)
+     */
+    protected $code;
 
     /**
      * ApiUser constructor.
@@ -121,9 +146,18 @@ class ApiUser implements UserInterface
     /**
      * @throws \Exception
      */
-    public function createToken()
+    public function createToken(): void
     {
         $this->token = new ApiToken();
+        $this->code = null;
+    }
+
+    /**
+     * @return ApiToken|null
+     */
+    public function getToken(): ?ApiToken
+    {
+        return $this->token;
     }
 
     /**
@@ -134,8 +168,10 @@ class ApiUser implements UserInterface
         return $this->username;
     }
 
-    public function eraseCredentials()
+
+    public function eraseCredentials(): void
     {
+        // do nothing
         return;
     }
 
@@ -149,5 +185,13 @@ class ApiUser implements UserInterface
     public function validateToken(string $token): bool
     {
         return $this->token->getExpiresAt() >= new \DateTimeImmutable() && $token == $this->token->getValue();
+    }
+
+    /**
+     * @param string $code
+     */
+    public function updateCode(string $code): void
+    {
+        $this->code = $code;
     }
 }

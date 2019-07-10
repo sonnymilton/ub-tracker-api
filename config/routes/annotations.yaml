@@ -3,3 +3,9 @@ api:
     type: annotation
     prefix: /api
     name_prefix: api_
+
+login:
+    resource: ../../src/Controller/Login/
+    type: annotation
+    prefix: /login
+    name_prefix: login_

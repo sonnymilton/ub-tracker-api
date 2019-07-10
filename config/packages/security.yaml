@@ -4,17 +4,24 @@ security:
         db_provider:
             entity:
                 class: App\Entity\Security\ApiUser
-                property: token
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            pattern: ^/api
             anonymous: ~
             logout: ~
+            stateless: true
             guard:
                 authenticators:
                     - App\Security\TokenAuthenticator
+        login:
+            pattern: ^/login
+            anonymous: ~
+            logout: ~
+            stateless: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
