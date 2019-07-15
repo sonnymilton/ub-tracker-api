@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
+use App\Entity\Security\ApiUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -67,9 +68,19 @@ class Bug
     protected $tracker;
 
     /**
-     * @todo add user entity
+     * @var ApiUser
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      */
     protected $responsiblePerson;
+
+    /**
+     * @var ApiUser
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
+     *
+     */
+    protected $author;
 
     /**
      * @var string
@@ -81,21 +92,21 @@ class Bug
     /**
      * Bug constructor.
      *
+     * @param ApiUser $author
+     * @param ApiUser $responsiblePerson
+     *
      * @param string $title
-     * @param Tracker $tracker
      * @param string $description
      * @param string $priority
-     * @param $responsiblePerson
-     *
      * @throws \Exception
      */
-    public function __construct(string $title, Tracker $tracker, string $description, string $priority, $responsiblePerson)
+    public function __construct(ApiUser $author, ApiUser $responsiblePerson, string $title, string $description, string $priority)
     {
+        $this->author = $author;
+        $this->responsiblePerson = $responsiblePerson;
         $this->title = $title;
-        $this->tracker = $tracker;
         $this->description = $description;
         $this->priority = $priority;
-        $this->responsiblePerson = $responsiblePerson;
         $this->status = BugStatusType::NEW;
         $this->createdAt = new \DateTimeImmutable();
     }

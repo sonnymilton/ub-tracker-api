@@ -11,6 +11,9 @@
 namespace App\Entity\Security;
 
 
+use App\Entity\Bug;
+use App\Entity\Project;
+use App\Entity\Tracker;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -193,5 +196,51 @@ class ApiUser implements UserInterface
     public function updateCode(string $code): void
     {
         $this->code = $code;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return Project
+     *
+     * @throws \Exception
+     */
+    public function createProject(string $title): Project
+    {
+        return new Project($this, $title);
+    }
+
+    /**
+     * @param Project $project
+     *
+     * @return Tracker
+     *
+     * @throws \Exception
+     */
+    public function createTracker(Project $project): Tracker
+    {
+        $tracker = new Tracker($this, $project);
+        $project->addTracker($tracker);
+
+        return $tracker;
+    }
+
+    /**
+     * @param ApiUser $responsiblePerson
+     * @param Tracker $tracker
+     * @param string $title
+     * @param string $description
+     * @param string $priority
+     *
+     * @return Bug
+     *
+     * @throws \Exception
+     */
+    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string  $description, string $priority): Bug
+    {
+        $bug = new Bug($this, $responsiblePerson, $title, $description, $priority);
+        $tracker->addBug($bug);
+
+        return $bug;
     }
 }

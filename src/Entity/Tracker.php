@@ -11,13 +11,17 @@
 
 namespace App\Entity;
 
+use App\Entity\Security\ApiUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Tracker
  *
  * @ORM\Entity(repositoryClass="App\Repository\TrackerRepository")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Tracker
 {
@@ -27,6 +31,9 @@ class Tracker
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $id;
 
@@ -34,6 +41,9 @@ class Tracker
      * @var \DateTimeImmutable
      *
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $startedAt;
 
@@ -41,6 +51,9 @@ class Tracker
      * @var Project
      *
      * @ORM\ManyToOne(targetEntity="Project", inversedBy="trackers")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $project;
 
@@ -48,18 +61,32 @@ class Tracker
      * @var ArrayCollection|Bug[]
      *
      * @ORM\OneToMany(targetEntity="Bug", mappedBy="tracker", cascade={"persist", "remove"})
+     *
+     * @JMS\Groups(groups={"tracker_show"})
      */
     protected $bugs;
 
     /**
+     * @var ApiUser
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_details"})
+     */
+    protected $author;
+
+    /**
      * Tracker constructor.
      *
+     * @param ApiUser $author
      * @param Project $project
      *
      * @throws \Exception
      */
-    public function __construct(Project $project)
+    public function __construct(ApiUser $author, Project $project)
     {
+        $this->author = $author;
         $this->project = $project;
         $this->startedAt = new \DateTimeImmutable();
         $this->bugs = new ArrayCollection();

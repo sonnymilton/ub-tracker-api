@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Security\ApiUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -69,17 +70,44 @@ class Project
     protected $createdAt;
 
     /**
+     * @var ArrayCollection|ApiUser[]
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="users_projects",
+     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
+     * )
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_details"})
+     */
+    protected $developers;
+
+    /**
+     * @var ApiUser
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_details"})
+     */
+    protected $author;
+
+    /**
      * Project constructor.
      *
+     * @param ApiUser $author
      * @param string $title
      *
      * @throws \Exception
      */
-    public function __construct(string $title)
+    public function __construct(ApiUser $author, string $title)
     {
+        $this->author = $author;
         $this->title = $title;
         $this->createdAt = new \DateTimeImmutable();
         $this->trackers = new ArrayCollection();
+        $this->developers = new ArrayCollection();
     }
 
     /**
@@ -101,7 +129,7 @@ class Project
     /**
      * @return Tracker[]|ArrayCollection
      */
-    public function getTrackers()
+    public function getTrackers(): ArrayCollection
     {
         return $this->trackers;
     }
@@ -136,5 +164,37 @@ class Project
     public function removeTracker(Tracker $tracker): void
     {
         $this->trackers->removeElement($tracker);
+    }
+
+    /**
+     * @return ApiUser[]|ArrayCollection
+     */
+    public function getDevelopers(): ArrayCollection
+    {
+        return $this->developers;
+    }
+
+    /**
+     * @return ApiUser
+     */
+    public function getAuthor(): ApiUser
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param ApiUser $developer
+     */
+    public function addDeveloper(ApiUser $developer): void
+    {
+        $this->developers->add($developer);
+    }
+
+    /**
+     * @param ApiUser $developer
+     */
+    public function removeDeveloper(ApiUser $developer): void
+    {
+        $this->developers->removeElement($developer);
     }
 }
