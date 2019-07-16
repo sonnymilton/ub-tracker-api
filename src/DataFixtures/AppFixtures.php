@@ -8,26 +8,62 @@ use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+/**
+ * Class AppFixtures
+ */
+class AppFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    /**
+     * @param ObjectManager $manager
+     *
+     * @throws \Exception
+     */
+    public function load(ObjectManager $manager): void
     {
-        $project = new Project('ub-tracker');
-        $tracker = new Tracker($project);
-        $project->addTracker($tracker);
-        for ($i=0; $i<=20; $i++) {
-            $tracker->addBug(new Bug(sprintf('bug %d', $i), $tracker, sprintf('bug %d descipriton', $i),
-                BugPriorityType::getRandomValue(), null));
+        /** @var ApiUser $qaUser */
+        $qaUser = $this->getReference(UserFixtures::QA_USER_REFERENCE);
+        $qaUser->createToken();
 
+        $project = $qaUser->createProject('ub-tracker');
+        $tracker = $qaUser->createTracker($project);
+
+        /** @var ApiUser[] $developers */
+        $developers = [
+            $this->getReference(UserFixtures::FIRST_DEVELOPER_REFERENCE),
+            $this->getReference(UserFixtures::SECOND_DEVELOPER_REFERENCE)
+        ];
+
+        foreach ($developers as $developer) {
+            $developer->createToken();
+            $project->addDeveloper($developer);
         }
+
+
+        for ($i=0; $i<=20; $i++) {
+            $qaUser->createBug(
+                $developers[mt_rand(0, 1)],
+                $tracker,
+                sprintf('bug %d', $i),
+                sprintf('bug %d description', $i),
+                BugPriorityType::getRandomValue()
+            );
+        }
+
         $manager->persist($project);
 
-        $user = new ApiUser('admin', 'admin@example.com', 'admin', ['ROLE_ADMIN']);
-        $user->createToken();
-        $manager->persist($user);
-
         $manager->flush();
+    }
+
+    /**
+     * @return array
+     */
+    public function getDependencies(): array
+    {
+        return [
+            UserFixtures::class,
+        ];
     }
 }
