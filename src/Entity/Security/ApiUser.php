@@ -35,7 +35,7 @@ class ApiUser implements UserInterface
      * @ORM\Id()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"user_details"})
+     * @JMS\Groups(groups={"user_details", "user_list"})
      */
     protected $id;
 
