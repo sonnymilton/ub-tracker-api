@@ -12,11 +12,9 @@
 namespace App\Request\Security;
 
 
+use App\Request\JsonRequest;
 use Fesor\RequestObject\ErrorResponseProvider;
-use Fesor\RequestObject\PayloadResolver;
-use Fesor\RequestObject\RequestObject;
 use Swagger\Annotations as SWG;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -24,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 /**
  * Class AuthenticationRequest
  */
-class AuthenticationRequest extends RequestObject implements PayloadResolver, ErrorResponseProvider
+class AuthenticationRequest extends JsonRequest implements ErrorResponseProvider
 {
     /**
      * @var string
@@ -32,16 +30,6 @@ class AuthenticationRequest extends RequestObject implements PayloadResolver, Er
      * @SWG\Property(type="string")
      */
     protected $code;
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function resolvePayload(Request $request): array
-    {
-        return json_decode($request->getContent(), true) ?? [];
-    }
 
     /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
