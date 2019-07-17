@@ -201,13 +201,14 @@ class ApiUser implements UserInterface
     /**
      * @param string $title
      *
+     * @param array|null $developers
      * @return Project
      *
      * @throws \Exception
      */
-    public function createProject(string $title): Project
+    public function createProject(string $title, array $developers = null): Project
     {
-        return new Project($this, $title);
+        return new Project($this, $title, $developers);
     }
 
     /**

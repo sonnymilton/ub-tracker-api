@@ -98,10 +98,11 @@ class Project
      *
      * @param ApiUser $author
      * @param string $title
+     * @param array $developers
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, string $title)
+    public function __construct(ApiUser $author, string $title, array $developers = null)
     {
         $this->author = $author;
         $this->title = $title;
