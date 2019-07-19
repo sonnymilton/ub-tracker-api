@@ -35,4 +35,19 @@ class ApiUserRepository extends EntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * @param array $ids
+     *
+     * @return ApiUser[]|array
+     */
+    public function getUsersByIds(array $ids): array
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $qb->where('o.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
 }
