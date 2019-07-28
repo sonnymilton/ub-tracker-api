@@ -62,7 +62,7 @@ class Tracker
      *
      * @ORM\OneToMany(targetEntity="Bug", mappedBy="tracker", cascade={"persist", "remove"})
      *
-     * @JMS\Groups(groups={"tracker_show"})
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $bugs;
 
@@ -72,7 +72,7 @@ class Tracker
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"project_details"})
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $author;
 
