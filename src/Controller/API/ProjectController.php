@@ -13,6 +13,7 @@ namespace App\Controller\API;
 
 use App\Entity\Project;
 use App\Entity\Security\ApiUser;
+use App\Entity\Tracker;
 use App\Repository\ProjectRepository;
 use App\Repository\Security\ApiUserRepository;
 use App\Request\Project\DeveloperProjectInteractionRequest;
@@ -342,6 +343,46 @@ class ProjectController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/tracker/{position}/", name="show_tracker_by_position", methods={"get"})
+     *
+     * @param int $id
+     * @param int $position
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Returns detailed info about the tracker by position in the project,",
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project or tracker not found"
+     * )
+     *
+     * @SWG\Tag(name="Tracker")
+     *
+     * @return JsonResponse|Response
+     */
+    public function showTrackerByPositionAction(int $id, int $position): JsonResponse
+    {
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
+
+        if (!isset($trackers[$position])) {
+            throw new NotFoundHttpException(sprintf('Tracker with position %d not found in this project', $position));
+        }
+
+        return $this->forward('App\Controller\API\TrackerController::showAction', [
+            'id' => $trackers[$position]->getId(),
+        ]);
+    }
+
+    /**
      * @return ObjectManager
      */
     private function getEntityManager(): ObjectManager
@@ -363,5 +404,10 @@ class ProjectController extends AbstractController
     private function getUserRepository(): ApiUserRepository
     {
         return $this->getDoctrine()->getRepository(ApiUser::class);
+    }
+
+    private function getTrackerRepository()
+    {
+        return $this->getDoctrine()->getRepository(Tracker::class);
     }
 }

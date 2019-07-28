@@ -11,6 +11,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Project;
+use App\Entity\Tracker;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -18,5 +20,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class TrackerRepository extends EntityRepository
 {
-
+    /**
+     * @param Project $project
+     *
+     * @return Tracker[]
+     */
+    public function getTrackersForProject(Project $project): array
+    {
+        return $this->createQueryBuilder('o')
+            ->where('o.project = :project')
+            ->orderBy('o.startedAt')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+    }
 }
