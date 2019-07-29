@@ -383,6 +383,53 @@ class ProjectController extends AbstractController
     }
 
     /**
+     * @Route("/tracker/")
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Creates new tracker in specified project.",
+     *     @Model(type=Tracker::class, groups={"tracker_show"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project not found."
+     * )
+     *
+     * @return JsonResponse
+     *
+     * @throws \Exception
+     */
+    public function createTrackerAction(int $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        /** @var ApiUser $user */
+        $user = $this->getUser();
+
+        $tracker = $user->createTracker($project);
+        $project->addTracker($tracker);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($project);
+        $em->flush();
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+                'tracker_show',
+            ]))
+        );
+    }
+
+    /**
      * @return ObjectManager
      */
     private function getEntityManager(): ObjectManager
