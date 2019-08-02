@@ -223,6 +223,40 @@ class ProjectController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/", name="remove", methods={"delete"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="204",
+     *     description="Removes the project."
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project not found"
+     * )
+     *
+     * @return Response
+     */
+    public function removeAction(int $id): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($project);
+        $em->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @Route("/{id}/add_developer/", methods={"patch"}, name="add_developer")
      *
      * @param int $id
