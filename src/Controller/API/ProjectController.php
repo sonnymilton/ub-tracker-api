@@ -15,16 +15,13 @@ use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Repository\ProjectRepository;
 use App\Repository\Security\ApiUserRepository;
-use App\Request\Project\DeveloperProjectInteractionRequest;
 use App\Request\Project\CreateProjectRequest;
+use App\Request\Project\DeveloperProjectInteractionRequest;
 use App\Request\Project\UpdateProjectRequest;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -119,7 +116,7 @@ class ProjectController extends AbstractController
      * @param CreateProjectRequest $request
      *
      * @SWG\Response(
-     *     response="200",
+     *     response="204",
      *     description="Creates a project",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
@@ -168,7 +165,7 @@ class ProjectController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
                 'project_details', 'tracker_list', 'user_list'
-            ]))
+            ])), Response::HTTP_CREATED
         );
     }
 
