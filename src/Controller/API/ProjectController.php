@@ -147,15 +147,17 @@ class ProjectController extends AbstractController
         /** @var ApiUser $author */
         $author = $this->getUser();
         $project = $author->createProject($request->get('title'));
-        $developerIds = $request->get('developers');
-        $developers = $this->getUserRepository()->getUsersByIds($developerIds);
 
-        if (count($developerIds) !== count($developers)) {
-            throw new NotFoundHttpException('Developer(s) not found');
-        }
+        if (null !== $developerIds = $request->get('developers')) {
+            $developers = $this->getUserRepository()->getUsersByIds($developerIds);
 
-        foreach ($developers as $developer) {
-            $project->addDeveloper($developer);
+            if (count($developerIds) !== count($developers)) {
+                throw new NotFoundHttpException('Developer(s) not found');
+            }
+
+            foreach ($developers as $developer) {
+                $project->addDeveloper($developer);
+            }
         }
 
         $em = $this->getEntityManager();
