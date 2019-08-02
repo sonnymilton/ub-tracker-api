@@ -22,6 +22,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -61,7 +62,7 @@ class TrackerController extends AbstractController
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project or tracker not found"
+     *     description="Tracker not found."
      * )
      *
      * @return JsonResponse
@@ -77,8 +78,39 @@ class TrackerController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create([
                 'tracker_show',
-            ]))
+            ])), Response::HTTP_CREATED
         );
+    }
+
+    /**
+     * @Route("/{id}/", name="delete", methods={"delete"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="204",
+     *     description="Removes the tracker.",
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Tracker not found.",
+     * )
+     *
+     * @return Response
+     */
+    public function removeAction(int $id): Response
+    {
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Tracker not found');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($tracker);
+        $em->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
 
@@ -88,13 +120,5 @@ class TrackerController extends AbstractController
     private function getTrackerRepository(): TrackerRepository
     {
         return $this->getDoctrine()->getRepository(Tracker::class);
-    }
-
-    /**
-     * @return \App\Repository\ProjectRepository|\Doctrine\Common\Persistence\ObjectRepository
-     */
-    private function getProjectRepository(): ProjectRepository
-    {
-        return $this->getDoctrine()->getRepository(Project::class);
     }
 }
