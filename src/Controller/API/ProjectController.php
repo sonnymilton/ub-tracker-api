@@ -16,16 +16,13 @@ use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use App\Repository\ProjectRepository;
 use App\Repository\Security\ApiUserRepository;
-use App\Request\Project\DeveloperProjectInteractionRequest;
 use App\Request\Project\CreateProjectRequest;
+use App\Request\Project\DeveloperProjectInteractionRequest;
 use App\Request\Project\UpdateProjectRequest;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -120,7 +117,7 @@ class ProjectController extends AbstractController
      * @param CreateProjectRequest $request
      *
      * @SWG\Response(
-     *     response="200",
+     *     response="201",
      *     description="Creates a project",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
@@ -151,15 +148,17 @@ class ProjectController extends AbstractController
         /** @var ApiUser $author */
         $author = $this->getUser();
         $project = $author->createProject($request->get('title'));
-        $developerIds = $request->get('developers');
-        $developers = $this->getUserRepository()->getUsersByIds($developerIds);
 
-        if (count($developerIds) !== count($developers)) {
-            throw new NotFoundHttpException('Developer(s) not found');
-        }
+        if (null !== $developerIds = $request->get('developers')) {
+            $developers = $this->getUserRepository()->getUsersByIds($developerIds);
 
-        foreach ($developers as $developer) {
-            $project->addDeveloper($developer);
+            if (count($developerIds) !== count($developers)) {
+                throw new NotFoundHttpException('Developer(s) not found');
+            }
+
+            foreach ($developers as $developer) {
+                $project->addDeveloper($developer);
+            }
         }
 
         $em = $this->getEntityManager();
@@ -169,7 +168,7 @@ class ProjectController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
                 'project_details', 'tracker_list', 'user_list'
-            ]))
+            ])), Response::HTTP_CREATED
         );
     }
 
@@ -222,6 +221,40 @@ class ProjectController extends AbstractController
                 'project_details', 'tracker_list', 'user_list'
             ]))
         );
+    }
+
+    /**
+     * @Route("/{id}/", name="remove", methods={"delete"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="204",
+     *     description="Removes the project."
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project not found"
+     * )
+     *
+     * @return Response
+     */
+    public function removeAction(int $id): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($project);
+        $em->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

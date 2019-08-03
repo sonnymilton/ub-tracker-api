@@ -72,7 +72,7 @@ class Project
     /**
      * @var ArrayCollection|ApiUser[]
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
      * @ORM\JoinTable(name="users_projects",
      *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
