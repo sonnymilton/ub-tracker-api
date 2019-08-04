@@ -47,8 +47,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 $developers[mt_rand(0, 1)],
                 $tracker,
                 sprintf('bug %d', $i),
-                sprintf('bug %d description', $i),
-                BugPriorityType::getRandomValue()
+                BugPriorityType::getRandomValue(),
+                sprintf('bug %d description', $i)
             );
         }
 
