@@ -406,6 +406,8 @@ class ProjectController extends AbstractController
 
         $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
 
+        $position -= 1;
+
         if (!isset($trackers[$position])) {
             throw new NotFoundHttpException(sprintf('Tracker with position %d not found in this project', $position));
         }
