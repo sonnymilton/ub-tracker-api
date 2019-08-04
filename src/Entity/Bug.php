@@ -93,17 +93,19 @@ class Bug
      * Bug constructor.
      *
      * @param ApiUser $author
+     * @param Tracker $tracker
      * @param ApiUser $responsiblePerson
-     *
      * @param string $title
      * @param string $description
      * @param string $priority
+     *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, ApiUser $responsiblePerson, string $title, string $description, string $priority)
+    public function __construct(ApiUser $author, Tracker $tracker, ApiUser $responsiblePerson, string $title, string $priority, string $description)
     {
         $this->author = $author;
         $this->responsiblePerson = $responsiblePerson;
+        $this->tracker = $tracker;
         $this->title = $title;
         $this->description = $description;
         $this->priority = $priority;

@@ -230,16 +230,16 @@ class ApiUser implements UserInterface
      * @param ApiUser $responsiblePerson
      * @param Tracker $tracker
      * @param string $title
-     * @param string $description
      * @param string $priority
+     * @param string $description
      *
      * @return Bug
      *
      * @throws \Exception
      */
-    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string  $description, string $priority): Bug
+    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string $priority, string  $description): Bug
     {
-        $bug = new Bug($this, $responsiblePerson, $title, $description, $priority);
+        $bug = new Bug($this, $tracker, $responsiblePerson, $title, $priority, $description);
         $tracker->addBug($bug);
 
         return $bug;
