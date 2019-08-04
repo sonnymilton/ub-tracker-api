@@ -383,7 +383,7 @@ class ProjectController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Returns detailed info about the tracker by position in the project,",
+     *     description="Returns detailed info about the tracker by position in the project.",
      *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
      * )
      * @SWG\Response(
@@ -418,14 +418,14 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/tracker/", name="create_tracker", methods={"post"})
+     * @Route("/{id}/tracker/", name="create_tracker", methods={"post"})
      *
      * @param int $id
      *
      * @SWG\Response(
      *     response="200",
      *     description="Creates new tracker in specified project.",
-     *     @Model(type=Tracker::class, groups={"tracker_show"})
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
      * )
      * @SWG\Response(
      *     response="404",
@@ -461,7 +461,7 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create([
-                'tracker_show',
+                'tracker_show', 'user_list', 'project_list',
             ]))
         );
     }

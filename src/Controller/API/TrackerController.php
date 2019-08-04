@@ -58,7 +58,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed information about the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list", "project_list"})
      * )
      * @SWG\Response(
      *     response="404",
