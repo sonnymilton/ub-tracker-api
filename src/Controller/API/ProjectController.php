@@ -418,7 +418,7 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/tracker/")
+     * @Route("/tracker/", name="create_tracker", methods={"post"})
      *
      * @param int $id
      *
@@ -431,6 +431,8 @@ class ProjectController extends AbstractController
      *     response="404",
      *     description="Project not found."
      * )
+     *
+     * @SWG\Tag(name="Tracker")
      *
      * @return JsonResponse
      *
