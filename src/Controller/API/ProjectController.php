@@ -486,6 +486,9 @@ class ProjectController extends AbstractController
         return $this->getDoctrine()->getRepository(ApiUser::class);
     }
 
+    /**
+     * @return \App\Repository\TrackerRepository
+     */
     private function getTrackerRepository()
     {
         return $this->getDoctrine()->getRepository(Tracker::class);
