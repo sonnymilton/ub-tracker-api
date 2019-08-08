@@ -42,7 +42,7 @@ class ApiUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(unique=true)
+     * @ORM\Column(unique=true, length=50)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"user_details", "user_list"})
@@ -52,7 +52,7 @@ class ApiUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(unique=true)
+     * @ORM\Column(unique=true, length=50)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"user_details"})
