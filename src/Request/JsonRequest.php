@@ -33,7 +33,13 @@ abstract class JsonRequest extends RequestObject implements PayloadResolver, Err
      */
     public function resolvePayload(Request $request): array
     {
-        return json_decode($request->getContent(), true) ?? [];
+        $payload = json_decode($request->getContent(), true) ?? [];
+
+        foreach ($payload as $key => $value) {
+            $this->{$key} = $value;
+        }
+
+        return $payload;
     }
 
     /**
