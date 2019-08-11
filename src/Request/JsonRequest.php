@@ -24,7 +24,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 /**
  * Class JsonRequest
  */
-class JsonRequest extends RequestObject implements PayloadResolver, ErrorResponseProvider
+abstract class JsonRequest extends RequestObject implements PayloadResolver, ErrorResponseProvider
 {
     /**
      * @param Request $request
