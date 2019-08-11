@@ -12,7 +12,6 @@
 namespace App\Request\Project;
 
 
-use App\Entity\Security\ApiUser;
 use App\Request\JsonRequest;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,7 +29,7 @@ class CreateProjectRequest extends JsonRequest
     protected $title;
 
     /**
-     * @var ApiUser[]
+     * @var array|int[]
      *
      * @SWG\Property(
      *     type="array",
@@ -56,5 +55,21 @@ class CreateProjectRequest extends JsonRequest
                 ])
             ]))
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return array|int[]
+     */
+    public function getDevelopers(): array
+    {
+        return $this->developers;
     }
 }
