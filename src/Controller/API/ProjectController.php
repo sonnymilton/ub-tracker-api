@@ -299,12 +299,11 @@ class ProjectController extends AbstractController
         }
 
         /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->get('developer'));
+        $developer = $this->getUserRepository()->find($request->getDeveloper());
 
         if (empty($developer)) {
             throw new NotFoundHttpException('Developer not found');
         }
-
         $project->addDeveloper($developer);
 
         $this->getEntityManager()->flush();
@@ -358,7 +357,7 @@ class ProjectController extends AbstractController
         }
 
         /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->get('developer'));
+        $developer = $this->getUserRepository()->find($request->getDeveloper());
 
         if (empty($developer)) {
             throw new NotFoundHttpException('Developer not found');

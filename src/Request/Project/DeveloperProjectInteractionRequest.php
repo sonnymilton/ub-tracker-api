@@ -18,6 +18,9 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class DeveloperProjectInteractionRequest
+ */
 class DeveloperProjectInteractionRequest extends RequestObject implements PayloadResolver
 {
     /**
@@ -35,7 +38,7 @@ class DeveloperProjectInteractionRequest extends RequestObject implements Payloa
     public function resolvePayload(Request $request): array
     {
         return [
-            'developer' => intval($request->query->get('developer')),
+            'developer' => $this->developer = intval($request->query->get('developer')),
         ];
     }
 
@@ -50,5 +53,13 @@ class DeveloperProjectInteractionRequest extends RequestObject implements Payloa
                new Assert\Type('integer'),
            ],
         ]);
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeveloper(): int
+    {
+        return $this->developer;
     }
 }
