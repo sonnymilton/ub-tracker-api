@@ -121,6 +121,8 @@ class LoginController extends AbstractController
 
         $user->createToken();
 
+        $this->getDoctrine()->getManager()->flush();
+
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($user, 'json', SerializationContext::create()->setGroups([
                 'user_auth', 'user_details'
