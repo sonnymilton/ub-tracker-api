@@ -111,9 +111,8 @@ class LoginController extends AbstractController
      */
     public function authByCodeAction(AuthenticationRequest $request): JsonResponse
     {
-        $code = $request->get('code');
         /** @var ApiUser $user */
-        $user = $this->getUserRepository()->findOneBy(['code' => $code]);
+        $user = $this->getUserRepository()->findOneBy(['code' => $request->getCode()]);
 
         if (empty($user)) {
             throw new AuthenticationException();

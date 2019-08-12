@@ -50,4 +50,12 @@ class AuthenticationRequest extends JsonRequest implements ErrorResponseProvider
     {
         return new Response(null, Response::HTTP_FORBIDDEN);
     }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
+    }
 }
