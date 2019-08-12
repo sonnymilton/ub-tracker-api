@@ -34,4 +34,12 @@ class UpdateProjectRequest extends JsonRequest
             'title' => new Assert\NotBlank(),
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 }
