@@ -188,7 +188,9 @@ class Project
      */
     public function addDeveloper(ApiUser $developer): void
     {
-        $this->developers->add($developer);
+        if (!$this->developers->contains($developer)) {
+            $this->developers->add($developer);
+        }
     }
 
     /**
