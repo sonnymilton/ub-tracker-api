@@ -57,7 +57,7 @@ class GithubController extends AbstractController
      *
      * @SWG\Response(
      *     response="302",
-     *     description="Redirects to Github OAuth page"
+     *     description="Redirects to Github OAuth page."
      * )
      */
     public function connectAction(): RedirectResponse

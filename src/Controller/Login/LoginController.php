@@ -95,7 +95,7 @@ class LoginController extends AbstractController
      * )
      * @SWG\Response(
      *     response="401",
-     *     description="Unable to authorize user by code"
+     *     description="Unable to authorize user by code."
      * )
      * @SWG\Parameter(
      *     name="Authentication request",

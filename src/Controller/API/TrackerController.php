@@ -12,8 +12,8 @@
 namespace App\Controller\API;
 
 use App\Entity\Project;
+use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
-use App\Repository\ProjectRepository;
 use App\Repository\TrackerRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class TrackerController
  *
- * @Route("/tracker", name="tracker_")
+ * @Route(name="tracker_")
  *
  * @SWG\Tag(name="Tracker")
  */
@@ -51,7 +51,7 @@ class TrackerController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/", name="show", methods={"get"})
+     * @Route("/tracker/{id}/", name="show", methods={"get"})
      *
      * @param int $id
      *
@@ -78,12 +78,99 @@ class TrackerController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create([
                 'tracker_show',
+            ]))
+        );
+    }
+
+    /**
+     * @Route("/project/{id}/tracker/{position}/", name="show_by_position", methods={"get"})
+     *
+     * @param int $id
+     * @param int $position
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Returns detailed info about the tracker by position in the project.",
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project or tracker not found"
+     * )
+     *
+     * @return JsonResponse|Response
+     */
+    public function showTrackerByPositionAction(int $id, int $position): JsonResponse
+    {
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
+
+        $position -= 1;
+
+        if (!isset($trackers[$position])) {
+            throw new NotFoundHttpException(sprintf('Tracker with position %d not found in this project', $position));
+        }
+
+        return $this->forward('App\Controller\API\TrackerController::showAction', [
+            'id' => $trackers[$position]->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/project/{id}/tracker/", name="create_tracker", methods={"post"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Creates new tracker in specified project.",
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project not found."
+     * )
+     *
+     * @return JsonResponse
+     *
+     * @throws \Exception
+     */
+    public function createTrackerAction(int $id): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        /** @var Project $project */
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        /** @var ApiUser $user */
+        $user = $this->getUser();
+
+        $tracker = $user->createTracker($project);
+        $project->addTracker($tracker);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($project);
+        $em->flush();
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+                'tracker_show', 'user_list', 'project_list',
             ])), Response::HTTP_CREATED
         );
     }
 
     /**
-     * @Route("/{id}/", name="delete", methods={"delete"})
+     * @Route("/tracker/{id}/", name="delete", methods={"delete"})
      *
      * @param int $id
      *
@@ -113,12 +200,19 @@ class TrackerController extends AbstractController
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-
     /**
-     * @return \App\Repository\TrackerRepository|\Doctrine\Common\Persistence\ObjectRepository
+     * @return \App\Repository\TrackerRepository
      */
     private function getTrackerRepository(): TrackerRepository
     {
         return $this->getDoctrine()->getRepository(Tracker::class);
+    }
+
+    /**
+     * @return \App\Repository\ProjectRepository
+     */
+    private function getProjectRepository()
+    {
+        return $this->getDoctrine()->getRepository(Project::class);
     }
 }

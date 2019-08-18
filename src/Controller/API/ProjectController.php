@@ -13,7 +13,6 @@ namespace App\Controller\API;
 
 use App\Entity\Project;
 use App\Entity\Security\ApiUser;
-use App\Entity\Tracker;
 use App\Repository\ProjectRepository;
 use App\Repository\Security\ApiUserRepository;
 use App\Request\Project\CreateProjectRequest;
@@ -91,7 +90,7 @@ class ProjectController extends AbstractController
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project not found",
+     *     description="Project not found.",
      * )
      *
      * @return JsonResponse
@@ -118,16 +117,16 @@ class ProjectController extends AbstractController
      *
      * @SWG\Response(
      *     response="201",
-     *     description="Creates a project",
+     *     description="Creates a project.",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
      * @SWG\Response(
      *     response="400",
-     *     description="Invalid request data"
+     *     description="Invalid request data."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Developer(s) not found"
+     *     description="Developer(s) not found."
      * )
      *
      * @SWG\Parameter(
@@ -180,16 +179,16 @@ class ProjectController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Updates the project",
+     *     description="Updates the project.",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
      * @SWG\Response(
      *     response="400",
-     *     description="Invalid request data"
+     *     description="Invalid request data."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project not found"
+     *     description="Project not found."
      * )
      *
      * @SWG\Parameter(
@@ -234,7 +233,7 @@ class ProjectController extends AbstractController
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project not found"
+     *     description="Project not found."
      * )
      *
      * @return Response
@@ -265,16 +264,16 @@ class ProjectController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Add developer to the project",
+     *     description="Add developer to the project.",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
      * @SWG\Response(
      *     response="400",
-     *     description="Invalid request data"
+     *     description="Invalid request data."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project or developer not found"
+     *     description="Project or developer not found."
      * )
      *
      * @SWG\Parameter(
@@ -323,16 +322,16 @@ class ProjectController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Add developer to the project",
+     *     description="Add developer to the project.",
      *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
      * )
      * @SWG\Response(
      *     response="400",
-     *     description="Invalid request data"
+     *     description="Invalid request data."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Project or developer not found"
+     *     description="Project or developer not found."
      * )
      *
      * @SWG\Parameter(
@@ -375,97 +374,6 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/tracker/{position}/", name="show_tracker_by_position", methods={"get"})
-     *
-     * @param int $id
-     * @param int $position
-     *
-     * @SWG\Response(
-     *     response="200",
-     *     description="Returns detailed info about the tracker by position in the project.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
-     * )
-     * @SWG\Response(
-     *     response="404",
-     *     description="Project or tracker not found"
-     * )
-     *
-     * @SWG\Tag(name="Tracker")
-     *
-     * @return JsonResponse|Response
-     */
-    public function showTrackerByPositionAction(int $id, int $position): JsonResponse
-    {
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
-
-        $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
-
-        $position -= 1;
-
-        if (!isset($trackers[$position])) {
-            throw new NotFoundHttpException(sprintf('Tracker with position %d not found in this project', $position));
-        }
-
-        return $this->forward('App\Controller\API\TrackerController::showAction', [
-            'id' => $trackers[$position]->getId(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/tracker/", name="create_tracker", methods={"post"})
-     *
-     * @param int $id
-     *
-     * @SWG\Response(
-     *     response="200",
-     *     description="Creates new tracker in specified project.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
-     * )
-     * @SWG\Response(
-     *     response="404",
-     *     description="Project not found."
-     * )
-     *
-     * @SWG\Tag(name="Tracker")
-     *
-     * @return JsonResponse
-     *
-     * @throws \Exception
-     */
-    public function createTrackerAction(int $id)
-    {
-        $this->denyAccessUnlessGranted('ROLE_QA');
-
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
-
-        /** @var ApiUser $user */
-        $user = $this->getUser();
-
-        $tracker = $user->createTracker($project);
-        $project->addTracker($tracker);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($project);
-        $em->flush();
-
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
-                'tracker_show', 'user_list', 'project_list',
-            ]))
-        );
-    }
-
-    /**
      * @return ObjectManager
      */
     private function getEntityManager(): ObjectManager
@@ -487,13 +395,5 @@ class ProjectController extends AbstractController
     private function getUserRepository(): ApiUserRepository
     {
         return $this->getDoctrine()->getRepository(ApiUser::class);
-    }
-
-    /**
-     * @return \App\Repository\TrackerRepository
-     */
-    private function getTrackerRepository()
-    {
-        return $this->getDoctrine()->getRepository(Tracker::class);
     }
 }
