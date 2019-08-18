@@ -201,6 +201,82 @@ class TrackerController extends AbstractController
     }
 
     /**
+     * @Route("/tracker/{id}/close/", name="close", methods={"patch"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Closes the tracker.",
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Tracker not found."
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function closeAction(int $id): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        /** @var Tracker $tracker */
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $tracker->close();
+        $this->getDoctrine()->getManager()->flush();
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+                'tracker_show', 'user_list', 'project_list',
+            ])), Response::HTTP_CREATED
+        );
+    }
+
+    /**
+     * @Route("/tracker/{id}/open/", name="open", methods={"patch"})
+     *
+     * @param int $id
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Opens the tracker.",
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Tracker not found."
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function openAction(int $id): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        /** @var Tracker $tracker */
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Project not found');
+        }
+
+        $tracker->open();
+        $this->getDoctrine()->getManager()->flush();
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+                'tracker_show', 'user_list', 'project_list',
+            ])), Response::HTTP_CREATED
+        );
+    }
+
+    /**
      * @return \App\Repository\TrackerRepository
      */
     private function getTrackerRepository(): TrackerRepository

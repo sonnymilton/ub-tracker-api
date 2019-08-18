@@ -78,6 +78,16 @@ class Tracker
     protected $author;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
+     */
+    protected $closed;
+
+    /**
      * Tracker constructor.
      *
      * @param ApiUser $author
@@ -89,6 +99,7 @@ class Tracker
     {
         $this->author = $author;
         $this->project = $project;
+        $this->closed = false;
         $this->startedAt = new \DateTimeImmutable();
         $this->bugs = new ArrayCollection();
     }
@@ -131,5 +142,15 @@ class Tracker
     public function removeBug(Bug $bug): void
     {
         $this->bugs->removeElement($bug);
+    }
+
+    public function close()
+    {
+        $this->closed = true;
+    }
+
+    public function open()
+    {
+        $this->closed = false;
     }
 }
