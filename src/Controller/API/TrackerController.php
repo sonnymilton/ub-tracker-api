@@ -76,7 +76,7 @@ class TrackerController extends AbstractController
         }
 
         return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show',
             ]))
         );
@@ -163,7 +163,7 @@ class TrackerController extends AbstractController
         $em->flush();
 
         return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show', 'user_list', 'project_list',
             ])), Response::HTTP_CREATED
         );
@@ -232,7 +232,7 @@ class TrackerController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show', 'user_list', 'project_list',
             ])), Response::HTTP_CREATED
         );
@@ -270,7 +270,7 @@ class TrackerController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create([
+            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show', 'user_list', 'project_list',
             ])), Response::HTTP_CREATED
         );
