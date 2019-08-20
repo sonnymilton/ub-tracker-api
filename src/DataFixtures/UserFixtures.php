@@ -33,8 +33,8 @@ class UserFixtures extends Fixture
     {
         $admin = new ApiUser('admin', 'admin@example.com', 'admin', ['ROLE_ADMIN']);
         $qa = new ApiUser('qa', 'qa@example.com', 'qa', ['ROLE_QA']);
-        $developer1 = new ApiUser('developer1', 'developer1@example.com', 'dev1');
-        $developer2 = new ApiUser('developer2', 'developer2@example.com', 'dev2');
+        $developer1 = new ApiUser('developer1', 'developer1@example.com', 'dev1', ['ROLE_DEVELOPER']);
+        $developer2 = new ApiUser('developer2', 'developer2@example.com', 'dev2', ['ROLE_DEVELOPER']);
 
         foreach ([$admin, $qa, $developer1, $developer2] as $user) {
             $manager->persist($user);
