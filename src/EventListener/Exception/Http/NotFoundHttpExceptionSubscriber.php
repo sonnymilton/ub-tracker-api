@@ -8,11 +8,8 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\EventListener\Exception\Http;
 
-
-use Fesor\RequestObject\InvalidRequestPayloadException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +17,9 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Not found HTTP exception subscriber
+ */
 class NotFoundHttpExceptionSubscriber implements EventSubscriberInterface
 {
     /**
@@ -41,9 +41,9 @@ class NotFoundHttpExceptionSubscriber implements EventSubscriberInterface
 
         if ($exception instanceof NotFoundHttpException) {
             $event->setResponse(new JsonResponse([
-              'errors' => [
-                  $event->getException()->getMessage(),
-              ]
+                'errors' => [
+                    $event->getException()->getMessage(),
+                ],
             ], Response::HTTP_NOT_FOUND));
         }
     }

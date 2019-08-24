@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Entity;
 
 use App\DBAL\Types\BugPriorityType;
@@ -95,22 +94,22 @@ class Bug
      * @param ApiUser $author
      * @param Tracker $tracker
      * @param ApiUser $responsiblePerson
-     * @param string $title
-     * @param string $description
-     * @param string $priority
+     * @param string  $title
+     * @param string  $description
+     * @param string  $priority
      *
      * @throws \Exception
      */
     public function __construct(ApiUser $author, Tracker $tracker, ApiUser $responsiblePerson, string $title, string $priority, string $description)
     {
-        $this->author = $author;
+        $this->author            = $author;
         $this->responsiblePerson = $responsiblePerson;
-        $this->tracker = $tracker;
-        $this->title = $title;
-        $this->description = $description;
-        $this->priority = $priority;
-        $this->status = BugStatusType::NEW;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->tracker           = $tracker;
+        $this->title             = $title;
+        $this->description       = $description;
+        $this->priority          = $priority;
+        $this->status            = BugStatusType::NEW;
+        $this->createdAt         = new \DateTimeImmutable();
     }
 
     /**

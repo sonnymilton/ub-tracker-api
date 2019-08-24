@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
@@ -97,17 +96,17 @@ class Project
      * Project constructor.
      *
      * @param ApiUser $author
-     * @param string $title
-     * @param array $developers
+     * @param string  $title
+     * @param array   $developers
      *
      * @throws \Exception
      */
     public function __construct(ApiUser $author, string $title, array $developers = null)
     {
-        $this->author = $author;
-        $this->title = $title;
-        $this->createdAt = new \DateTimeImmutable();
-        $this->trackers = new ArrayCollection();
+        $this->author     = $author;
+        $this->title      = $title;
+        $this->createdAt  = new \DateTimeImmutable();
+        $this->trackers   = new ArrayCollection();
         $this->developers = new ArrayCollection();
     }
 

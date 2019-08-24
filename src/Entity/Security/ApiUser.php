@@ -10,7 +10,6 @@
 
 namespace App\Entity\Security;
 
-
 use App\Entity\Bug;
 use App\Entity\Project;
 use App\Entity\Tracker;
@@ -103,20 +102,19 @@ class ApiUser implements UserInterface
     /**
      * ApiUser constructor.
      *
-     * @param string $username
-     * @param string $email
-     * @param string $password
+     * @param string     $username
+     * @param string     $email
+     * @param string     $password
      * @param array|null $roles
      */
     public function __construct(string $username, string $email, string $password, array $roles = null)
     {
         $this->username = $username;
-        $this->email = $email;
+        $this->email    = $email;
         $this->password = $password;
-        $this->roles = $roles;
-        $this->salt = hash('sha512', uniqid((string)mt_rand(), true));
+        $this->roles    = $roles;
+        $this->salt     = hash('sha512', uniqid((string)mt_rand(), true));
     }
-
 
     /**
      * @return array
@@ -125,7 +123,7 @@ class ApiUser implements UserInterface
     {
         $roles = $this->roles;
 
-        $roles []= 'ROLE_USER';
+        $roles [] = 'ROLE_USER';
 
         return $roles;
     }
@@ -152,7 +150,7 @@ class ApiUser implements UserInterface
     public function createToken(): void
     {
         $this->token = new ApiToken();
-        $this->code = null;
+        $this->code  = null;
     }
 
     /**
@@ -170,7 +168,6 @@ class ApiUser implements UserInterface
     {
         return $this->username;
     }
-
 
     public function eraseCredentials(): void
     {
@@ -199,9 +196,10 @@ class ApiUser implements UserInterface
     }
 
     /**
-     * @param string $title
+     * @param string     $title
      *
      * @param array|null $developers
+     *
      * @return Project
      *
      * @throws \Exception
@@ -229,15 +227,15 @@ class ApiUser implements UserInterface
     /**
      * @param ApiUser $responsiblePerson
      * @param Tracker $tracker
-     * @param string $title
-     * @param string $priority
-     * @param string $description
+     * @param string  $title
+     * @param string  $priority
+     * @param string  $description
      *
      * @return Bug
      *
      * @throws \Exception
      */
-    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string $priority, string  $description): Bug
+    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string $priority, string $description): Bug
     {
         $bug = new Bug($this, $tracker, $responsiblePerson, $title, $priority, $description);
         $tracker->addBug($bug);

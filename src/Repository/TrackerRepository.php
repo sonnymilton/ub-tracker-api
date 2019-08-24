@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Repository;
 
 use App\Entity\Project;

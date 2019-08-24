@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Request;
-
 
 use Fesor\RequestObject\ErrorResponseProvider;
 use Fesor\RequestObject\PayloadResolver;
@@ -51,9 +49,9 @@ abstract class JsonRequest extends RequestObject implements PayloadResolver, Err
     {
         return new JsonResponse([
             'message' => 'Please check your data',
-            'errors' => array_map(function (ConstraintViolation $violation) {
+            'errors'  => array_map(function (ConstraintViolation $violation) {
                 return [
-                    'path' => $violation->getPropertyPath(),
+                    'path'    => $violation->getPropertyPath(),
                     'message' => $violation->getMessage(),
                 ];
             }, iterator_to_array($errors)),

@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Request\Project;
-
 
 use Fesor\RequestObject\PayloadResolver;
 use Fesor\RequestObject\RequestObject;
@@ -48,10 +46,10 @@ class DeveloperProjectInteractionRequest extends RequestObject implements Payloa
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
-           'developer' =>  [
-               new Assert\NotNull(),
-               new Assert\Type('integer'),
-           ],
+            'developer' => [
+                new Assert\NotNull(),
+                new Assert\Type('integer'),
+            ],
         ]);
     }
 

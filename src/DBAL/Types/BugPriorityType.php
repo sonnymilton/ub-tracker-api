@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\DBAL\Types;
-
 
 use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 
@@ -19,15 +17,15 @@ use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
  */
 final class BugPriorityType extends AbstractEnumType
 {
-    public const CRITICAL   = 'critical';
-    public const MAJOR      = 'major';
-    public const MINOR      = 'minor';
-    public const NORMAL     = 'normal';
+    public const CRITICAL = 'critical';
+    public const MAJOR    = 'major';
+    public const MINOR    = 'minor';
+    public const NORMAL   = 'normal';
 
     protected static $choices = [
-        self::CRITICAL  => 'bug_priority.critical',
-        self::MAJOR     => 'bug_priority.major',
-        self::MINOR     => 'bug_priority.minor',
-        self::NORMAL    => 'bug_priority.normal'
+        self::CRITICAL => 'bug_priority.critical',
+        self::MAJOR    => 'bug_priority.major',
+        self::MINOR    => 'bug_priority.minor',
+        self::NORMAL   => 'bug_priority.normal',
     ];
 }

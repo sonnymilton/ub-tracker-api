@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Repository;
-
 
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Bug repository
+ */
 class BugRepository extends EntityRepository
 {
-
 }

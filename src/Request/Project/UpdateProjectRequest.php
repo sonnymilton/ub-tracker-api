@@ -8,14 +8,15 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Request\Project;
-
 
 use App\Request\JsonRequest;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Update project request
+ */
 class UpdateProjectRequest extends JsonRequest
 {
     /**

@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Controller\Login;
-
 
 use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
@@ -48,13 +46,13 @@ class LoginController extends AbstractController
     /**
      * LoginController constructor.
      *
-     * @param SerializerInterface $serializer
+     * @param SerializerInterface    $serializer
      * @param EntityManagerInterface $em
      */
     public function __construct(SerializerInterface $serializer, EntityManagerInterface $em)
     {
         $this->serializer = $serializer;
-        $this->em = $em;
+        $this->em         = $em;
     }
 
     /**
@@ -124,7 +122,8 @@ class LoginController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($user, 'json', SerializationContext::create()->setGroups([
-                'user_auth', 'user_details'
+                'user_auth',
+                'user_details',
             ]))
         );
     }
@@ -136,5 +135,4 @@ class LoginController extends AbstractController
     {
         return $this->em->getRepository(ApiUser::class);
     }
-
 }

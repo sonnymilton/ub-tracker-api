@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\DataFixtures;
-
 
 use App\Entity\Security\ApiUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -31,8 +29,8 @@ class UserFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        $admin = new ApiUser('admin', 'admin@example.com', 'admin', ['ROLE_ADMIN']);
-        $qa = new ApiUser('qa', 'qa@example.com', 'qa', ['ROLE_QA']);
+        $admin      = new ApiUser('admin', 'admin@example.com', 'admin', ['ROLE_ADMIN']);
+        $qa         = new ApiUser('qa', 'qa@example.com', 'qa', ['ROLE_QA']);
         $developer1 = new ApiUser('developer1', 'developer1@example.com', 'dev1', ['ROLE_DEVELOPER']);
         $developer2 = new ApiUser('developer2', 'developer2@example.com', 'dev2', ['ROLE_DEVELOPER']);
 

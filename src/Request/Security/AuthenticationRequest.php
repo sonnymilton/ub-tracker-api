@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Request\Security;
-
 
 use App\Request\JsonRequest;
 use Fesor\RequestObject\ErrorResponseProvider;
@@ -37,7 +35,7 @@ class AuthenticationRequest extends JsonRequest implements ErrorResponseProvider
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
-           'code' =>  new Assert\NotNull(['message' => 'security.auth.code_required'])
+            'code' => new Assert\NotNull(['message' => 'security.auth.code_required']),
         ]);
     }
 

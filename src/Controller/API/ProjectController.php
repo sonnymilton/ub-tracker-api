@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Controller\API;
 
 use App\Entity\Project;
@@ -105,7 +104,9 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details', 'tracker_list', 'user_list'
+                'project_details',
+                'tracker_list',
+                'user_list',
             ]))
         );
     }
@@ -145,7 +146,7 @@ class ProjectController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_QA');
 
         /** @var ApiUser $author */
-        $author = $this->getUser();
+        $author  = $this->getUser();
         $project = $author->createProject($request->getTitle());
 
         if (null !== $developerIds = $request->getDevelopers()) {
@@ -166,7 +167,9 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details', 'tracker_list', 'user_list'
+                'project_details',
+                'tracker_list',
+                'user_list',
             ])), Response::HTTP_CREATED
         );
     }
@@ -174,7 +177,7 @@ class ProjectController extends AbstractController
     /**
      * @Route("/{id}/", methods={"put"}, name="update")
      *
-     * @param int $id
+     * @param int                  $id
      * @param UpdateProjectRequest $request
      *
      * @SWG\Response(
@@ -217,7 +220,9 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details', 'tracker_list', 'user_list'
+                'project_details',
+                'tracker_list',
+                'user_list',
             ]))
         );
     }
@@ -259,7 +264,7 @@ class ProjectController extends AbstractController
     /**
      * @Route("/{id}/add_developer/", methods={"patch"}, name="add_developer")
      *
-     * @param int $id
+     * @param int                                $id
      * @param DeveloperProjectInteractionRequest $request
      *
      * @SWG\Response(
@@ -309,7 +314,9 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details', 'tracker_list', 'user_list'
+                'project_details',
+                'tracker_list',
+                'user_list',
             ]))
         );
     }
@@ -317,7 +324,7 @@ class ProjectController extends AbstractController
     /**
      * @Route("/{id}/remove_developer/", methods={"patch"}, name="remove_developer")
      *
-     * @param int $id
+     * @param int                                $id
      * @param DeveloperProjectInteractionRequest $request
      *
      * @SWG\Response(
@@ -368,7 +375,9 @@ class ProjectController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details', 'tracker_list', 'user_list'
+                'project_details',
+                'tracker_list',
+                'user_list',
             ]))
         );
     }

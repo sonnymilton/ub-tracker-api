@@ -52,7 +52,7 @@ class ApiToken
      */
     public function __construct()
     {
-        $this->value = bin2hex(openssl_random_pseudo_bytes(32));
+        $this->value     = bin2hex(openssl_random_pseudo_bytes(32));
         $this->expiresAt = new \DateTimeImmutable('tomorrow');
     }
 

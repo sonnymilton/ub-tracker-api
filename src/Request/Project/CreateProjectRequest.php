@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Request\Project;
-
 
 use App\Request\JsonRequest;
 use Swagger\Annotations as SWG;
@@ -45,15 +43,15 @@ class CreateProjectRequest extends JsonRequest
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'title' => new Assert\NotBlank(),
+            'title'      => new Assert\NotBlank(),
             'developers' => new Assert\Optional(([
                 new Assert\Type('array'),
                 new Assert\Count(['min' => 1]),
                 new Assert\All([
                     new Assert\Type('integer'),
-                    new Assert\GreaterThanOrEqual(0)
-                ])
-            ]))
+                    new Assert\GreaterThanOrEqual(0),
+                ]),
+            ])),
         ]);
     }
 

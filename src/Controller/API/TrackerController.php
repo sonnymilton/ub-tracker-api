@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Controller\API;
 
 use App\Entity\Project;
@@ -164,7 +163,9 @@ class TrackerController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show', 'user_list', 'project_list',
+                'tracker_show',
+                'user_list',
+                'project_list',
             ])), Response::HTTP_CREATED
         );
     }
@@ -233,7 +234,9 @@ class TrackerController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show', 'user_list', 'project_list',
+                'tracker_show',
+                'user_list',
+                'project_list',
             ])), Response::HTTP_CREATED
         );
     }
@@ -271,7 +274,9 @@ class TrackerController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show', 'user_list', 'project_list',
+                'tracker_show',
+                'user_list',
+                'project_list',
             ])), Response::HTTP_CREATED
         );
     }

@@ -8,9 +8,7 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Controller\Login\OAuth;
-
 
 use App\Security\UserManager;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -44,11 +42,11 @@ class GithubController extends AbstractController
      * GithubController constructor.
      *
      * @param ClientRegistry $clientRegistry
-     * @param UserManager $userManager
+     * @param UserManager    $userManager
      */
     public function __construct(ClientRegistry $clientRegistry, UserManager $userManager)
     {
-        $this->client= $clientRegistry->getClient('github_main');
+        $this->client      = $clientRegistry->getClient('github_main');
         $this->userManager = $userManager;
     }
 
@@ -76,12 +74,12 @@ class GithubController extends AbstractController
     {
         $this->client->setAsStateless();
         $oauthUser = $this->client->fetchUser();
-        $user = $this->userManager->getUserByGithubResourceOwner($oauthUser);
+        $user      = $this->userManager->getUserByGithubResourceOwner($oauthUser);
         $user->updateCode($request->query->get('code'));
         $this->getDoctrine()->getManager()->flush();
 
         return new RedirectResponse(
-            sprintf('%s?%s', $_ENV['APP_LOGIN_CALLBACK_URL'], $request->getQueryString()),302
+            sprintf('%s?%s', $_ENV['APP_LOGIN_CALLBACK_URL'], $request->getQueryString()), 302
         );
     }
 }

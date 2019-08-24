@@ -8,15 +8,16 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Security;
-
 
 use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
 
+/**
+ * User manager
+ */
 class UserManager
 {
     /**

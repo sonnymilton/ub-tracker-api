@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Response\Security;
 
 use JMS\Serializer\Annotation as JMS;
@@ -43,7 +42,7 @@ class AuthMethodResponseObject
     public function __construct(string $name, string $url)
     {
         $this->name = $name;
-        $this->url = $url;
+        $this->url  = $url;
     }
 
     /**
@@ -61,6 +60,4 @@ class AuthMethodResponseObject
     {
         return $this->url;
     }
-
-
 }

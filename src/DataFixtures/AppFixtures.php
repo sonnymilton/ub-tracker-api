@@ -33,7 +33,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         /** @var ApiUser[] $developers */
         $developers = [
             $this->getReference(UserFixtures::FIRST_DEVELOPER_REFERENCE),
-            $this->getReference(UserFixtures::SECOND_DEVELOPER_REFERENCE)
+            $this->getReference(UserFixtures::SECOND_DEVELOPER_REFERENCE),
         ];
 
         foreach ($developers as $developer) {
@@ -41,8 +41,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $project->addDeveloper($developer);
         }
 
-
-        for ($i=0; $i<=20; $i++) {
+        for ($i = 0; $i <= 20; $i++) {
             $qaUser->createBug(
                 $developers[mt_rand(0, 1)],
                 $tracker,

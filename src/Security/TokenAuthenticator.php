@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Security;
 
 use App\Entity\Security\ApiUser;
@@ -45,7 +44,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param Request $request
+     * @param Request                      $request
      * @param AuthenticationException|null $authException
      *
      * @return JsonResponse|Response
@@ -55,8 +54,8 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         return new JsonResponse([
             'errors' => [
                 'security.unauthorized',
-                ]
-            ], Response::HTTP_UNAUTHORIZED
+            ],
+        ], Response::HTTP_UNAUTHORIZED
         );
     }
 
@@ -72,6 +71,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * @param Request $request
+     *
      * @return array|mixed
      */
     public function getCredentials(Request $request): ?array
@@ -86,7 +86,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param mixed $credentials
+     * @param mixed                 $credentials
      * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|void|null
@@ -99,7 +99,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param mixed $credentials
+     * @param mixed   $credentials
      * @param ApiUser $user
      *
      * @return bool
@@ -111,7 +111,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @param Request $request
+     * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return Response|void|null
@@ -121,14 +121,14 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
         return new JsonResponse([
             'errors' => [
                 'security.forbidden',
-            ]
+            ],
         ], Response::HTTP_FORBIDDEN);
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
-     * @param string $providerKey
+     * @param string         $providerKey
      *
      * @return Response|void|null
      */

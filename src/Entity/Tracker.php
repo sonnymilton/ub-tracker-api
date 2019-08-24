@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
@@ -97,11 +96,11 @@ class Tracker
      */
     public function __construct(ApiUser $author, Project $project)
     {
-        $this->author = $author;
-        $this->project = $project;
-        $this->closed = false;
+        $this->author    = $author;
+        $this->project   = $project;
+        $this->closed    = false;
         $this->startedAt = new \DateTimeImmutable();
-        $this->bugs = new ArrayCollection();
+        $this->bugs      = new ArrayCollection();
     }
 
     /**

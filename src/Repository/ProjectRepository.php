@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -18,5 +17,4 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProjectRepository extends EntityRepository
 {
-
 }
