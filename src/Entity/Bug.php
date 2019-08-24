@@ -14,11 +14,14 @@ use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
 use App\Entity\Security\ApiUser;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Bug
  *
  * @ORM\Entity(repositoryClass="App\Repository\BugRepository")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Bug
 {
@@ -28,6 +31,9 @@ class Bug
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $id;
 
@@ -35,6 +41,9 @@ class Bug
      * @var string
      *
      * @ORM\Column()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $title;
 
@@ -42,6 +51,9 @@ class Bug
      * @var string|null
      *
      * @ORM\Column(type="text")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $description;
 
@@ -49,6 +61,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="BugStatusType")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $status;
 
@@ -56,6 +71,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="BugPriorityType")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $priority;
 
@@ -63,6 +81,7 @@ class Bug
      * @var Tracker
      *
      * @ORM\ManyToOne(targetEntity="Tracker", inversedBy="bugs")
+     *
      */
     protected $tracker;
 
@@ -70,6 +89,9 @@ class Bug
      * @var ApiUser
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $responsiblePerson;
 
@@ -78,6 +100,8 @@ class Bug
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $author;
 
@@ -85,6 +109,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $createdAt;
 
