@@ -69,8 +69,6 @@ class ApiUser implements UserInterface
      * @var array
      *
      * @ORM\Column(type="simple_array", nullable=true)
-     *
-     * @JMS\Groups(groups={"user_details"})
      */
     protected $roles;
 
@@ -117,13 +115,18 @@ class ApiUser implements UserInterface
     }
 
     /**
+     *
+     * @JMS\VirtualProperty(name="roles")
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_details"})
+     *
      * @return array
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
 
-        $roles [] = 'ROLE_USER';
+        $roles []= 'ROLE_USER';
 
         return $roles;
     }
