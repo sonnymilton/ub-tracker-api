@@ -131,7 +131,7 @@ class ProjectController extends AbstractController
      * )
      *
      * @SWG\Parameter(
-     *     name="Authentication request",
+     *     name="Create project request.",
      *     in="body",
      *     allowEmptyValue=false,
      *     @Model(type=CreateProjectRequest::class)
@@ -195,7 +195,7 @@ class ProjectController extends AbstractController
      * )
      *
      * @SWG\Parameter(
-     *     name="Authentication request",
+     *     name="Update project request",
      *     in="body",
      *     allowEmptyValue=false,
      *     @Model(type=CreateProjectRequest::class)

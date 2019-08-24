@@ -77,6 +77,9 @@ class TrackerController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show',
+                'project_list',
+                'user_list',
+                'bug_list',
             ]))
         );
     }
@@ -209,7 +212,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Closes the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list", "bug_list"})
      * )
      * @SWG\Response(
      *     response="404",
@@ -235,8 +238,9 @@ class TrackerController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show',
-                'user_list',
                 'project_list',
+                'user_list',
+                'bug_list',
             ])), Response::HTTP_CREATED
         );
     }
@@ -249,7 +253,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Opens the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list", "bug_list"})
      * )
      * @SWG\Response(
      *     response="404",
@@ -275,8 +279,9 @@ class TrackerController extends AbstractController
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
                 'tracker_show',
-                'user_list',
                 'project_list',
+                'user_list',
+                'bug_list',
             ])), Response::HTTP_CREATED
         );
     }
