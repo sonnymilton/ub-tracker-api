@@ -3,24 +3,24 @@ security:
     providers:
         db_provider:
             entity:
-                class: App\Entity\Security\ApiUser
+                class:    App\Entity\Security\ApiUser
                 property: username
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            pattern: ^/api
+            pattern:   ^/api
             anonymous: ~
-            logout: ~
+            logout:    ~
             stateless: true
             guard:
                 authenticators:
                     - App\Security\TokenAuthenticator
         login:
-            pattern: ^/login
+            pattern:   ^/login
             anonymous: ~
-            logout: ~
+            logout:    ~
             stateless: true
 
             # activate different ways to authenticate
@@ -37,5 +37,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/profile, roles: ROLE_USER }

@@ -1,11 +1,11 @@
 api:
-    resource: ../../src/Controller/API/
-    type: annotation
-    prefix: /api
+    resource:    ../../src/Controller/API/
+    type:        annotation
+    prefix:      /api
     name_prefix: api_
 
 login:
-    resource: ../../src/Controller/Login/
-    type: annotation
-    prefix: /login
+    resource:    ../../src/Controller/Login/
+    type:        annotation
+    prefix:      /login
     name_prefix: login_
