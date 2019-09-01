@@ -16,6 +16,7 @@ use App\Entity\Tracker;
 use App\Repository\Security\ApiUserRepository;
 use App\Repository\TrackerRepository;
 use App\Request\Bug\CreateBugRequest;
+use App\Request\Bug\UpdateBugRequest;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -54,7 +55,7 @@ class DefaultController extends AbstractController
      *
      * @SWG\Response(
      *     response="201",
-     *     description="Creates project.",
+     *     description="Creates bug.",
      *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
      * )
      * @SWG\Response(
@@ -115,7 +116,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/bug/{id}", name="show")
+     * @Route("/bug/{id}", name="show", methods={"get"})
      *
      * @SWG\Response(
      *     response="200",
@@ -138,6 +139,63 @@ class DefaultController extends AbstractController
         if (empty($bug)) {
             throw new NotFoundHttpException('Bug not found');
         }
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
+                'bug_details',
+                'user_list',
+                'tracker_list',
+            ]))
+        );
+    }
+
+    /**
+     * @Route("/bug/{id}/", name="update", methods={"put"})
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Updates the bug.",
+     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Bug or developer not found.",
+     * )
+     * @SWG\Response(
+     *     response="400",
+     *     description="Invalid request data."
+     * )
+     *
+     * @param int                               $id
+     * @param \App\Request\Bug\UpdateBugRequest $request
+     *
+     */
+    public function updateAction(int $id, UpdateBugRequest $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        /** @var Bug $bug */
+        $bug = $this->getBugRepository()->find($id);
+
+        if (empty($bug)) {
+            throw new NotFoundHttpException('The bug not found.');
+        }
+
+        /** @var ApiUser $developer */
+        $developer = $this->getUserRepository()->find($request->getResponsiblePerson());
+        $tracker   = $bug->getTracker();
+
+        if (
+            empty($developer) ||
+            !$developer->isDeveloper() ||
+            !$tracker->getProject()->getDevelopers()->contains($developer)
+        ) {
+            throw new NotFoundHttpException('Developer not found in this project');
+        }
+
+        $bug->updateFromRequest($request, $developer);
+
+        $this->getDoctrine()->getManager()->flush();
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([

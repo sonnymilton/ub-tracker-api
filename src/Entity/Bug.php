@@ -13,6 +13,7 @@ namespace App\Entity;
 use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
 use App\Entity\Security\ApiUser;
+use App\Request\Bug\UpdateBugRequest;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -81,7 +82,6 @@ class Bug
      * @var Tracker
      *
      * @ORM\ManyToOne(targetEntity="Tracker", inversedBy="bugs")
-     *
      */
     protected $tracker;
 
@@ -140,6 +140,18 @@ class Bug
     }
 
     /**
+     * @param \App\Request\Bug\UpdateBugRequest $request
+     * @param \App\Entity\Security\ApiUser      $responsiblePerson
+     */
+    public function updateFromRequest(UpdateBugRequest $request, ApiUser $responsiblePerson)
+    {
+        $this->title             = $request->getTitle();
+        $this->description       = $request->getDescription();
+        $this->priority          = $request->getPriority();
+        $this->responsiblePerson = $responsiblePerson;
+    }
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -177,6 +189,14 @@ class Bug
     public function getPriority(): string
     {
         return $this->priority;
+    }
+
+    /**
+     * @return \App\Entity\Tracker
+     */
+    public function getTracker(): Tracker
+    {
+        return $this->tracker;
     }
 
     /**
