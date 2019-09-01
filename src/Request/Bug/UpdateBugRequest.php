@@ -12,6 +12,7 @@ namespace App\Request\Bug;
 
 use App\DBAL\Types\BugPriorityType;
 use App\Request\JsonRequest;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

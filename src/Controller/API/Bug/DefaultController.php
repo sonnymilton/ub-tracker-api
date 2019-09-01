@@ -166,11 +166,19 @@ class DefaultController extends AbstractController
      *     description="Invalid request data."
      * )
      *
+     * @SWG\Parameter(
+     *     name="Update bug request",
+     *     required=true,
+     *     in="body",
+     *     @Model(type=UpdateBugRequest::class)
+     * )
+     *
      * @param int                               $id
      * @param \App\Request\Bug\UpdateBugRequest $request
      *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function updateAction(int $id, UpdateBugRequest $request)
+    public function updateAction(int $id, UpdateBugRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
