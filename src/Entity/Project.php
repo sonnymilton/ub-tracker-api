@@ -12,6 +12,7 @@ namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -167,9 +168,9 @@ class Project
     }
 
     /**
-     * @return ApiUser[]|ArrayCollection
+     * @return ApiUser[]|Collection
      */
-    public function getDevelopers(): ArrayCollection
+    public function getDevelopers(): Collection
     {
         return $this->developers;
     }

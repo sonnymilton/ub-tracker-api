@@ -13,12 +13,16 @@ namespace App\Entity;
 use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
 use App\Entity\Security\ApiUser;
+use App\Request\Bug\UpdateBugRequest;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Bug
  *
  * @ORM\Entity(repositoryClass="App\Repository\BugRepository")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Bug
 {
@@ -28,6 +32,9 @@ class Bug
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $id;
 
@@ -35,6 +42,9 @@ class Bug
      * @var string
      *
      * @ORM\Column()
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $title;
 
@@ -42,6 +52,9 @@ class Bug
      * @var string|null
      *
      * @ORM\Column(type="text")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $description;
 
@@ -49,6 +62,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="BugStatusType")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $status;
 
@@ -56,6 +72,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="BugPriorityType")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $priority;
 
@@ -70,6 +89,9 @@ class Bug
      * @var ApiUser
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $responsiblePerson;
 
@@ -78,6 +100,8 @@ class Bug
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
      */
     protected $author;
 
@@ -85,6 +109,9 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $createdAt;
 
@@ -110,6 +137,18 @@ class Bug
         $this->priority          = $priority;
         $this->status            = BugStatusType::NEW;
         $this->createdAt         = new \DateTimeImmutable();
+    }
+
+    /**
+     * @param \App\Request\Bug\UpdateBugRequest $request
+     * @param \App\Entity\Security\ApiUser      $responsiblePerson
+     */
+    public function updateFromRequest(UpdateBugRequest $request, ApiUser $responsiblePerson)
+    {
+        $this->title             = $request->getTitle();
+        $this->description       = $request->getDescription();
+        $this->priority          = $request->getPriority();
+        $this->responsiblePerson = $responsiblePerson;
     }
 
     /**
@@ -150,6 +189,14 @@ class Bug
     public function getPriority(): string
     {
         return $this->priority;
+    }
+
+    /**
+     * @return \App\Entity\Tracker
+     */
+    public function getTracker(): Tracker
+    {
+        return $this->tracker;
     }
 
     /**

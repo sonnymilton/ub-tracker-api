@@ -13,6 +13,7 @@ namespace App\Entity\Security;
 use App\Entity\Bug;
 use App\Entity\Project;
 use App\Entity\Tracker;
+use App\Request\Bug\CreateBugRequest;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -126,9 +127,33 @@ class ApiUser implements UserInterface
     {
         $roles = $this->roles;
 
-        $roles []= 'ROLE_USER';
+        $roles [] = 'ROLE_USER';
 
         return $roles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeveloper(): bool
+    {
+        return in_array('ROLE_DEVELOPER', $this->roles);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQA(): bool
+    {
+        return in_array('ROLE_QA', $this->roles);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->roles);
     }
 
     /**
@@ -244,5 +269,19 @@ class ApiUser implements UserInterface
         $tracker->addBug($bug);
 
         return $bug;
+    }
+
+    /**
+     * @param \App\Request\Bug\CreateBugRequest $request
+     * @param \App\Entity\Tracker               $tracker
+     * @param \App\Entity\Security\ApiUser      $responsiblePerson
+     *
+     * @return \App\Entity\Bug
+     *
+     * @throws \Exception
+     */
+    public function createBugFromRequest(CreateBugRequest $request, Tracker $tracker, ApiUser $responsiblePerson): Bug
+    {
+        return $this->createBug($responsiblePerson, $tracker, $request->getTitle(), $request->getPriority(), $request->getDescription());
     }
 }
