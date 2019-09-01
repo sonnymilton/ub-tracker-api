@@ -23,6 +23,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -212,6 +213,40 @@ class DefaultController extends AbstractController
                 'tracker_list',
             ]))
         );
+    }
+
+    /**
+     * @Route("/bug/{id}/", name="delete", methods={"delete"})
+     *
+     * @SWG\Response(
+     *     response="204",
+     *     description="Removes the bug."
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Bug not found."
+     * )
+     *
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeAction(int $id): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        $bug = $this->getBugRepository()->find($id);
+
+        if (empty($bug)) {
+            throw new NotFoundHttpException('The bug not found.');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($bug);
+        $em->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
