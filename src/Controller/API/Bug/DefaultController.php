@@ -54,7 +54,12 @@ class DefaultController extends AbstractController
      *
      * @SWG\Response(
      *     response="201",
-     *     description="Creates project."
+     *     description="Creates project.",
+     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Tracker or developer not found."
      * )
      *
      * @SWG\Parameter(
@@ -102,14 +107,54 @@ class DefaultController extends AbstractController
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
-                'bug_detail',
+                'bug_details',
                 'user_list',
                 'tracker_list',
             ]))
         );
     }
 
- 
+    /**
+     * @Route("/bug/{id}", name="show")
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Returns detailed info about the bug.",
+     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Bug not found.",
+     * )
+     *
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function showAction(int $id): JsonResponse
+    {
+        $bug = $this->getBugRepository()->find($id);
+
+        if (empty($bug)) {
+            throw new NotFoundHttpException('Bug not found');
+        }
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
+                'bug_details',
+                'user_list',
+                'tracker_list',
+            ]))
+        );
+    }
+
+    /**
+     * @return \App\Repository\BugRepository
+     */
+    private function getBugRepository()
+    {
+        return $this->getDoctrine()->getRepository(Bug::class);
+    }
 
     /**
      * @return \App\Repository\TrackerRepository
