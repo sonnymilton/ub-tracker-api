@@ -57,7 +57,10 @@ class CreateBugRequest extends JsonRequest
             'title'      => new Assert\NotBlank(),
             'description' => new Assert\NotNull(),
             'priority' => new Assert\Choice(['choices' => BugPriorityType::getChoices()]),
-            'responsiblePerson' => new Assert\Type(['type' => 'integer'])
+            'responsiblePerson' => [
+                new Assert\NotNull(),
+                new Assert\Type(['type' => 'integer']),
+            ],
         ]);
     }
 
