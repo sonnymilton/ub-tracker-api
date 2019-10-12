@@ -231,6 +231,14 @@ class Bug
         $this->description = $description;
     }
 
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return BugStatusType::VERIFIED !== $this->status && BugStatusType::CLOSED !== $this->status;
+    }
+
     public function cantBeReproduced(): void
     {
         $this->status = BugStatusType::CANT_REPRODUCE;
