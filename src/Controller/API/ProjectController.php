@@ -214,7 +214,7 @@ class ProjectController extends AbstractController
             throw new NotFoundHttpException('Project not found');
         }
 
-        $project->changeTitle($request->getTitle());
+        $project->updateFromRequest($request);
 
         $this->getEntityManager()->flush();
 

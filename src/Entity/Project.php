@@ -12,6 +12,7 @@ namespace App\Entity;
 
 use App\Entity\Project\Links;
 use App\Entity\Security\ApiUser;
+use App\Request\Project\UpdateProjectRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -209,5 +210,14 @@ class Project
     public function removeDeveloper(ApiUser $developer): void
     {
         $this->developers->removeElement($developer);
+    }
+
+    /**
+     * @param \App\Request\Project\UpdateProjectRequest $request
+     */
+    public function updateFromRequest(UpdateProjectRequest $request)
+    {
+        $this->title = $request->getTitle();
+        $this->links = $request->getLinks();
     }
 }
