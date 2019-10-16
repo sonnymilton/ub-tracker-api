@@ -12,6 +12,7 @@ namespace App\Entity\Security;
 
 use App\Entity\Bug;
 use App\Entity\Project;
+use App\Entity\Project\Links;
 use App\Entity\Tracker;
 use App\Request\Bug\CreateBugRequest;
 use Doctrine\ORM\Mapping as ORM;
@@ -224,17 +225,17 @@ class ApiUser implements UserInterface
     }
 
     /**
-     * @param string     $title
-     *
-     * @param array|null $developers
+     * @param string                    $title
+     * @param array|null                $developers
+     * @param \App\Entity\Project\Links $links
      *
      * @return Project
      *
      * @throws \Exception
      */
-    public function createProject(string $title, array $developers = null): Project
+    public function createProject(string $title, array $developers = null, Links $links = null): Project
     {
-        return new Project($this, $title, $developers);
+        return new Project($this, $title, $developers, $links);
     }
 
     /**
