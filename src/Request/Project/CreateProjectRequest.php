@@ -38,20 +38,41 @@ class CreateProjectRequest extends JsonRequest
     protected $developers;
 
     /**
+     * @var \App\Entity\Project\Links
+     */
+    protected $links;
+
+    /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
      */
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
             'title'      => new Assert\NotBlank(),
-            'developers' => new Assert\Optional(([
+            'developers' => new Assert\Optional([
                 new Assert\Type('array'),
                 new Assert\Count(['min' => 1]),
                 new Assert\All([
                     new Assert\Type('integer'),
                     new Assert\GreaterThanOrEqual(0),
                 ]),
-            ])),
+            ]),
+            'links' => new Assert\Optional([
+                new Assert\Collection([
+                    'task' => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'repository' => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'liveSite' => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'testSite' => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                ])
+            ])
         ]);
     }
 
