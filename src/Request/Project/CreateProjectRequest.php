@@ -68,6 +68,6 @@ class CreateProjectRequest extends JsonRequest
      */
     public function getDevelopers(): array
     {
-        return $this->developers;
+        return $this->developers ?? [];
     }
 }
