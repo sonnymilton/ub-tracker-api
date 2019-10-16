@@ -10,6 +10,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Project\Links;
 use App\Entity\Security\ApiUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -94,21 +95,30 @@ class Project
     protected $author;
 
     /**
+     * @var \App\Entity\Project\Links
+     *
+     * @ORM\Embedded(class="App\Entity\Project\Links", columnPrefix="link_")
+     */
+    protected $links;
+
+    /**
      * Project constructor.
      *
-     * @param ApiUser $author
-     * @param string  $title
-     * @param array   $developers
+     * @param ApiUser                   $author
+     * @param string                    $title
+     * @param array                     $developers
+     * @param \App\Entity\Project\Links $links
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, string $title, array $developers = null)
+    public function __construct(ApiUser $author, string $title, array $developers = null, Links $links = null)
     {
         $this->author     = $author;
         $this->title      = $title;
         $this->createdAt  = new \DateTimeImmutable();
         $this->trackers   = new ArrayCollection();
         $this->developers = new ArrayCollection();
+        $this->links      = $links;
     }
 
     /**
