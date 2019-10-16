@@ -10,8 +10,10 @@
 
 namespace App\Request\Project;
 
+use App\Entity\Project\Links;
 use App\Request\JsonRequest;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -41,6 +43,15 @@ class CreateProjectRequest extends JsonRequest
      * @var \App\Entity\Project\Links
      */
     protected $links;
+
+    public function resolvePayload(Request $request): array
+    {
+        $payload = parent::resolvePayload($request);
+
+        $this->links = Links::createFromArray($payload['links']);
+
+        return $payload;
+    }
 
     /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
@@ -90,5 +101,13 @@ class CreateProjectRequest extends JsonRequest
     public function getDevelopers(): array
     {
         return $this->developers ?? [];
+    }
+
+    /**
+     * @return \App\Entity\Project\Links|null
+     */
+    public function getLinks(): ?Links
+    {
+        return $this->links;
     }
 }
