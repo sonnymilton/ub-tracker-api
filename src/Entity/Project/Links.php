@@ -11,11 +11,14 @@
 namespace App\Entity\Project;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Links
  *
  * @ORM\Embeddable()
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Links
 {
@@ -23,6 +26,10 @@ class Links
      * @var string|null
      *
      * @ORM\Column(nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $task;
 
@@ -30,6 +37,10 @@ class Links
      * @var string|null
      *
      * @ORM\Column(nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $repository;
 
@@ -37,6 +48,10 @@ class Links
      * @var string|null
      *
      * @ORM\Column(nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $liveSite;
 
@@ -44,6 +59,10 @@ class Links
      * @var string|null
      *
      * @ORM\Column(nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $testSite;
 

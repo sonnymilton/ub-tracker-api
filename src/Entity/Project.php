@@ -99,6 +99,10 @@ class Project
      * @var \App\Entity\Project\Links
      *
      * @ORM\Embedded(class="App\Entity\Project\Links", columnPrefix="link_")
+     *
+     * @JMS\Expose()
+     * @JMS\Type(Links::class)
+     * @JMS\Groups(groups={"project_details"})
      */
     protected $links;
 
