@@ -12,6 +12,7 @@ namespace App\Request\Project;
 
 use App\Entity\Project\Links;
 use App\Request\JsonRequest;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,9 +42,16 @@ class CreateProjectRequest extends JsonRequest
 
     /**
      * @var \App\Entity\Project\Links
+     *
+     * @SWG\Property(ref=@Model(type=Links::class))
      */
     protected $links;
 
+    /***
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
     public function resolvePayload(Request $request): array
     {
         $payload = parent::resolvePayload($request);
@@ -70,20 +78,20 @@ class CreateProjectRequest extends JsonRequest
             ]),
             'links' => new Assert\Optional([
                 new Assert\Collection([
-                    'task' => new Assert\Optional(
+                    'task'       => new Assert\Optional(
                         new Assert\Url()
                     ),
                     'repository' => new Assert\Optional(
                         new Assert\Url()
                     ),
-                    'liveSite' => new Assert\Optional(
+                    'liveSite'   => new Assert\Optional(
                         new Assert\Url()
                     ),
-                    'testSite' => new Assert\Optional(
+                    'testSite'   => new Assert\Optional(
                         new Assert\Url()
                     ),
-                ])
-            ])
+                ]),
+            ]),
         ]);
     }
 
