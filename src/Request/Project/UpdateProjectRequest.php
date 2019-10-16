@@ -10,7 +10,9 @@
 
 namespace App\Request\Project;
 
+use App\Entity\Project\Links;
 use App\Request\JsonRequest;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,12 +29,35 @@ class UpdateProjectRequest extends JsonRequest
     protected $title;
 
     /**
+     * @var \App\Entity\Project\Links
+     *
+     * @SWG\Property(ref=@Model(type=Links::class))
+     */
+    protected $links;
+
+    /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
      */
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
             'title' => new Assert\NotBlank(),
+            'links' => new Assert\Optional([
+                new Assert\Collection([
+                    'task'       => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'repository' => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'liveSite'   => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                    'testSite'   => new Assert\Optional(
+                        new Assert\Url()
+                    ),
+                ]),
+            ]),
         ]);
     }
 
@@ -42,5 +67,13 @@ class UpdateProjectRequest extends JsonRequest
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    /**
+     * @return \App\Entity\Project\Links|null
+     */
+    public function getLinks(): ?Links
+    {
+        return $this->links;
     }
 }
