@@ -64,6 +64,22 @@ class Links
     }
 
     /**
+     * @param array $array
+     *
+     * @return \App\Entity\Project\Links
+     */
+    public static function createFromArray(array $array): Links
+    {
+        $links = new self(null, null, null, null);
+
+        foreach ($array as $key => $value) {
+            $links->{$key} = $value;
+        }
+
+        return $links;
+    }
+
+    /**
      * @return null|string
      */
     public function getTask(): ?string
