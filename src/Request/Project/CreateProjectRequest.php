@@ -56,7 +56,7 @@ class CreateProjectRequest extends JsonRequest
     {
         $payload = parent::resolvePayload($request);
 
-        $this->links = Links::createFromArray($payload['links']);
+        $this->links = Links::createFromArray($payload['links'] ?? []);
 
         return $payload;
     }
