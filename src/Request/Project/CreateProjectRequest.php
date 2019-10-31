@@ -47,6 +47,17 @@ class CreateProjectRequest extends JsonRequest
      */
     protected $links;
 
+    /**
+     * @var array|string[]
+     *
+     * @SWG\Property(
+     *     type="array",
+     *     @SWG\Items(type="string"),
+     *     description="Locales"
+     * )
+     */
+    protected $locales;
+
     /***
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
@@ -76,6 +87,14 @@ class CreateProjectRequest extends JsonRequest
                     new Assert\GreaterThanOrEqual(0),
                 ]),
             ]),
+            'locales' => [
+                new Assert\Type('array'),
+                new Assert\Count(['min' => 1]),
+                new Assert\All([
+                    new Assert\Type('string'),
+                    new Assert\NotBlank(),
+                ])
+            ],
             'links' => new Assert\Optional([
                 new Assert\Collection([
                     'task'       => new Assert\Optional(
@@ -117,5 +136,13 @@ class CreateProjectRequest extends JsonRequest
     public function getLinks(): ?Links
     {
         return $this->links;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getLocales(): array
+    {
+        return $this->locales;
     }
 }

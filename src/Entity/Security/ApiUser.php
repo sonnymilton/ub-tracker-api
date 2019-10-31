@@ -226,16 +226,16 @@ class ApiUser implements UserInterface
 
     /**
      * @param string                    $title
-     * @param array|null                $developers
+     * @param array|string[]            $locales
      * @param \App\Entity\Project\Links $links
      *
      * @return Project
      *
      * @throws \Exception
      */
-    public function createProject(string $title, array $developers = null, Links $links = null): Project
+    public function createProject(string $title, array $locales, Links $links = null): Project
     {
-        return new Project($this, $title, $developers, $links);
+        return new Project($this, $title, $locales, $links);
     }
 
     /**
