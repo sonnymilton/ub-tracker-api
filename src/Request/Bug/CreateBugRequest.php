@@ -49,6 +49,27 @@ class CreateBugRequest extends JsonRequest
     protected $responsiblePerson;
 
     /**
+     * @var array|string[]|null
+     *
+     * @SWG\Property(type="array", @SWG\Items(type="string"))
+     */
+    protected $browsers;
+
+    /**
+     * @var array|string[]|null
+     *
+     * @SWG\Property(type="array", @SWG\Items(type="string"))
+     */
+    protected $resolutions;
+
+    /**
+     * @var array|string[]|null
+     *
+     * @SWG\Property(type="array", @SWG\Items(type="string"))
+     */
+    protected $locales;
+
+    /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|\Symfony\Component\Validator\Constraints\Collection
      */
     public function rules()
@@ -61,6 +82,28 @@ class CreateBugRequest extends JsonRequest
                 new Assert\NotNull(),
                 new Assert\Type(['type' => 'integer']),
             ],
+            'browsers' => new Assert\Optional([
+                new Assert\Type('array'),
+                new Assert\All([
+                    new Assert\Type('string'),
+                    new Assert\NotBlank(),
+                ]),
+            ]),
+            'resolutions' => new Assert\Optional([
+                new Assert\Type('array'),
+                new Assert\All([
+                    new Assert\Type('string'),
+                    new Assert\NotBlank(),
+                    new Assert\Regex(['pattern' => '/^\d{3,4}x\d{3,4}/'])
+                ]),
+            ]),
+            'locales' => new Assert\Optional([
+                new Assert\Type('array'),
+                new Assert\All([
+                    new Assert\Type('string'),
+                    new Assert\NotBlank(),
+                ]),
+            ]),
         ]);
     }
 
@@ -94,5 +137,29 @@ class CreateBugRequest extends JsonRequest
     public function getResponsiblePerson(): int
     {
         return $this->responsiblePerson;
+    }
+
+    /**
+     * @return array|string[]|null
+     */
+    public function getBrowsers(): ?array
+    {
+        return $this->browsers;
+    }
+
+    /**
+     * @return array|string[]|null
+     */
+    public function getResolutions(): ?array
+    {
+        return $this->resolutions;
+    }
+
+    /**
+     * @return array|string[]|null
+     */
+    public function getLocales(): ?array
+    {
+        return $this->locales;
     }
 }
