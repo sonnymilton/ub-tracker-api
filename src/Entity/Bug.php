@@ -118,7 +118,7 @@ class Bug
     /**
      * @var array|null
      *
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
@@ -128,7 +128,7 @@ class Bug
     /**
      * @var array|null
      *
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
@@ -138,7 +138,7 @@ class Bug
     /**
      * @var array|null
      *
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
