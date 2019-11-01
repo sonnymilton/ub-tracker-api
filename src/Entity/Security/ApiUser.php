@@ -254,19 +254,40 @@ class ApiUser implements UserInterface
     }
 
     /**
-     * @param ApiUser $responsiblePerson
-     * @param Tracker $tracker
-     * @param string  $title
-     * @param string  $priority
-     * @param string  $description
+     * @param ApiUser    $responsiblePerson
+     * @param Tracker    $tracker
+     * @param string     $title
+     * @param string     $priority
+     * @param string     $description
+     * @param array|null $browsers
+     * @param array|null $resolutions
+     * @param array|null $locales
      *
      * @return Bug
      *
      * @throws \Exception
      */
-    public function createBug(ApiUser $responsiblePerson, Tracker $tracker, string $title, string $priority, string $description): Bug
-    {
-        $bug = new Bug($this, $tracker, $responsiblePerson, $title, $priority, $description);
+    public function createBug(
+        ApiUser $responsiblePerson,
+        Tracker $tracker,
+        string $title,
+        string $priority,
+        string $description,
+        array $browsers = null,
+        array $resolutions = null,
+        array $locales = null
+    ): Bug {
+        $bug = new Bug(
+            $this,
+            $tracker,
+            $responsiblePerson,
+            $title,
+            $priority,
+            $description,
+            $browsers,
+            $resolutions,
+            $locales
+        );
         $tracker->addBug($bug);
 
         return $bug;
@@ -283,6 +304,15 @@ class ApiUser implements UserInterface
      */
     public function createBugFromRequest(CreateBugRequest $request, Tracker $tracker, ApiUser $responsiblePerson): Bug
     {
-        return $this->createBug($responsiblePerson, $tracker, $request->getTitle(), $request->getPriority(), $request->getDescription());
+        return $this->createBug(
+            $responsiblePerson,
+            $tracker,
+            $request->getTitle(),
+            $request->getPriority(),
+            $request->getDescription(),
+            $request->getBrowsers(),
+            $request->getResolutions(),
+            $request->getLocales()
+        );
     }
 }
