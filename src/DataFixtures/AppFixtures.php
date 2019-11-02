@@ -97,9 +97,9 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             sprintf('bug %d', $number),
             BugPriorityType::getRandomValue(),
             sprintf('bug %d description', $number),
-            $localesCases[mt_rand(0, 3)],
+            $browserCases[mt_rand(0, 5)],
             $resolutionCases[mt_rand(0, 4)],
-            $browserCases[mt_rand(0, 5)]
+            $localesCases[mt_rand(0, 3)]
         );
     }
 
