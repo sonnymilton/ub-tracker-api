@@ -62,7 +62,7 @@ class Tracker
      * @ORM\OneToMany(targetEntity="Bug", mappedBy="tracker", cascade={"persist", "remove"})
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
+     * @JMS\Groups(groups={"tracker_show"})
      */
     protected $bugs;
 
