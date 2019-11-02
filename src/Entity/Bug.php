@@ -116,25 +116,70 @@ class Bug
     protected $createdAt;
 
     /**
+     * @var array|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     */
+    protected $browsers;
+
+    /**
+     * @var array|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     */
+    protected $resolutions;
+
+    /**
+     * @var array|null
+     *
+     * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     */
+    protected $locales;
+
+    /**
      * Bug constructor.
      *
-     * @param ApiUser $author
-     * @param Tracker $tracker
-     * @param ApiUser $responsiblePerson
-     * @param string  $title
-     * @param string  $description
-     * @param string  $priority
+     * @param ApiUser    $author
+     * @param Tracker    $tracker
+     * @param ApiUser    $responsiblePerson
+     * @param string     $title
+     * @param string     $priority
+     * @param string     $description
+     * @param array|null $browsers
+     * @param array|null $resolutions
+     * @param array|null $locales
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, Tracker $tracker, ApiUser $responsiblePerson, string $title, string $priority, string $description)
-    {
+    public function __construct(
+        ApiUser $author,
+        Tracker $tracker,
+        ApiUser $responsiblePerson,
+        string $title,
+        string $priority,
+        string $description,
+        array $browsers = null,
+        array $resolutions = null,
+        array $locales = null
+    ) {
         $this->author            = $author;
         $this->responsiblePerson = $responsiblePerson;
         $this->tracker           = $tracker;
         $this->title             = $title;
         $this->description       = $description;
         $this->priority          = $priority;
+        $this->browsers          = $browsers;
+        $this->resolutions       = $resolutions;
+        $this->locales           = $locales;
         $this->status            = BugStatusType::NEW;
         $this->createdAt         = new \DateTimeImmutable();
     }
@@ -213,6 +258,38 @@ class Bug
     public function getCreatedAt(): string
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return \App\Entity\Security\ApiUser
+     */
+    public function getAuthor(): ApiUser
+    {
+        return $this->author;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getBrowsers(): ?array
+    {
+        return $this->browsers;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getResolutions(): ?array
+    {
+        return $this->resolutions;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLocales(): ?array
+    {
+        return $this->locales;
     }
 
     /**

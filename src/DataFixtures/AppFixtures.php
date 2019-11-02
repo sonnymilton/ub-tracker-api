@@ -27,7 +27,12 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $qaUser = $this->getReference(UserFixtures::QA_USER_REFERENCE);
         $qaUser->createToken();
 
-        $project = $qaUser->createProject('ub-tracker');
+        $project = $qaUser->createProject('ub-tracker', ['ru', 'en'], new Project\Links(
+            'https://task-manager.example.com/task/1/',
+            'https://github.com/Sonny812/ub-tracker-api',
+            'https://ub-tracker.example.com/',
+            'https://stage.ub-tracker.example.com/'
+        ));
         $tracker = $qaUser->createTracker($project);
 
         /** @var ApiUser[] $developers */
@@ -42,18 +47,60 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         }
 
         for ($i = 0; $i <= 20; $i++) {
-            $qaUser->createBug(
-                $developers[mt_rand(0, 1)],
-                $tracker,
-                sprintf('bug %d', $i),
-                BugPriorityType::getRandomValue(),
-                sprintf('bug %d description', $i)
-            );
+            $this->generateBug($qaUser, $developers, $tracker, $i);
         }
 
         $manager->persist($project);
 
         $manager->flush();
+    }
+
+    /**
+     * @param \App\Entity\Security\ApiUser         $qa
+     * @param array|\App\Entity\Security\ApiUser[] $developers
+     * @param \App\Entity\Tracker                  $tracker
+     * @param int                                  $number
+     *
+     * @return \App\Entity\Bug
+     *
+     * @throws \Exception
+     */
+    protected function generateBug(ApiUser $qa, array $developers, Tracker $tracker, int $number)
+    {
+        $localesCases = [
+            ['ru'],
+            ['en'],
+            ['ru', 'en'],
+            [],
+        ];
+
+        $resolutionCases = [
+            ['320x480'],
+            ['320x480', '480x720'],
+            ['1080x1920'],
+            [],
+            [],
+        ];
+
+        $browserCases = [
+            ['firefox'],
+            ['chrome'],
+            ['safari'],
+            ['firefox', 'safari'],
+            [],
+            [],
+        ];
+
+        return $qa->createBug(
+            $developers[mt_rand(0, 1)],
+            $tracker,
+            sprintf('bug %d', $number),
+            BugPriorityType::getRandomValue(),
+            sprintf('bug %d description', $number),
+            $browserCases[mt_rand(0, 5)],
+            $resolutionCases[mt_rand(0, 4)],
+            $localesCases[mt_rand(0, 3)]
+        );
     }
 
     /**

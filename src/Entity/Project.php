@@ -107,16 +107,26 @@ class Project
     protected $links;
 
     /**
+     * @var array|string[]
+     *
+     * @ORM\Column(type="simple_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"project_details"})
+     */
+    protected $locales;
+
+    /**
      * Project constructor.
      *
      * @param ApiUser                   $author
      * @param string                    $title
-     * @param array                     $developers
+     * @param array                     $locales
      * @param \App\Entity\Project\Links $links
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, string $title, array $developers = null, Links $links = null)
+    public function __construct(ApiUser $author, string $title, array $locales, Links $links = null)
     {
         $this->author     = $author;
         $this->title      = $title;
@@ -124,6 +134,7 @@ class Project
         $this->trackers   = new ArrayCollection();
         $this->developers = new ArrayCollection();
         $this->links      = $links;
+        $this->locales    = $locales;
     }
 
     /**

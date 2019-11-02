@@ -147,7 +147,11 @@ class ProjectController extends AbstractController
 
         /** @var ApiUser $author */
         $author  = $this->getUser();
-        $project = $author->createProject($request->getTitle(), null, $request->getLinks());
+        $project = $author->createProject(
+            $request->getTitle(),
+            $request->getLocales(),
+            $request->getLinks()
+        );
 
         if (null !== $developerIds = $request->getDevelopers()) {
             $developers = $this->getUserRepository()->getUsersByIds($developerIds);
