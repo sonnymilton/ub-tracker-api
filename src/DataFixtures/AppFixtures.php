@@ -3,8 +3,6 @@
 namespace App\DataFixtures;
 
 use App\DBAL\Types\BugPriorityType;
-use App\Entity\Bug;
-use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -27,12 +25,12 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $qaUser = $this->getReference(UserFixtures::QA_USER_REFERENCE);
         $qaUser->createToken();
 
-        $project = $qaUser->createProject('ub-tracker', ['ru', 'en'], new Project\Links(
-            'https://task-manager.example.com/task/1/',
-            'https://github.com/Sonny812/ub-tracker-api',
-            'https://ub-tracker.example.com/',
-            'https://stage.ub-tracker.example.com/'
-        ));
+        $project = $qaUser->createProject('ub-tracker', ['ru', 'en'], [
+            'task'       => 'https://task-manager.example.com/task/1/',
+            'repository' => 'https://github.com/Sonny812/ub-tracker-api',
+            'liveSite'   => 'https://ub-tracker.example.com/',
+            'testSite'   => 'https://stage.ub-tracker.example.com/',
+        ]);
         $tracker = $qaUser->createTracker($project);
 
         /** @var ApiUser[] $developers */

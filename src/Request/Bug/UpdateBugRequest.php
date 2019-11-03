@@ -82,22 +82,22 @@ class UpdateBugRequest extends JsonRequest
                 new Assert\NotNull(),
                 new Assert\Type(['type' => 'integer']),
             ],
-            'browsers' => new Assert\Optional([
+            'browsers'          => new Assert\Optional([
                 new Assert\Type('array'),
                 new Assert\All([
                     new Assert\Type('string'),
                     new Assert\NotBlank(),
                 ]),
             ]),
-            'resolutions' => new Assert\Optional([
+            'resolutions'       => new Assert\Optional([
                 new Assert\Type('array'),
                 new Assert\All([
                     new Assert\Type('string'),
                     new Assert\NotBlank(),
-                    new Assert\Regex(['pattern' => '/^\d{3,4}x\d{3,4}/'])
+                    new Assert\Regex(['pattern' => '/^\d{3,4}x\d{3,4}/']),
                 ]),
             ]),
-            'locales' => new Assert\Optional([
+            'locales'           => new Assert\Optional([
                 new Assert\Type('array'),
                 new Assert\All([
                     new Assert\Type('string'),

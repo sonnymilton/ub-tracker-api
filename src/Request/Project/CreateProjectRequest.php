@@ -25,7 +25,7 @@ class CreateProjectRequest extends JsonRequest
     /**
      * @var string
      *
-     * @SWG\Property(type="string", required={"true"})
+     * @SWG\Property(type="string")
      */
     protected $title;
 
@@ -41,9 +41,17 @@ class CreateProjectRequest extends JsonRequest
     protected $developers;
 
     /**
-     * @var \App\Entity\Project\Links
+     * @var array|null
      *
-     * @SWG\Property(ref=@Model(type=Links::class))
+     * @SWG\Property(
+     *     type="array",
+     *     @SWG\Items(
+     *      properties={
+     *          @SWG\Property(property="title", type="string"),
+     *          @SWG\Property(property="url", type="string", format="uri")
+     *      }
+     *    )
+     * )
      */
     protected $links;
 
@@ -57,20 +65,6 @@ class CreateProjectRequest extends JsonRequest
      * )
      */
     protected $locales;
-
-    /***
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return array
-     */
-    public function resolvePayload(Request $request): array
-    {
-        $payload = parent::resolvePayload($request);
-
-        $this->links = Links::createFromArray($payload['links'] ?? []);
-
-        return $payload;
-    }
 
     /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
@@ -96,19 +90,15 @@ class CreateProjectRequest extends JsonRequest
                 ])
             ],
             'links' => new Assert\Optional([
-                new Assert\Collection([
-                    'task'       => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'repository' => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'liveSite'   => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'testSite'   => new Assert\Optional(
-                        new Assert\Url()
-                    ),
+                new Assert\Type("array"),
+                new Assert\All([
+                    new Assert\Collection([
+                        'title' => new Assert\NotBlank(),
+                        'url' => [
+                            new Assert\NotBlank(),
+                            new Assert\Url(),
+                        ],
+                    ]),
                 ]),
             ]),
         ]);
@@ -131,9 +121,9 @@ class CreateProjectRequest extends JsonRequest
     }
 
     /**
-     * @return \App\Entity\Project\Links|null
+     * @return array|null
      */
-    public function getLinks(): ?Links
+    public function getLinks(): ?array
     {
         return $this->links;
     }

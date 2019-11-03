@@ -10,7 +10,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Project\Links;
 use App\Entity\Security\ApiUser;
 use App\Request\Project\UpdateProjectRequest;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -96,12 +95,11 @@ class Project
     protected $author;
 
     /**
-     * @var \App\Entity\Project\Links
+     * @var array|null
      *
-     * @ORM\Embedded(class="App\Entity\Project\Links", columnPrefix="link_")
+     * @ORM\Column(type="json_array")
      *
      * @JMS\Expose()
-     * @JMS\Type(Links::class)
      * @JMS\Groups(groups={"project_details"})
      */
     protected $links;
@@ -119,14 +117,14 @@ class Project
     /**
      * Project constructor.
      *
-     * @param ApiUser                   $author
-     * @param string                    $title
-     * @param array                     $locales
-     * @param \App\Entity\Project\Links $links
+     * @param ApiUser $author
+     * @param string  $title
+     * @param array   $locales
+     * @param array   $links
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, string $title, array $locales, Links $links = null)
+    public function __construct(ApiUser $author, string $title, array $locales, array $links = null)
     {
         $this->author     = $author;
         $this->title      = $title;
@@ -207,6 +205,14 @@ class Project
     public function getAuthor(): ApiUser
     {
         return $this->author;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLinks(): ?array
+    {
+        return $this->links;
     }
 
     /**

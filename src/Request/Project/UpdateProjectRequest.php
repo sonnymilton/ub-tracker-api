@@ -29,9 +29,17 @@ class UpdateProjectRequest extends JsonRequest
     protected $title;
 
     /**
-     * @var \App\Entity\Project\Links
+     * @var array|null
      *
-     * @SWG\Property(ref=@Model(type=Links::class))
+     * @SWG\Property(
+     *     type="array",
+     *     @SWG\Items(
+     *      properties={
+     *          @SWG\Property(property="title", type="string"),
+     *          @SWG\Property(property="url", type="string", format="uri")
+     *      }
+     *    )
+     * )
      */
     protected $links;
 
@@ -43,19 +51,15 @@ class UpdateProjectRequest extends JsonRequest
         return new Assert\Collection([
             'title' => new Assert\NotBlank(),
             'links' => new Assert\Optional([
-                new Assert\Collection([
-                    'task'       => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'repository' => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'liveSite'   => new Assert\Optional(
-                        new Assert\Url()
-                    ),
-                    'testSite'   => new Assert\Optional(
-                        new Assert\Url()
-                    ),
+                new Assert\Type("array"),
+                new Assert\All([
+                    new Assert\Collection([
+                        'title' => new Assert\NotBlank(),
+                        'url' => [
+                            new Assert\NotBlank(),
+                            new Assert\Url(),
+                        ],
+                    ]),
                 ]),
             ]),
         ]);
@@ -70,9 +74,9 @@ class UpdateProjectRequest extends JsonRequest
     }
 
     /**
-     * @return \App\Entity\Project\Links|null
+     * @return array|null
      */
-    public function getLinks(): ?Links
+    public function getLinks(): ?array
     {
         return $this->links;
     }
