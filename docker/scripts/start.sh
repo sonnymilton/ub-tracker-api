@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 docker exec ubtracker_php composer install
 
