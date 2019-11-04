@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,9 +7,14 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-### ide
+###> ide ###
 /.idea/
+###< ide ###
 
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
+
+###> docker ###
+/docker/data/
+###< docker ###

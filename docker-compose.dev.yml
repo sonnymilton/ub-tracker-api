@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    pma:
+        image:          phpmyadmin/phpmyadmin
+        container_name: ubtracker_pma
+        ports:
+            - 8001:80
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+        links:
+            - mysql
