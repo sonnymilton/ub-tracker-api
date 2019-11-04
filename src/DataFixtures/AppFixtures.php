@@ -26,10 +26,10 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $qaUser->createToken();
 
         $project = $qaUser->createProject('ub-tracker', ['ru', 'en'], [
-            'task'       => 'https://task-manager.example.com/task/1/',
-            'repository' => 'https://github.com/Sonny812/ub-tracker-api',
-            'liveSite'   => 'https://ub-tracker.example.com/',
-            'testSite'   => 'https://stage.ub-tracker.example.com/',
+            ['title' => 'task', 'url' => 'https://task-manager.example.com/task/1/',],
+            ['title' => 'repository', 'url' => 'https://github.com/Sonny812/ub-tracker-api',],
+            ['title' => 'liveSite', 'url' => 'https://ub-tracker.example.com/',],
+            ['title' => 'testSite', 'url' => 'https://stage.ub-tracker.example.com/',],
         ]);
         $tracker = $qaUser->createTracker($project);
 
