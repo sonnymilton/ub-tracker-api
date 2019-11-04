@@ -25,13 +25,6 @@ class CreateBugRequest extends JsonRequest
      *
      * @SWG\Property(type="string")
      */
-    protected $title;
-
-    /**
-     * @var string
-     *
-     * @SWG\Property(type="string")
-     */
     protected $description;
 
     /**
@@ -75,8 +68,7 @@ class CreateBugRequest extends JsonRequest
     public function rules()
     {
         return new Assert\Collection([
-            'title'             => new Assert\NotBlank(),
-            'description'       => new Assert\NotNull(),
+            'description'       => new Assert\NotBlank(),
             'priority'          => new Assert\Choice(['choices' => BugPriorityType::getChoices()]),
             'responsiblePerson' => [
                 new Assert\NotNull(),
@@ -105,14 +97,6 @@ class CreateBugRequest extends JsonRequest
                 ]),
             ]),
         ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
     }
 
     /**

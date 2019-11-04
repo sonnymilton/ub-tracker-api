@@ -39,22 +39,12 @@ class Bug
     protected $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column()
-     *
-     * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
-     */
-    protected $title;
-
-    /**
      * @var string|null
      *
      * @ORM\Column(type="text")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_details"})
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $description;
 
@@ -151,9 +141,8 @@ class Bug
      * @param ApiUser    $author
      * @param Tracker    $tracker
      * @param ApiUser    $responsiblePerson
-     * @param string     $title
-     * @param string     $priority
      * @param string     $description
+     * @param string     $priority
      * @param array|null $browsers
      * @param array|null $resolutions
      * @param array|null $locales
@@ -164,9 +153,8 @@ class Bug
         ApiUser $author,
         Tracker $tracker,
         ApiUser $responsiblePerson,
-        string $title,
-        string $priority,
         string $description,
+        string $priority,
         array $browsers = null,
         array $resolutions = null,
         array $locales = null
@@ -174,7 +162,6 @@ class Bug
         $this->author            = $author;
         $this->responsiblePerson = $responsiblePerson;
         $this->tracker           = $tracker;
-        $this->title             = $title;
         $this->description       = $description;
         $this->priority          = $priority;
         $this->browsers          = $browsers;
@@ -190,7 +177,6 @@ class Bug
      */
     public function updateFromRequest(UpdateBugRequest $request, ApiUser $responsiblePerson)
     {
-        $this->title             = $request->getTitle();
         $this->description       = $request->getDescription();
         $this->priority          = $request->getPriority();
         $this->responsiblePerson = $responsiblePerson;
@@ -290,14 +276,6 @@ class Bug
     public function getLocales(): ?array
     {
         return $this->locales;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function changeTitle(string $title): void
-    {
-        $this->title = $title;
     }
 
     /**

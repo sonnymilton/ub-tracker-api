@@ -92,9 +92,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         return $qa->createBug(
             $developers[mt_rand(0, 1)],
             $tracker,
-            sprintf('bug %d', $number),
-            BugPriorityType::getRandomValue(),
             sprintf('bug %d description', $number),
+            BugPriorityType::getRandomValue(),
             $browserCases[mt_rand(0, 5)],
             $resolutionCases[mt_rand(0, 4)],
             $localesCases[mt_rand(0, 3)]

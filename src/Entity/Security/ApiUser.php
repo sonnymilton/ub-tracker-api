@@ -255,9 +255,8 @@ class ApiUser implements UserInterface
     /**
      * @param ApiUser    $responsiblePerson
      * @param Tracker    $tracker
-     * @param string     $title
-     * @param string     $priority
      * @param string     $description
+     * @param string     $priority
      * @param array|null $browsers
      * @param array|null $resolutions
      * @param array|null $locales
@@ -269,9 +268,8 @@ class ApiUser implements UserInterface
     public function createBug(
         ApiUser $responsiblePerson,
         Tracker $tracker,
-        string $title,
-        string $priority,
         string $description,
+        string $priority,
         array $browsers = null,
         array $resolutions = null,
         array $locales = null
@@ -280,9 +278,8 @@ class ApiUser implements UserInterface
             $this,
             $tracker,
             $responsiblePerson,
-            $title,
-            $priority,
             $description,
+            $priority,
             $browsers,
             $resolutions,
             $locales
@@ -306,9 +303,8 @@ class ApiUser implements UserInterface
         return $this->createBug(
             $responsiblePerson,
             $tracker,
-            $request->getTitle(),
-            $request->getPriority(),
             $request->getDescription(),
+            $request->getPriority(),
             $request->getBrowsers(),
             $request->getResolutions(),
             $request->getLocales()
