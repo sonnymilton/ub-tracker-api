@@ -81,7 +81,7 @@ class Bug
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_details"})
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $responsiblePerson;
 
@@ -91,7 +91,7 @@ class Bug
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_details"})
+     * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
     protected $author;
 
