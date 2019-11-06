@@ -314,6 +314,11 @@ class Bug
         $this->status = BugStatusType::VERIFIED;
     }
 
+    public function reopen(): void
+    {
+        $this->status = BugStatusType::NEW;
+    }
+
     public function sendToVerify(): void
     {
         $this->status = BugStatusType::TO_VERIFY;
