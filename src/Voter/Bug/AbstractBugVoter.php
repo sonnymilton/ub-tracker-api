@@ -26,8 +26,6 @@ abstract class AbstractBugVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        if (!$subject instanceof Bug) {
-            return false;
-        }
+        return $subject instanceof Bug;
     }
 }
