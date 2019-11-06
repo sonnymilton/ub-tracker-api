@@ -226,6 +226,36 @@ class StatusController extends AbstractController
     }
 
     /**
+     * @Route("/reopen/", name="reopen", methods={"PATCH"})
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Re-opens closed bug.",
+     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     * )
+     * @SWG\Response(
+     *     response="403",
+     *     description="Only closed or verified bugs can be returned"
+     * )
+     *
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function reopenAction(int $id): JsonResponse
+    {
+        $bug = $this->getBug($id);
+
+        $this->denyAccessUnlessGranted('reopen', $bug);
+
+        $bug->reopen();
+
+        $this->getEntityManager()->flush();
+
+        return $this->createResponse($bug);
+    }
+
+    /**
      * @param \App\Entity\Bug $bug
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
