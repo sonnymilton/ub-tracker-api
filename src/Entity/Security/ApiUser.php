@@ -116,6 +116,14 @@ class ApiUser implements UserInterface
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
      *
      * @JMS\VirtualProperty(name="roles")
      * @JMS\Expose()

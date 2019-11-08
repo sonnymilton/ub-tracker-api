@@ -276,7 +276,7 @@ class StatusController extends AbstractController
      *
      * @return \App\Entity\Bug|object
      */
-    private function getBug(int $id)
+    private function getBug(int $id): Bug
     {
         $bug = $this->getBugRepository()->find($id);
 

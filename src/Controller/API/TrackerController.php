@@ -14,7 +14,7 @@ use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use App\Repository\TrackerRepository;
-use JMS\Serializer\SerializationContext;
+use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -34,6 +34,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TrackerController extends AbstractController
 {
+    const LIST_SERIALIZATION_GROUPS    = ['tracker_show', 'user_list', 'bug_list', 'project_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['tracker_show', 'user_list', 'bug_list', 'project_list'];
+    use AutoserializationTrait;
+
     /**
      * @var Serializer
      */
@@ -57,7 +61,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed information about the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list", "project_list"})
+     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -68,20 +72,9 @@ class TrackerController extends AbstractController
      */
     public function showAction(int $id): JsonResponse
     {
-        $tracker = $this->getTrackerRepository()->find($id);
+        $tracker = $this->getTracker($id);
 
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Tracker not found');
-        }
-
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show',
-                'project_list',
-                'user_list',
-                'bug_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($tracker));
     }
 
     /**
@@ -93,7 +86,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info about the tracker by position in the project.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "bug_list"})
+     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -104,12 +97,7 @@ class TrackerController extends AbstractController
      */
     public function showTrackerByPositionAction(int $id, int $position): JsonResponse
     {
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
 
@@ -132,7 +120,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Creates new tracker in specified project.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list"})
+     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -147,12 +135,7 @@ class TrackerController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         /** @var ApiUser $user */
         $user = $this->getUser();
@@ -164,13 +147,7 @@ class TrackerController extends AbstractController
         $em->persist($project);
         $em->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show',
-                'user_list',
-                'project_list',
-            ])), Response::HTTP_CREATED
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($tracker), Response::HTTP_CREATED);
     }
 
     /**
@@ -191,11 +168,7 @@ class TrackerController extends AbstractController
      */
     public function removeAction(int $id): Response
     {
-        $tracker = $this->getTrackerRepository()->find($id);
-
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Tracker not found');
-        }
+        $tracker = $this->getTracker($id);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($tracker);
@@ -212,7 +185,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Closes the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list", "bug_list"})
+     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -225,24 +198,12 @@ class TrackerController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Tracker $tracker */
-        $tracker = $this->getTrackerRepository()->find($id);
-
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $tracker = $this->getTracker($id);
 
         $tracker->close();
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show',
-                'project_list',
-                'user_list',
-                'bug_list',
-            ])), Response::HTTP_CREATED
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($tracker));
     }
 
     /**
@@ -253,7 +214,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Opens the tracker.",
-     *     @Model(type=Tracker::class, groups={"tracker_show", "user_list", "project_list", "bug_list"})
+     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -266,24 +227,44 @@ class TrackerController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Tracker $tracker */
-        $tracker = $this->getTrackerRepository()->find($id);
-
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $tracker = $this->getTracker($id);
 
         $tracker->open();
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($tracker, 'json', SerializationContext::create()->setGroups([
-                'tracker_show',
-                'project_list',
-                'user_list',
-                'bug_list',
-            ])), Response::HTTP_CREATED
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($tracker));
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Tracker|object
+     */
+    private function getTracker(int $id): Tracker
+    {
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Tracker not found.');
+        }
+
+        return $tracker;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Project|object
+     */
+    private function getProject(int $id): Project
+    {
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found.');
+        }
+
+        return $project;
     }
 
     /**

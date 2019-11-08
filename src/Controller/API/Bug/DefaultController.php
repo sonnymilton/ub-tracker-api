@@ -11,13 +11,13 @@
 namespace App\Controller\API\Bug;
 
 use App\Entity\Bug;
+use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
-use App\Repository\Security\ApiUserRepository;
 use App\Repository\TrackerRepository;
 use App\Request\Bug\CreateBugRequest;
 use App\Request\Bug\UpdateBugRequest;
-use JMS\Serializer\SerializationContext;
+use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -36,6 +36,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DefaultController extends AbstractController
 {
+    const LIST_SERIALIZATION_GROUPS    = ['bug_details', 'user_list', 'tracker_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['bug_details', 'user_list', 'tracker_list'];
+    use AutoserializationTrait;
+
     /**
      * @var SerializerInterface
      */
@@ -57,7 +61,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="201",
      *     description="Creates bug.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -82,23 +86,9 @@ class DefaultController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Tracker $tracker */
-        $tracker = $this->getTrackerRepository()->find($id);
+        $tracker = $this->getTracker($id);
 
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Tracker not found');
-        }
-
-        /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->getResponsiblePerson());
-
-        if (
-            empty($developer) ||
-            !$developer->isDeveloper() ||
-            !$tracker->getProject()->getDevelopers()->contains($developer)
-        ) {
-            throw new NotFoundHttpException('Developer not found in this project');
-        }
+        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker->getProject());
 
         /** @var ApiUser $author */
         $author = $this->getUser();
@@ -107,13 +97,7 @@ class DefaultController extends AbstractController
 
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
-                'bug_details',
-                'user_list',
-                'tracker_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($bug));
     }
 
     /**
@@ -122,7 +106,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info about the bug.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -135,19 +119,9 @@ class DefaultController extends AbstractController
      */
     public function showAction(int $id): JsonResponse
     {
-        $bug = $this->getBugRepository()->find($id);
+        $bug = $this->getBug($id);
 
-        if (empty($bug)) {
-            throw new NotFoundHttpException('Bug not found');
-        }
-
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
-                'bug_details',
-                'user_list',
-                'tracker_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($bug));
     }
 
     /**
@@ -156,7 +130,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Updates the bug.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -183,36 +157,15 @@ class DefaultController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Bug $bug */
-        $bug = $this->getBugRepository()->find($id);
-
-        if (empty($bug)) {
-            throw new NotFoundHttpException('The bug not found.');
-        }
-
-        /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->getResponsiblePerson());
+        $bug       = $this->getBug($id);
         $tracker   = $bug->getTracker();
-
-        if (
-            empty($developer) ||
-            !$developer->isDeveloper() ||
-            !$tracker->getProject()->getDevelopers()->contains($developer)
-        ) {
-            throw new NotFoundHttpException('Developer not found in this project');
-        }
+        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker->getProject());
 
         $bug->updateFromRequest($request, $developer);
 
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
-                'bug_details',
-                'user_list',
-                'tracker_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($bug));
     }
 
     /**
@@ -235,11 +188,7 @@ class DefaultController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        $bug = $this->getBugRepository()->find($id);
-
-        if (empty($bug)) {
-            throw new NotFoundHttpException('The bug not found.');
-        }
+        $bug = $this->getBug($id);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -247,6 +196,57 @@ class DefaultController extends AbstractController
         $em->flush();
 
         return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Bug|object
+     */
+    private function getBug(int $id): Bug
+    {
+        $bug = $this->getBugRepository()->find($id);
+
+        if (empty($bug)) {
+            throw new NotFoundHttpException('Bug not found.');
+        }
+
+        return $bug;
+    }
+
+    /**
+     * @param int                 $id
+     * @param \App\Entity\Project $project
+     *
+     * @return \App\Entity\Security\ApiUser
+     */
+    private function getDeveloper(int $id, Project $project): ApiUser
+    {
+        $users = $project->getDevelopers()->filter(function (ApiUser $user) use ($id) {
+            return $user->isDeveloper() && $user->getId() === $id;
+        });
+
+        if ($users->isEmpty()) {
+            throw new NotFoundHttpException('Developer not found in this project');
+        }
+
+        return $users->first();
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Tracker|object
+     */
+    private function getTracker(int $id): Tracker
+    {
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Tracker not found.');
+        }
+
+        return $tracker;
     }
 
     /**
@@ -263,13 +263,5 @@ class DefaultController extends AbstractController
     private function getTrackerRepository(): TrackerRepository
     {
         return $this->getDoctrine()->getRepository(Tracker::class);
-    }
-
-    /**
-     * @return \App\Repository\Security\ApiUserRepository
-     */
-    private function getUserRepository(): ApiUserRepository
-    {
-        return $this->getDoctrine()->getRepository(ApiUser::class);
     }
 }

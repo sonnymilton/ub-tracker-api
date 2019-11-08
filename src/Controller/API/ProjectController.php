@@ -17,8 +17,8 @@ use App\Repository\Security\ApiUserRepository;
 use App\Request\Project\CreateProjectRequest;
 use App\Request\Project\DeveloperProjectInteractionRequest;
 use App\Request\Project\UpdateProjectRequest;
+use App\Serializer\AutoserializationTrait;
 use Doctrine\Common\Persistence\ObjectManager;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -37,6 +37,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProjectController extends AbstractController
 {
+    const LIST_SERIALIZATION_GROUPS    = ['project_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['project_details', 'tracker_list', 'user_list'];
+    use AutoserializationTrait;
+
     /**
      * @var SerializerInterface
      */
@@ -59,8 +63,8 @@ class ProjectController extends AbstractController
      *     response="200",
      *     description="Returns the list of projects.",
      *     @SWG\Schema(
-     *      type="array",
-     *      @SWG\Items(ref=@Model(type=Project::class, groups={"project_list"}))
+     *          type="array",
+     *          @SWG\Items(ref=@Model(type=Project::class, groups=ProjectController::LIST_SERIALIZATION_GROUPS))
      *     )
      * )
      *
@@ -70,11 +74,7 @@ class ProjectController extends AbstractController
     {
         $projects = $this->getProjectRepository()->findAll();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($projects, 'json', SerializationContext::create()->setGroups([
-                'project_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($projects));
     }
 
     /**
@@ -85,7 +85,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed information about the project.",
-     *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
+     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
@@ -96,19 +96,9 @@ class ProjectController extends AbstractController
      */
     public function showAction(int $id): JsonResponse
     {
-        $project = $this->getProjectRepository()->find($id);
+        $project = $this->getProject($id);
 
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
-
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details',
-                'tracker_list',
-                'user_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($project));
     }
 
     /**
@@ -119,7 +109,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="201",
      *     description="Creates a project.",
-     *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
+     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="400",
@@ -169,13 +159,7 @@ class ProjectController extends AbstractController
         $em->persist($project);
         $em->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details',
-                'tracker_list',
-                'user_list',
-            ])), Response::HTTP_CREATED
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($project));
     }
 
     /**
@@ -187,7 +171,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Updates the project.",
-     *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
+     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="400",
@@ -211,24 +195,13 @@ class ProjectController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         $project->updateFromRequest($request);
 
         $this->getEntityManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details',
-                'tracker_list',
-                'user_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($project));
     }
 
     /**
@@ -251,12 +224,7 @@ class ProjectController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($project);
@@ -274,7 +242,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Add developer to the project.",
-     *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
+     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="400",
@@ -299,12 +267,7 @@ class ProjectController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         /** @var ApiUser $developer */
         $developer = $this->getUserRepository()->find($request->getDeveloper());
@@ -316,13 +279,7 @@ class ProjectController extends AbstractController
 
         $this->getEntityManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details',
-                'tracker_list',
-                'user_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($project));
     }
 
     /**
@@ -334,7 +291,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Add developer to the project.",
-     *     @Model(type=Project::class, groups={"project_details", "tracker_list", "user_list"})
+     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="400",
@@ -359,12 +316,7 @@ class ProjectController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        /** @var Project $project */
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found');
-        }
+        $project = $this->getProject($id);
 
         /** @var ApiUser $developer */
         $developer = $this->getUserRepository()->find($request->getDeveloper());
@@ -377,13 +329,23 @@ class ProjectController extends AbstractController
 
         $this->getEntityManager()->flush();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($project, 'json', SerializationContext::create()->setGroups([
-                'project_details',
-                'tracker_list',
-                'user_list',
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($project));
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Project|object
+     */
+    private function getProject(int $id)
+    {
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found.');
+        }
+
+        return $project;
     }
 
     /**

@@ -12,7 +12,7 @@ namespace App\Controller\API;
 
 use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
-use JMS\Serializer\SerializationContext;
+use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -30,6 +30,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends AbstractController
 {
+    const LIST_SERIALIZATION_GROUPS    = ['user_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['user_details'];
+    use AutoserializationTrait;
+
     /**
      * @var \JMS\Serializer\SerializerInterface
      */
@@ -53,7 +57,7 @@ class UserController extends AbstractController
      *     description="Returns the list of users.",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref=@Model(type=ApiUser::class, groups={"user_list"}))
+     *      @SWG\Items(ref=@Model(type=ApiUser::class, groups=UserController::LIST_SERIALIZATION_GROUPS))
      *     )
      * )
      *
@@ -63,11 +67,7 @@ class UserController extends AbstractController
     {
         $users = $this->getUserRepository()->findAll();
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($users, 'json', SerializationContext::create()->setGroups([
-                'user_list'
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($users));
     }
 
     /**
@@ -78,7 +78,7 @@ class UserController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info abour the user",
-     *     @Model(type=ApiUser::class, groups={"user_details"})
+     *     @Model(type=ApiUser::class, groups=UserController::DETAILS_SERIALIZATION_GROUPS)
      * )
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -91,11 +91,7 @@ class UserController extends AbstractController
             throw new NotFoundHttpException('User not found');
         }
 
-        return JsonResponse::fromJsonString(
-            $this->serializer->serialize($user, 'json', SerializationContext::create()->setGroups([
-                'user_details'
-            ]))
-        );
+        return JsonResponse::fromJsonString($this->autoserialize($users));
     }
 
     /**
