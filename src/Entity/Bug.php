@@ -14,6 +14,7 @@ use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
 use App\Entity\Security\ApiUser;
 use App\Request\Bug\UpdateBugRequest;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -136,6 +137,16 @@ class Bug
     protected $locales;
 
     /**
+     * @var ArrayCollection|\App\Entity\Comment[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="bug", cascade={"persist", "remove"})
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bug_details"})
+     */
+    protected $comments;
+
+    /**
      * Bug constructor.
      *
      * @param ApiUser    $author
@@ -169,6 +180,7 @@ class Bug
         $this->locales           = $locales;
         $this->status            = BugStatusType::NEW;
         $this->createdAt         = new \DateTimeImmutable();
+        $this->comments          = new ArrayCollection();
     }
 
     /**
@@ -279,11 +291,27 @@ class Bug
     }
 
     /**
+     * @return \App\Entity\Comment[]|\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getComments(): ArrayCollection
+    {
+        return $this->comments;
+    }
+
+    /**
      * @param string $description
      */
     public function changeDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param \App\Entity\Comment $comment
+     */
+    public function addComment(Comment $comment): void
+    {
+        $this->comments->add($comment);
     }
 
     /**
