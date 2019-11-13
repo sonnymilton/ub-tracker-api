@@ -11,6 +11,7 @@
 namespace App\Entity\Security;
 
 use App\Entity\Bug;
+use App\Entity\Comment;
 use App\Entity\Project;
 use App\Entity\Tracker;
 use App\Request\Bug\CreateBugRequest;
@@ -317,5 +318,21 @@ class ApiUser implements UserInterface
             $request->getResolutions(),
             $request->getLocales()
         );
+    }
+
+    /**
+     * @param \App\Entity\Bug $bug
+     * @param string          $text
+     *
+     * @return \App\Entity\Comment
+     *
+     * @throws \Exception
+     */
+    public function createComment(Bug $bug, string $text)
+    {
+        $comment = new Comment($this, $bug, $text);
+        $bug->addComment($comment);
+
+        return $comment;
     }
 }
