@@ -203,14 +203,6 @@ class Bug
     }
 
     /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
      * @return string|null
      */
     public function getDescription(): ?string
