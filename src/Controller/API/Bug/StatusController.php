@@ -267,6 +267,7 @@ class StatusController extends AbstractController
                 'bug_details',
                 'user_list',
                 'tracker_list',
+                'comment_list',
             ]))
         );
     }
