@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Comment
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  *
  * @JMS\ExclusionPolicy("ALL")
  */
