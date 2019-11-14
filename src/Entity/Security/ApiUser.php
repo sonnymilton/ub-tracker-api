@@ -15,6 +15,7 @@ use App\Entity\Comment;
 use App\Entity\Project;
 use App\Entity\Tracker;
 use App\Request\Bug\CreateBugRequest;
+use App\Request\Comment\CommentRequest;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -328,11 +329,24 @@ class ApiUser implements UserInterface
      *
      * @throws \Exception
      */
-    public function createComment(Bug $bug, string $text)
+    public function createComment(Bug $bug, string $text): Comment
     {
         $comment = new Comment($this, $bug, $text);
         $bug->addComment($comment);
 
         return $comment;
+    }
+
+    /**
+     * @param \App\Request\Comment\CommentRequest $request
+     * @param \App\Entity\Bug                     $bug
+     *
+     * @return \App\Entity\Comment
+     *
+     * @throws \Exception
+     */
+    public function createCommentFromRequest(CommentRequest $request, Bug $bug): Comment
+    {
+        return $this->createComment($bug, $request->getText());
     }
 }
