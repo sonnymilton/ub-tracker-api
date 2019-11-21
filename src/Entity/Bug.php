@@ -10,7 +10,6 @@
 
 namespace App\Entity;
 
-use App\DBAL\Types\BugPriorityType;
 use App\DBAL\Types\BugStatusType;
 use App\Entity\Security\ApiUser;
 use App\Request\Bug\UpdateBugRequest;
@@ -347,25 +346,5 @@ class Bug
     public function sendToDiscuss(): void
     {
         $this->status = BugStatusType::TO_BE_DISCUSSED;
-    }
-
-    public function changePriorityToNormal(): void
-    {
-        $this->priority = BugPriorityType::NORMAL;
-    }
-
-    public function changePriorityToCritical(): void
-    {
-        $this->priority = BugPriorityType::CRITICAL;
-    }
-
-    public function changePriorityToMinor(): void
-    {
-        $this->priority = BugPriorityType::MINOR;
-    }
-
-    public function changePriorityToMajor(): void
-    {
-        $this->priority = BugPriorityType::MAJOR;
     }
 }
