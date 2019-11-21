@@ -78,41 +78,6 @@ class TrackerController extends AbstractController
     }
 
     /**
-     * @Route("/project/{id}/tracker/{position}/", name="show_by_position", methods={"get"})
-     *
-     * @param int $id
-     * @param int $position
-     *
-     * @SWG\Response(
-     *     response="200",
-     *     description="Returns detailed info about the tracker by position in the project.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
-     * )
-     * @SWG\Response(
-     *     response="404",
-     *     description="Project or tracker not found"
-     * )
-     *
-     * @return JsonResponse|Response
-     */
-    public function showTrackerByPositionAction(int $id, int $position): JsonResponse
-    {
-        $project = $this->getProject($id);
-
-        $trackers = $this->getTrackerRepository()->getTrackersForProject($project);
-
-        $position -= 1;
-
-        if (!isset($trackers[$position])) {
-            throw new NotFoundHttpException(sprintf('Tracker with position %d not found in this project', $position));
-        }
-
-        return $this->forward('App\Controller\API\TrackerController::showAction', [
-            'id' => $trackers[$position]->getId(),
-        ]);
-    }
-
-    /**
      * @Route("/project/{id}/tracker/", name="create_tracker", methods={"post"})
      *
      * @param int $id
