@@ -14,7 +14,6 @@ use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
 use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\SerializerInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -57,7 +56,7 @@ class UserController extends AbstractController
      *     description="Returns the list of users.",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref=@Model(type=ApiUser::class, groups=UserController::LIST_SERIALIZATION_GROUPS))
+     *      @SWG\Items(ref="#/definitions/UserFromList"))
      *     )
      * )
      *
@@ -78,7 +77,7 @@ class UserController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info abour the user",
-     *     @Model(type=ApiUser::class, groups=UserController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/UserFromList")
      * )
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -91,7 +90,7 @@ class UserController extends AbstractController
             throw new NotFoundHttpException('User not found');
         }
 
-        return JsonResponse::fromJsonString($this->autoserialize($users));
+        return JsonResponse::fromJsonString($this->autoserialize($user));
     }
 
     /**

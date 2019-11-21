@@ -16,6 +16,7 @@ use App\Request\Bug\UpdateBugRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations as SWG;
 
 /**
  * Class Bug
@@ -82,6 +83,8 @@ class Bug
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
+     *
+     * @SWG\Property(ref="#/definitions/UserFromList")
      */
     protected $responsiblePerson;
 
@@ -92,6 +95,8 @@ class Bug
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
+     *
+     * @SWG\Property(ref="#/definitions/UserFromList")
      */
     protected $author;
 
@@ -142,6 +147,8 @@ class Bug
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_details"})
+     *
+     * @SWG\Property(type="array", @SWG\Items(ref="#/definitions/Comment"))
      */
     protected $comments;
 

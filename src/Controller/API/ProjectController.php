@@ -64,7 +64,7 @@ class ProjectController extends AbstractController
      *     description="Returns the list of projects.",
      *     @SWG\Schema(
      *          type="array",
-     *          @SWG\Items(ref=@Model(type=Project::class, groups=ProjectController::LIST_SERIALIZATION_GROUPS))
+     *          @SWG\Items(ref="#/definitions/ProjectFromList")
      *     )
      * )
      *
@@ -85,7 +85,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed information about the project.",
-     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Project")
      * )
      * @SWG\Response(
      *     response="404",
@@ -109,7 +109,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="201",
      *     description="Creates a project.",
-     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Project")
      * )
      * @SWG\Response(
      *     response="400",
@@ -171,7 +171,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Updates the project.",
-     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Project")
      * )
      * @SWG\Response(
      *     response="400",
@@ -242,7 +242,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Add developer to the project.",
-     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Project")
      * )
      * @SWG\Response(
      *     response="400",
@@ -291,7 +291,7 @@ class ProjectController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Add developer to the project.",
-     *     @Model(type=Project::class, groups=ProjectController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Project")
      * )
      * @SWG\Response(
      *     response="400",

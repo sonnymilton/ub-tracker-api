@@ -51,7 +51,7 @@ class StatusController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Changes bug status to can't be reproduced",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"}),
+     *     @SWG\Schema(ref="#/definitions/Bug")
      * )
      * @SWG\Response(
      *     response="403",
@@ -81,7 +81,7 @@ class StatusController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Changes bug status to close.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     @SWG\Schema(ref="#/definitions/Bug")
      * )
      * @SWG\Response(
      *     response="403",

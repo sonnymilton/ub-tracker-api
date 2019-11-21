@@ -18,6 +18,7 @@ use App\Request\Bug\CreateBugRequest;
 use App\Request\Comment\CommentRequest;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -90,6 +91,8 @@ class ApiUser implements UserInterface
      * @JMS\Expose()
      * @JMS\Groups(groups={"user_auth"})
      * @JMS\Type(ApiToken::class)
+     *
+     * @SWG\Property(ref="#/definitions/Token")
      */
     protected $token;
 

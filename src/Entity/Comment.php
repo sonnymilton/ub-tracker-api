@@ -13,6 +13,7 @@ namespace App\Entity;
 use App\Entity\Security\ApiUser;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations as SWG;
 
 /**
  * Comment
@@ -42,6 +43,8 @@ class Comment
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"comment_list", "comment_details"})
+     *
+     * @SWG\Property(ref="#/definitions/UserFromList")
      */
     protected $author;
 

@@ -14,6 +14,7 @@ use App\Entity\Security\ApiUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations as SWG;
 
 /**
  * Class Tracker
@@ -63,6 +64,8 @@ class Tracker
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"tracker_show"})
+     *
+     * @SWG\Property(ref="#/definitions/Bug")
      */
     protected $bugs;
 
@@ -73,6 +76,8 @@ class Tracker
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"tracker_list", "tracker_show"})
+     *
+     * @SWG\Property(ref="#/definitions/UserFromList")
      */
     protected $author;
 

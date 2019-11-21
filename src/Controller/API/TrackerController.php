@@ -17,7 +17,6 @@ use App\Repository\TrackerRepository;
 use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,7 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TrackerController extends AbstractController
 {
-    const LIST_SERIALIZATION_GROUPS    = ['tracker_show', 'user_list', 'bug_list', 'project_list'];
+    const LIST_SERIALIZATION_GROUPS    = ['tracker_list', 'user_list'];
     const DETAILS_SERIALIZATION_GROUPS = ['tracker_show', 'user_list', 'bug_list', 'project_list'];
     use AutoserializationTrait;
 
@@ -61,7 +60,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed information about the tracker.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
      *     response="404",
@@ -86,7 +85,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info about the tracker by position in the project.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
      *     response="404",
@@ -120,7 +119,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Creates new tracker in specified project.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
      *     response="404",
@@ -185,7 +184,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Closes the tracker.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
      *     response="404",
@@ -214,7 +213,7 @@ class TrackerController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Opens the tracker.",
-     *     @Model(type=Tracker::class, groups=TrackerController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
      *     response="404",

@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations as SWG;
 
 /**
  * Class Project
@@ -55,6 +56,8 @@ class Project
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"project_details"})
+     *
+     * @SWG\Property(ref="#/definitions/TrackerFromList")
      */
     protected $trackers;
 
@@ -81,6 +84,8 @@ class Project
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"project_details"})
+     *
+     * @SWG\Property(type="array", @SWG\Items(ref="#/definitions/UserFromList"))
      */
     protected $developers;
 
@@ -91,6 +96,8 @@ class Project
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"project_details"})
+     *
+     * @SWG\Property(ref="#/definitions/UserFromList")
      */
     protected $author;
 

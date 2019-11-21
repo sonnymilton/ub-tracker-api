@@ -61,7 +61,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="201",
      *     description="Creates bug.",
-     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Bug")
      * )
      * @SWG\Response(
      *     response="404",
@@ -106,7 +106,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Returns detailed info about the bug.",
-     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Bug")
      * )
      * @SWG\Response(
      *     response="404",
@@ -130,7 +130,7 @@ class DefaultController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Updates the bug.",
-     *     @Model(type=Bug::class, groups=DefaultController::DETAILS_SERIALIZATION_GROUPS)
+     *     @SWG\Schema(ref="#/definitions/Bug")
      * )
      * @SWG\Response(
      *     response="404",
