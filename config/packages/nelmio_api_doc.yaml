@@ -18,3 +18,63 @@ nelmio_api_doc:
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
             - ^/login(?!.+check)
+    models:
+        names:
+            -
+                alias:             Bug
+                type:              App\Entity\Bug
+                groups: !php/const App\Controller\API\Bug\DefaultController::DETAILS_SERIALIZATION_GROUPS
+            -
+                alias:             BugFromList
+                type:              App\Entity\Bug
+                groups: !php/const App\Controller\API\Bug\DefaultController::LIST_SERIALIZATION_GROUPS
+
+
+            -
+                alias:             Comment
+                type:              App\Entity\Comment
+                groups: !php/const App\Controller\API\CommentController::DETAILS_SERIALIZATION_GROUPS
+            -
+                alias:             CommentFromList
+                type:              App\Entity\Comment
+                groups: !php/const App\Controller\API\CommentController::LIST_SERIALIZATION_GROUPS
+
+
+            -
+                alias: Token
+                type:  App\Entity\Security\ApiToken
+                groups: ['user_auth']
+
+
+            -
+                alias:             Project
+                type:              App\Entity\Project
+                groups: !php/const App\Controller\API\ProjectController::DETAILS_SERIALIZATION_GROUPS
+            -
+                alias:             ProjectFromList
+                type:              App\Entity\Project
+                groups: !php/const App\Controller\API\ProjectController::LIST_SERIALIZATION_GROUPS
+
+
+            -
+                alias:             Tracker
+                type:              App\Entity\Tracker
+                groups: !php/const App\Controller\API\TrackerController::DETAILS_SERIALIZATION_GROUPS
+            -
+                alias:             TrackerFromList
+                type:              App\Entity\Tracker
+                groups: !php/const App\Controller\API\TrackerController::LIST_SERIALIZATION_GROUPS
+
+
+            -
+                alias:             User
+                type:              App\Entity\Security\ApiUser
+                groups: !php/const App\Controller\API\UserController::DETAILS_SERIALIZATION_GROUPS
+            -
+                alias: UserAuth
+                type:  App\Entity\Security\ApiUser
+                groups: ['user_details', 'user_auth']
+            -
+                alias:             UserFromList
+                type:              App\Entity\Security\ApiUser
+                groups: !php/const App\Controller\API\UserController::LIST_SERIALIZATION_GROUPS
