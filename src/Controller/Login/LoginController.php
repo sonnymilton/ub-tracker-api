@@ -89,7 +89,7 @@ class LoginController extends AbstractController
      * @SWG\Response(
      *     response="200",
      *     description="Auth user by code. Returns user with access token.",
-     *     @Model(type=ApiUser::class, groups={"user_auth", "user_details"}),
+     *     @SWG\Schema(ref="#/definitions/UserAuth"),
      * )
      * @SWG\Response(
      *     response="401",
