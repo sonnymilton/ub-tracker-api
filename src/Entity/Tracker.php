@@ -50,9 +50,6 @@ class Tracker
      * @var Project
      *
      * @ORM\ManyToOne(targetEntity="Project", inversedBy="trackers")
-     *
-     * @JMS\Expose()
-     * @JMS\Groups(groups={"tracker_list", "tracker_show"})
      */
     protected $project;
 
