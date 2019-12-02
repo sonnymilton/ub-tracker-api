@@ -15,15 +15,15 @@
         "league/oauth2-github": "^2.0",
         "nelmio/api-doc-bundle": "^3.4",
         "nelmio/cors-bundle": "^1.5",
-        "symfony/asset": "4.3.*",
-        "symfony/console": "4.3.*",
-        "symfony/dotenv": "4.3.*",
+        "symfony/asset": "4.4.*",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.3.*",
-        "symfony/security": "4.3.*",
-        "symfony/security-bundle": "4.3.*",
-        "symfony/twig-bundle": "4.3.*",
-        "symfony/yaml": "4.3.*"
+        "symfony/framework-bundle": "4.4.*",
+        "symfony/security": "4.4.*",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/twig-bundle": "4.4.*",
+        "symfony/yaml": "4.4.*"
     },
     "config": {
         "preferred-install": {
@@ -67,12 +67,12 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.3.*"
+            "require": "4.4.*"
         }
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
-        "symfony/var-dumper": "4.3.*",
-        "symfony/web-server-bundle": "4.3.*"
+        "symfony/var-dumper": "4.4.*",
+        "symfony/web-server-bundle": "4.4.*"
     }
 }
