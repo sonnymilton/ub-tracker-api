@@ -245,7 +245,8 @@ class Project
      */
     public function updateFromRequest(UpdateProjectRequest $request)
     {
-        $this->title = $request->getTitle();
-        $this->links = $request->getLinks();
+        $this->title   = $request->getTitle();
+        $this->links   = $request->getLinks();
+        $this->locales = $request->getLocales();
     }
 }

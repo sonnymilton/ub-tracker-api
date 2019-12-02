@@ -186,7 +186,7 @@ class ProjectController extends AbstractController
      *     name="Update project request",
      *     in="body",
      *     allowEmptyValue=false,
-     *     @Model(type=CreateProjectRequest::class)
+     *     @Model(type=UpdateProjectRequest::class)
      * )
      *
      * @return JsonResponse

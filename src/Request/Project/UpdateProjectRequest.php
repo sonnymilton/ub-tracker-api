@@ -44,18 +44,37 @@ class UpdateProjectRequest extends JsonRequest
     protected $links;
 
     /**
+     * @var array|string[]
+     *
+     * @SWG\Property(
+     *     type="array",
+     *     @SWG\Items(type="string"),
+     *     description="Locales"
+     * )
+     */
+    protected $locales;
+
+    /**
      * @return \Symfony\Component\Validator\Constraint|\Symfony\Component\Validator\Constraint[]|Assert\Collection
      */
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'title' => new Assert\NotBlank(),
-            'links' => new Assert\Optional([
+            'title'   => new Assert\NotBlank(),
+            'locales' => [
+                new Assert\Type('array'),
+                new Assert\Count(['min' => 1]),
+                new Assert\All([
+                    new Assert\Type('string'),
+                    new Assert\NotBlank(),
+                ]),
+            ],
+            'links'   => new Assert\Optional([
                 new Assert\Type("array"),
                 new Assert\All([
                     new Assert\Collection([
                         'title' => new Assert\NotBlank(),
-                        'url' => [
+                        'url'   => [
                             new Assert\NotBlank(),
                             new Assert\Url(),
                         ],
@@ -79,5 +98,13 @@ class UpdateProjectRequest extends JsonRequest
     public function getLinks(): ?array
     {
         return $this->links;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getLocales(): ?array
+    {
+        return $this->locales;
     }
 }
