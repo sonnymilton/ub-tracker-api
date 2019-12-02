@@ -37,12 +37,12 @@ class NotFoundHttpExceptionSubscriber implements EventSubscriberInterface
      */
     public function onException(ExceptionEvent $event): void
     {
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
 
         if ($exception instanceof NotFoundHttpException) {
             $event->setResponse(new JsonResponse([
                 'errors' => [
-                    $event->getException()->getMessage(),
+                    $exception->getMessage(),
                 ],
             ], Response::HTTP_NOT_FOUND));
         }
