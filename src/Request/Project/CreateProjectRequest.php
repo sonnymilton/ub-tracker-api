@@ -82,6 +82,7 @@ class CreateProjectRequest extends JsonRequest
                 ]),
             ]),
             'locales' => [
+                new Assert\NotNull(),
                 new Assert\Type('array'),
                 new Assert\Count(['min' => 1]),
                 new Assert\All([
