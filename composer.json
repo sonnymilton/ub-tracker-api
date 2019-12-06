@@ -1,4 +1,6 @@
 {
+    "name": "sonny812/ub-tracker-api",
+    "description": "Bug tracker REST API.",
     "type": "project",
     "license": "proprietary",
     "require": {
