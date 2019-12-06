@@ -44,10 +44,12 @@ services:
             - ./src:${APP_PATH}/src
             - ./composer.json:${APP_PATH}/composer.json
             - ./composer.lock:${APP_PATH}/composer.lock
+            - ./symfony.lock:${APP_PATH}/symfony.lock
 
         environment:
             APP_ENV:                ${APP_ENV}
             APP_SECRET:             ${APP_SECRET}
+            APP_PATH:               ${APP_PATH}
             DATABASE_URL:           ${DATABASE_URL}
             GITHUB_CLIENT_ID:       ${GITHUB_CLIENT_ID}
             GITHUB_CLIENT_SECRET:   ${GITHUB_CLIENT_SECRET}
