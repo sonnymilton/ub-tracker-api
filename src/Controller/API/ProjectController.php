@@ -159,7 +159,7 @@ class ProjectController extends AbstractController
         $em->persist($project);
         $em->flush();
 
-        return JsonResponse::fromJsonString($this->autoserialize($project));
+        return JsonResponse::fromJsonString($this->autoserialize($project), Response::HTTP_CREATED);
     }
 
     /**
