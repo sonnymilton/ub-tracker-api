@@ -104,7 +104,7 @@ class Project
     /**
      * @var array|null
      *
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json_array", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"project_details"})
