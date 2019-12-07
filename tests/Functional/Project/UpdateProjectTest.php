@@ -15,6 +15,7 @@ use App\Repository\ProjectRepository;
 use App\Tests\Functional\AbstractApiTest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Update project test
@@ -114,7 +115,10 @@ class UpdateProjectTest extends AbstractApiTest
 
     public function testDeveloperCantUpdateProject(): void
     {
+        $this->expectException(AccessDeniedException::class);
+
         $client = self::$client;
+        $client->catchExceptions(false);
         $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['developer']);
 
         $client->request(
