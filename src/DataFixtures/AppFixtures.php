@@ -36,6 +36,10 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
+        /** @var ApiUser $adminUser */
+        $adminUser = $this->getReference(UserFixtures::ADMIN_USER_REFERENCE);
+        $adminUser->createToken();
+
         /** @var ApiUser $qaUser */
         $qaUser = $this->getReference(UserFixtures::QA_USER_REFERENCE);
         $qaUser->createToken();
