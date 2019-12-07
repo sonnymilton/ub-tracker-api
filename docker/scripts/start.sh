@@ -1,5 +1,6 @@
 #!/bin/bash
 
+docker exec ubtracker_php touch .env
 docker exec ubtracker_php composer install
 
 scriptdir=$(dirname "$(realpath $0)")
