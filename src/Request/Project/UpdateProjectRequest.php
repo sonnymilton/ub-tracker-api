@@ -62,6 +62,7 @@ class UpdateProjectRequest extends JsonRequest
         return new Assert\Collection([
             'title'   => new Assert\NotBlank(),
             'locales' => [
+                new Assert\NotNull(),
                 new Assert\Type('array'),
                 new Assert\Count(['min' => 1]),
                 new Assert\All([
