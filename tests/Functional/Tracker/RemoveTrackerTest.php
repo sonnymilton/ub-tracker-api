@@ -16,6 +16,7 @@ use App\Tests\Functional\AbstractApiTest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Remove tracker test
@@ -24,8 +25,11 @@ class RemoveTrackerTest extends AbstractApiTest
 {
     public function testNotAdminCantDeleteTracker(): void
     {
+        $this->expectException(AccessDeniedException::class);
+
         $client = self::$client;
-        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['developer']);
+        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
+        $client->catchExceptions(false);
 
         $client->request(Request::METHOD_DELETE, sprintf('/api/tracker/%d/', $this->getExistingTrackerId()));
 
