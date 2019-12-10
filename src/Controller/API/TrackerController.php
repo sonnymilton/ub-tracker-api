@@ -132,6 +132,8 @@ class TrackerController extends AbstractController
      */
     public function removeAction(int $id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $tracker = $this->getTracker($id);
 
         $em = $this->getDoctrine()->getManager();
