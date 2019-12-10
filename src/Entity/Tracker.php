@@ -51,6 +51,11 @@ class Tracker
      * @var Project
      *
      * @ORM\ManyToOne(targetEntity="Project", inversedBy="trackers")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_show"})
+     *
+     * @SWG\Property(ref="#/definitions/ProjectFromList")
      */
     protected $project;
 
