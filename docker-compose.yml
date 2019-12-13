@@ -33,6 +33,8 @@ services:
     php-fpm:
         build:
             context: ./docker/php-fpm
+            args:
+                XDEBUG_REMOTE_PORT:     ${XDEBUG_REMOTE_PORT}
         container_name: ubtracker_php
         working_dir:    /usr/share/nginx/ubtracker
         links:
@@ -42,11 +44,13 @@ services:
             - ./config:${APP_PATH}/config
             - ./public:${APP_PATH}/public
             - ./src:${APP_PATH}/src
+            - ./vendor:${APP_PATH}/vendor:rw
             - ./composer.json:${APP_PATH}/composer.json
             - ./composer.lock:${APP_PATH}/composer.lock
             - ./symfony.lock:${APP_PATH}/symfony.lock
 
         environment:
+            XDEBUG_REMOTE_PORT:     ${XDEBUG_REMOTE_PORT}
             APP_ENV:                ${APP_ENV}
             APP_SECRET:             ${APP_SECRET}
             APP_PATH:               ${APP_PATH}
