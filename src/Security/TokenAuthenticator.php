@@ -120,9 +120,9 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     {
         return new JsonResponse([
             'errors' => [
-                'security.forbidden',
+                'security.unauthorized',
             ],
-        ], Response::HTTP_FORBIDDEN);
+        ], Response::HTTP_UNAUTHORIZED);
     }
 
     /**
