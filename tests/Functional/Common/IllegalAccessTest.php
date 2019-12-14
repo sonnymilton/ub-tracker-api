@@ -26,7 +26,7 @@ class IllegalAccessTest extends AbstractApiTest
         $client->request(Request::METHOD_GET, '/api/project/');
         $response = $client->getResponse();
 
-        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 
     public function testAccessDeniedForUserWithFakeToken(): void
@@ -37,6 +37,6 @@ class IllegalAccessTest extends AbstractApiTest
         $client->request(Request::METHOD_GET, '/api/project/');
         $response = $client->getResponse();
 
-        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 }
