@@ -143,18 +143,6 @@ class ProjectController extends AbstractController
             $request->getLinks()
         );
 
-        if (null !== $developerIds = $request->getDevelopers()) {
-            $developers = $this->getUserRepository()->getUsersByIds($developerIds);
-
-            if (count($developerIds) !== count($developers)) {
-                throw new NotFoundHttpException('Developer(s) not found');
-            }
-
-            foreach ($developers as $developer) {
-                $project->addDeveloper($developer);
-            }
-        }
-
         $em = $this->getEntityManager();
         $em->persist($project);
         $em->flush();
@@ -234,105 +222,6 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/add_developer/", methods={"patch"}, name="add_developer")
-     *
-     * @param int                                $id
-     * @param DeveloperProjectInteractionRequest $request
-     *
-     * @SWG\Response(
-     *     response="200",
-     *     description="Add developer to the project.",
-     *     @SWG\Schema(ref="#/definitions/Project")
-     * )
-     * @SWG\Response(
-     *     response="400",
-     *     description="Invalid request data."
-     * )
-     * @SWG\Response(
-     *     response="404",
-     *     description="Project or developer not found."
-     * )
-     *
-     * @SWG\Parameter(
-     *     name="developer",
-     *     description="Developer's id",
-     *     in="query",
-     *     type="string",
-     *     required=true,
-     * )
-     *
-     * @return JsonResponse
-     */
-    public function addDeveloperAction(int $id, DeveloperProjectInteractionRequest $request): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('ROLE_QA');
-
-        $project = $this->getProject($id);
-
-        /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->getDeveloper());
-
-        if (empty($developer)) {
-            throw new NotFoundHttpException('Developer not found');
-        }
-        $project->addDeveloper($developer);
-
-        $this->getEntityManager()->flush();
-
-        return JsonResponse::fromJsonString($this->autoserialize($project));
-    }
-
-    /**
-     * @Route("/{id}/remove_developer/", methods={"patch"}, name="remove_developer")
-     *
-     * @param int                                $id
-     * @param DeveloperProjectInteractionRequest $request
-     *
-     * @SWG\Response(
-     *     response="200",
-     *     description="Add developer to the project.",
-     *     @SWG\Schema(ref="#/definitions/Project")
-     * )
-     * @SWG\Response(
-     *     response="400",
-     *     description="Invalid request data."
-     * )
-     * @SWG\Response(
-     *     response="404",
-     *     description="Project or developer not found."
-     * )
-     *
-     * @SWG\Parameter(
-     *     name="developer",
-     *     description="Developer's id",
-     *     in="query",
-     *     type="string",
-     *     required=true,
-     * )
-     *
-     * @return JsonResponse
-     */
-    public function removeDeveloperAction(int $id, DeveloperProjectInteractionRequest $request): JsonResponse
-    {
-        $this->denyAccessUnlessGranted('ROLE_QA');
-
-        $project = $this->getProject($id);
-
-        /** @var ApiUser $developer */
-        $developer = $this->getUserRepository()->find($request->getDeveloper());
-
-        if (empty($developer)) {
-            throw new NotFoundHttpException('Developer not found');
-        }
-
-        $project->removeDeveloper($developer);
-
-        $this->getEntityManager()->flush();
-
-        return JsonResponse::fromJsonString($this->autoserialize($project));
-    }
-
-    /**
      * @param int $id
      *
      * @return \App\Entity\Project|object
@@ -362,13 +251,5 @@ class ProjectController extends AbstractController
     private function getProjectRepository(): ProjectRepository
     {
         return $this->getDoctrine()->getRepository(Project::class);
-    }
-
-    /**
-     * @return \App\Repository\Security\ApiUserRepository
-     */
-    private function getUserRepository(): ApiUserRepository
-    {
-        return $this->getDoctrine()->getRepository(ApiUser::class);
     }
 }
