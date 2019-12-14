@@ -252,14 +252,16 @@ class ApiUser implements UserInterface
 
     /**
      * @param Project $project
+     * @param array   $developers
+     * @param array   $links
      *
      * @return Tracker
      *
      * @throws \Exception
      */
-    public function createTracker(Project $project): Tracker
+    public function createTracker(Project $project, array $developers = [], array $links = []): Tracker
     {
-        $tracker = new Tracker($this, $project);
+        $tracker = new Tracker($this, $project, $developers, $links);
         $project->addTracker($tracker);
 
         return $tracker;

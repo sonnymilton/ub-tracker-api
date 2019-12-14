@@ -60,6 +60,32 @@ class Tracker
     protected $project;
 
     /**
+     * @var ArrayCollection|ApiUser[]
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
+     * @ORM\JoinTable(name="users_trackers",
+     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
+     * )
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_show"})
+     *
+     * @SWG\Property(type="array", @SWG\Items(ref="#/definitions/UserFromList"))
+     */
+    protected $developers;
+
+    /**
+     * @var array|null
+     *
+     * @ORM\Column(type="json_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"tracker_show"})
+     */
+    protected $links;
+
+    /**
      * @var ArrayCollection|Bug[]
      *
      * @ORM\OneToMany(targetEntity="Bug", mappedBy="tracker", cascade={"persist", "remove"})
@@ -98,16 +124,20 @@ class Tracker
      *
      * @param ApiUser $author
      * @param Project $project
+     * @param array   $developers
+     * @param array   $links
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, Project $project)
+    public function __construct(ApiUser $author, Project $project, array $developers = [], array $links = [])
     {
-        $this->author    = $author;
-        $this->project   = $project;
-        $this->closed    = false;
-        $this->startedAt = new \DateTimeImmutable();
-        $this->bugs      = new ArrayCollection();
+        $this->author     = $author;
+        $this->project    = $project;
+        $this->developers = new ArrayCollection($developers);
+        $this->links      = $links;
+        $this->closed     = false;
+        $this->startedAt  = new \DateTimeImmutable();
+        $this->bugs       = new ArrayCollection();
     }
 
     /**
@@ -119,7 +149,7 @@ class Tracker
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getStartedAt(): \DateTimeImmutable
     {
@@ -132,6 +162,32 @@ class Tracker
     public function getProject(): Project
     {
         return $this->project;
+    }
+
+    /**
+     * @return \App\Entity\Security\ApiUser[]|\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getDevelopers(): ArrayCollection
+    {
+        return $this->developers;
+    }
+
+    /**
+     * @param ApiUser $developer
+     */
+    public function addDeveloper(ApiUser $developer): void
+    {
+        if (!$this->developers->contains($developer)) {
+            $this->developers->add($developer);
+        }
+    }
+
+    /**
+     * @param ApiUser $developer
+     */
+    public function removeDeveloper(ApiUser $developer): void
+    {
+        $this->developers->removeElement($developer);
     }
 
     /**

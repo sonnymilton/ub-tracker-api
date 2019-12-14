@@ -74,22 +74,6 @@ class Project
     protected $createdAt;
 
     /**
-     * @var ArrayCollection|ApiUser[]
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
-     * @ORM\JoinTable(name="users_projects",
-     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
-     * )
-     *
-     * @JMS\Expose()
-     * @JMS\Groups(groups={"project_details"})
-     *
-     * @SWG\Property(type="array", @SWG\Items(ref="#/definitions/UserFromList"))
-     */
-    protected $developers;
-
-    /**
      * @var ApiUser
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
@@ -133,13 +117,12 @@ class Project
      */
     public function __construct(ApiUser $author, string $title, array $locales, array $links = null)
     {
-        $this->author     = $author;
-        $this->title      = $title;
-        $this->createdAt  = new \DateTimeImmutable();
-        $this->trackers   = new ArrayCollection();
-        $this->developers = new ArrayCollection();
-        $this->links      = $links;
-        $this->locales    = $locales;
+        $this->author    = $author;
+        $this->title     = $title;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->trackers  = new ArrayCollection();
+        $this->links     = $links;
+        $this->locales   = $locales;
     }
 
     /**
@@ -199,14 +182,6 @@ class Project
     }
 
     /**
-     * @return ApiUser[]|Collection
-     */
-    public function getDevelopers(): Collection
-    {
-        return $this->developers;
-    }
-
-    /**
      * @return ApiUser
      */
     public function getAuthor(): ApiUser
@@ -220,24 +195,6 @@ class Project
     public function getLinks(): ?array
     {
         return $this->links;
-    }
-
-    /**
-     * @param ApiUser $developer
-     */
-    public function addDeveloper(ApiUser $developer): void
-    {
-        if (!$this->developers->contains($developer)) {
-            $this->developers->add($developer);
-        }
-    }
-
-    /**
-     * @param ApiUser $developer
-     */
-    public function removeDeveloper(ApiUser $developer): void
-    {
-        $this->developers->removeElement($developer);
     }
 
     /**
