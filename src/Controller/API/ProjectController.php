@@ -13,10 +13,7 @@ namespace App\Controller\API;
 use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Repository\ProjectRepository;
-use App\Repository\Security\ApiUserRepository;
-use App\Request\Project\CreateProjectRequest;
-use App\Request\Project\DeveloperProjectInteractionRequest;
-use App\Request\Project\UpdateProjectRequest;
+use App\Request\Project\ProjectRequest;
 use App\Serializer\AutoserializationTrait;
 use Doctrine\Common\Persistence\ObjectManager;
 use JMS\Serializer\SerializerInterface;
@@ -104,8 +101,11 @@ class ProjectController extends AbstractController
     /**
      * @Route("/", methods={"post"}, name="create")
      *
-     * @param CreateProjectRequest $request
+     * @param \App\Controller\API\CreateProjectRequest $request
      *
+     * @return JsonResponse
+     *
+     * @throws \Exception
      * @SWG\Response(
      *     response="201",
      *     description="Creates a project.",
@@ -127,11 +127,8 @@ class ProjectController extends AbstractController
      *     @Model(type=CreateProjectRequest::class)
      * )
      *
-     * @return JsonResponse
-     *
-     * @throws \Exception
      */
-    public function createAction(CreateProjectRequest $request): JsonResponse
+    public function createAction(ProjectRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
@@ -153,9 +150,10 @@ class ProjectController extends AbstractController
     /**
      * @Route("/{id}/", methods={"put"}, name="update")
      *
-     * @param int                  $id
-     * @param UpdateProjectRequest $request
+     * @param int                                 $id
+     * @param \App\Request\Project\ProjectRequest $request
      *
+     * @return JsonResponse
      * @SWG\Response(
      *     response="200",
      *     description="Updates the project.",
@@ -176,10 +174,8 @@ class ProjectController extends AbstractController
      *     allowEmptyValue=false,
      *     @Model(type=UpdateProjectRequest::class)
      * )
-     *
-     * @return JsonResponse
      */
-    public function updateAction(int $id, UpdateProjectRequest $request): JsonResponse
+    public function updateAction(int $id, ProjectRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 

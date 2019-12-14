@@ -14,12 +14,13 @@ use App\Entity\Project\Links;
 use App\Request\JsonRequest;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Update project request
+ * Class CreateProjectRequest
  */
-class UpdateProjectRequest extends JsonRequest
+class ProjectRequest extends JsonRequest
 {
     /**
      * @var string
@@ -104,7 +105,7 @@ class UpdateProjectRequest extends JsonRequest
     /**
      * @return array|string[]
      */
-    public function getLocales(): ?array
+    public function getLocales(): array
     {
         return $this->locales;
     }

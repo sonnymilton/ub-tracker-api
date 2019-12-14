@@ -11,9 +11,8 @@
 namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
-use App\Request\Project\UpdateProjectRequest;
+use App\Request\Project\ProjectRequest;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -198,9 +197,9 @@ class Project
     }
 
     /**
-     * @param \App\Request\Project\UpdateProjectRequest $request
+     * @param \App\Request\Project\ProjectRequest $request
      */
-    public function updateFromRequest(UpdateProjectRequest $request)
+    public function updateFromRequest(ProjectRequest $request)
     {
         $this->title   = $request->getTitle();
         $this->links   = $request->getLinks();
