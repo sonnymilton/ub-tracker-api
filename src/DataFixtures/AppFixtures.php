@@ -62,7 +62,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($developers as $developer) {
             $developer->createToken();
-            $project->addDeveloper($developer);
+            $tracker->addDeveloper($developer);
         }
 
         for ($i = 0; $i <= 20; $i++) {
