@@ -30,17 +30,6 @@ class CreateProjectRequest extends JsonRequest
     protected $title;
 
     /**
-     * @var array|int[]
-     *
-     * @SWG\Property(
-     *     type="array",
-     *     @SWG\Items(type="integer"),
-     *     description="Developers IDs. Optional",
-     * )
-     */
-    protected $developers;
-
-    /**
      * @var array|null
      *
      * @SWG\Property(
@@ -72,15 +61,7 @@ class CreateProjectRequest extends JsonRequest
     public function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'title'      => new Assert\NotBlank(),
-            'developers' => new Assert\Optional([
-                new Assert\Type('array'),
-                new Assert\Count(['min' => 1]),
-                new Assert\All([
-                    new Assert\Type('integer'),
-                    new Assert\GreaterThanOrEqual(0),
-                ]),
-            ]),
+            'title'   => new Assert\NotBlank(),
             'locales' => [
                 new Assert\NotNull(),
                 new Assert\Type('array'),
@@ -88,14 +69,14 @@ class CreateProjectRequest extends JsonRequest
                 new Assert\All([
                     new Assert\Type('string'),
                     new Assert\NotBlank(),
-                ])
+                ]),
             ],
-            'links' => new Assert\Optional([
+            'links'   => new Assert\Optional([
                 new Assert\Type("array"),
                 new Assert\All([
                     new Assert\Collection([
                         'title' => new Assert\NotBlank(),
-                        'url' => [
+                        'url'   => [
                             new Assert\NotBlank(),
                             new Assert\Url(),
                         ],
@@ -111,14 +92,6 @@ class CreateProjectRequest extends JsonRequest
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    /**
-     * @return array|int[]
-     */
-    public function getDevelopers(): array
-    {
-        return $this->developers ?? [];
     }
 
     /**
