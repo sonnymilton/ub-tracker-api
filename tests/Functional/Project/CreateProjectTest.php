@@ -48,22 +48,20 @@ class CreateProjectTest extends AbstractApiTest
 
     /**
      * @param string|null $title
-     * @param array|null  $developers
      * @param array|null  $locales
      * @param array|null  $links
      *
      * @dataProvider provideCreateProjectData
      */
-    public function testCreateProject(?string $title, ?array $developers, ?array $locales, ?array $links): void
+    public function testCreateProject(?string $title, ?array $locales, ?array $links): void
     {
         $client = self::$client;
         $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
 
         $client->request(Request::METHOD_POST, '/api/project/', [], [], [], json_encode([
-            'title'      => $title,
-            'developers' => $developers,
-            'locales'    => $locales,
-            'links'      => $links,
+            'title'   => $title,
+            'locales' => $locales,
+            'links'   => $links,
         ]));
 
         $response = $client->getResponse();
@@ -73,7 +71,6 @@ class CreateProjectTest extends AbstractApiTest
 
     /**
      * @param string|null $title
-     * @param array|null  $developers
      * @param array|null  $locales
      * @param array|null  $links
      * @param int         $expectedResult
@@ -82,7 +79,6 @@ class CreateProjectTest extends AbstractApiTest
      */
     public function testCreateProjectWithInvalidData(
         ?string $title,
-        ?array $developers,
         ?array $locales,
         ?array $links,
         int $expectedResult = Response::HTTP_BAD_REQUEST
@@ -91,10 +87,9 @@ class CreateProjectTest extends AbstractApiTest
         $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
 
         $client->request(Request::METHOD_POST, '/api/project/', [], [], [], json_encode([
-            'title'      => $title,
-            'developers' => $developers,
-            'locales'    => $locales,
-            'links'      => $links,
+            'title'   => $title,
+            'locales' => $locales,
+            'links'   => $links,
         ]));
 
         $response = $client->getResponse();
@@ -109,21 +104,12 @@ class CreateProjectTest extends AbstractApiTest
     {
         yield 'With all data' => [
             'Test',
-            [1, 2],
-            ['ru', 'en'],
-            [['title' => 'github', 'url' => 'https://github.com/Sonny812/ub-tracker-api']],
-        ];
-
-        yield 'Without developers' => [
-            'Test',
-            null,
             ['ru', 'en'],
             [['title' => 'github', 'url' => 'https://github.com/Sonny812/ub-tracker-api']],
         ];
 
         yield 'Without links' => [
             'Test',
-            [1, 2],
             ['ru', 'en'],
             null,
         ];
@@ -136,38 +122,20 @@ class CreateProjectTest extends AbstractApiTest
     {
         yield 'With blank title' => [
             '',
-            null,
             ['en'],
             null,
         ];
 
         yield 'Without locales' => [
             'Test',
-            [1, 2],
             null,
             [['title' => 'github', 'url' => 'https://github.com/Sonny812/ub-tracker-api']],
         ];
 
         yield 'With invalid url in link' => [
             'Test',
-            [1, 2],
             ['en'],
             [['title' => 'github', 'url' => 'invalid url']],
-        ];
-
-        yield 'Invalid developer ids' => [
-            'Test',
-            [5, -5],
-            ['en'],
-            null,
-        ];
-
-        yield 'Non-existent developer ids' => [
-            'Test',
-            [1, 2350041],
-            ['en'],
-            null,
-            Response::HTTP_NOT_FOUND,
         ];
     }
 }
