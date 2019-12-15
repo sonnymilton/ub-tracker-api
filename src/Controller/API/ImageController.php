@@ -14,6 +14,7 @@ use App\Request\Image\ImageRequest;
 use App\Response\ResourceResponse;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,6 +28,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Image controller
  *
  * @Route("/image", name="image_")
+ *
+ * @SWG\Tag(name="Image")
  */
 class ImageController extends AbstractController
 {
@@ -46,9 +49,28 @@ class ImageController extends AbstractController
     }
 
     /**
-     * @Route("/", name="upload")
+     * @Route("/", name="upload", methods={"POST"})
      *
      * @param \App\Request\Image\ImageRequest $request
+     *
+     * @SWG\Parameter(
+     *     name="image",
+     *     in="formData",
+     *     type="file"
+     * )
+     *
+     * @SWG\Response(
+     *     response="201",
+     *     description="Uploads image",
+     *     @SWG\Schema(properties={
+     *          @SWG\Property(property="id", type="string"),
+     *          @SWG\Property(property="resource", type="string", format="url")
+     *     })
+     * )
+     * @SWG\Response(
+     *     response="400",
+     *     description="Invalid request data."
+     * )
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *
@@ -62,9 +84,12 @@ class ImageController extends AbstractController
             throw new BadRequestHttpException('Image required');
         }
 
-        $path   = uniqid();
         $stream = fopen($image->getRealPath(), 'r');
-        $this->filesystem->writeStream($path, $stream);
+        $path   = uniqid();
+
+        $this->filesystem->writeStream($path, $stream, [
+            'mimetype' => $image->getMimeType(),
+        ]);
 
         return new JsonResponse([
             'id'       => $path,
@@ -73,9 +98,18 @@ class ImageController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/", name="show")
+     * @Route("/{id}/", name="show", methods={"GET"})
      *
      * @param string $id
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Returns image by id"
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Image not found"
+     * )
      *
      * @return \App\Response\ResourceResponse
      *
