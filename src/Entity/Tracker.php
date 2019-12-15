@@ -11,6 +11,7 @@
 namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
+use App\Request\Tracker\TrackerRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -206,13 +207,22 @@ class Tracker
         $this->bugs->removeElement($bug);
     }
 
-    public function close()
+    public function close(): void
     {
         $this->closed = true;
     }
 
-    public function open()
+    public function open(): void
     {
         $this->closed = false;
+    }
+
+    /**
+     * @param \App\Request\Tracker\TrackerRequest $request
+     */
+    public function updateFromRequest(TrackerRequest $request): void
+    {
+        $this->developers = new ArrayCollection($request->getDevelopers());
+        $this->links      = $request->getLinks();
     }
 }

@@ -10,20 +10,21 @@
 
 namespace App\Tests\Functional\Tracker;
 
-use App\Entity\Project;
-use App\Repository\ProjectRepository;
+use App\Entity\Tracker;
+use App\Repository\TrackerRepository;
 use App\Request\UnableToProcessRequestObjectException;
 use App\Tests\Functional\AbstractApiTest;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Create tracker test
+ * Update tracker test
  */
-class CreateTrackerTest extends AbstractApiTest
+class UpdateTrackerTest extends AbstractApiTest
 {
-    public function testDeveloperCantCreateTracker(): void
+    public function testDeveloperCantUpdateTracker(): void
     {
         $this->expectException(AccessDeniedException::class);
 
@@ -31,7 +32,7 @@ class CreateTrackerTest extends AbstractApiTest
         $client->catchExceptions(false);
         $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['developer']);
 
-        $client->request(Request::METHOD_POST, sprintf('/api/project/%d/tracker/', $this->getExistingProjectId()));
+        $client->request(Request::METHOD_PUT, sprintf('/api/tracker/%d/', $this->getExistingTrackerId()));
 
         $response = $client->getResponse();
 
@@ -42,19 +43,19 @@ class CreateTrackerTest extends AbstractApiTest
      * @param array $developers
      * @param array $links
      *
-     * @dataProvider provideCreateTrackerData
+     * @dataProvider provideUpdateTrackerData
      *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function testCreateTracker(?array $developers, ?array $links): void
+    public function testUpdateTracker(?array $developers, ?array $links): void
     {
         $client = self::$client;
         $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
 
         $client->request(
-            Request::METHOD_POST,
-            sprintf('/api/project/%d/tracker/', $this->getExistingProjectId()), [], [], [], json_encode(array_filter([
+            Request::METHOD_PUT,
+            sprintf('/api/tracker/%d/', $this->getExistingTrackerId()), [], [], [], json_encode(array_filter([
                     'developers' => $developers,
                     'links'      => $links,
                 ], function ($value) {
@@ -65,20 +66,18 @@ class CreateTrackerTest extends AbstractApiTest
 
         $response = $client->getResponse();
 
-        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), $response->getContent());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
     }
 
     /**
-     * @param array $developers
-     * @param array $links
-     * @param int   $expectedCode
+     * @param array|null $developers
+     * @param array|null $links
+     * @param int        $expectedCode
      *
-     * @dataProvider provideCreateTrackerInvalidData
+     * @dataProvider provideUpdateTrackerInvalidData
      *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
-     *
-     *
      */
     public function testCreateTrackerWithInvalidData(?array $developers, ?array $links, int $expectedCode = Response::HTTP_BAD_REQUEST): void
     {
@@ -91,8 +90,8 @@ class CreateTrackerTest extends AbstractApiTest
         $client->catchExceptions(false);
 
         $client->request(
-            Request::METHOD_POST,
-            sprintf('/api/project/%d/tracker/', $this->getExistingProjectId()), [], [], [], json_encode(array_filter([
+            Request::METHOD_PUT,
+            sprintf('/api/tracker/%d/', $this->getExistingTrackerId()), [], [], [], json_encode(array_filter([
                     'developers' => $developers,
                     'links'      => $links,
                 ], function ($value) {
@@ -106,23 +105,10 @@ class CreateTrackerTest extends AbstractApiTest
         $this->assertEquals($expectedCode, $response->getStatusCode(), $response->getContent());
     }
 
-    public function testCreateTrackerForNotExistingProject(): void
-    {
-        $client = self::$client;
-
-        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
-
-        $client->request(Request::METHOD_POST, sprintf('/api/project/%d/tracker/', 2052050200));
-
-        $response = $client->getResponse();
-
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-    }
-
     /**
      * @return \Generator
      */
-    public function provideCreateTrackerData(): \Generator
+    public function provideUpdateTrackerData(): \Generator
     {
         yield 'With all data' => [
             [3, 4],
@@ -140,7 +126,7 @@ class CreateTrackerTest extends AbstractApiTest
     /**
      * @return \Generator
      */
-    public function provideCreateTrackerInvalidData(): \Generator
+    public function provideUpdateTrackerInvalidData(): \Generator
     {
         yield 'With invalid  url in link' => [
             [3, 4],
@@ -156,13 +142,14 @@ class CreateTrackerTest extends AbstractApiTest
 
     /**
      * @return int
+     *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    private function getExistingProjectId(): int
+    private function getExistingTrackerId(): int
     {
         return $this
-            ->getProjectRepository()
+            ->getTrackerRepository()
             ->createQueryBuilder('o')
             ->select('o.id')
             ->setMaxResults(1)
@@ -171,10 +158,18 @@ class CreateTrackerTest extends AbstractApiTest
     }
 
     /**
-     * @return \App\Repository\ProjectRepository
+     * @return \App\Repository\TrackerRepository
      */
-    private function getProjectRepository(): ProjectRepository
+    private function getTrackerRepository(): TrackerRepository
     {
-        return self::$container->get('doctrine.orm.default_entity_manager')->getRepository(Project::class);
+        return $this->getEntityManager()->getRepository(Tracker::class);
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManagerInterface
+     */
+    private function getEntityManager(): EntityManagerInterface
+    {
+        return self::$container->get('doctrine.orm.default_entity_manager');
     }
 }

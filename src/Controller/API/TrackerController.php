@@ -14,9 +14,11 @@ use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use App\Repository\TrackerRepository;
+use App\Request\Tracker\TrackerRequest;
 use App\Serializer\AutoserializationTrait;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,7 +81,14 @@ class TrackerController extends AbstractController
     /**
      * @Route("/project/{id}/tracker/", name="create_tracker", methods={"post"})
      *
-     * @param int $id
+     * @param int                                 $id
+     * @param \App\Request\Tracker\TrackerRequest $request
+     *
+     * @SWG\Parameter(
+     *     name="Tracker requset",
+     *     in="body",
+     *     @Model(type=CreateTrackerRequest::class)
+     * )
      *
      * @SWG\Response(
      *     response="200",
@@ -95,7 +104,7 @@ class TrackerController extends AbstractController
      *
      * @throws \Exception
      */
-    public function createTrackerAction(int $id): JsonResponse
+    public function createAction(int $id, TrackerRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
@@ -104,14 +113,58 @@ class TrackerController extends AbstractController
         /** @var ApiUser $user */
         $user = $this->getUser();
 
-        $tracker = $user->createTracker($project);
-        $project->addTracker($tracker);
-
         $em = $this->getDoctrine()->getManager();
-        $em->persist($project);
+        $request->resolve($em);
+
+        $tracker = $user->createTracker(
+            $project,
+            $request->getDevelopers(),
+            $request->getLinks()
+        );
+
         $em->flush();
 
         return JsonResponse::fromJsonString($this->autoserialize($tracker), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/tracker/{id}/", name="update", methods={"PUT"})
+     *
+     * @param int                                 $id
+     * @param \App\Request\Tracker\TrackerRequest $request
+     *
+     * @SWG\Parameter(
+     *     name="Tracker requset",
+     *     in="body",
+     *     @Model(type=CreateTrackerRequest::class)
+     * )
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Creates new tracker in specified project.",
+     *     @SWG\Schema(ref="#/definitions/Tracker")
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Project not found."
+     * )
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function updateAction(int $id, TrackerRequest $request): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_QA');
+
+        $tracker = $this->getTracker($id);
+
+        $em = $this->getDoctrine()->getManager();
+        $request->resolve($em);
+
+        $tracker->updateFromRequest($request);
+
+        $em->flush();
+
+        return JsonResponse::fromJsonString($this->autoserialize($tracker));
     }
 
     /**
