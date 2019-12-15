@@ -9,14 +9,17 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "ext-openssl": "*",
+        "alcaeus/mongo-php-adapter": "^1.1",
         "fesor/request-objects": "^0.3.0",
         "fresh/doctrine-enum-bundle": "^6.3",
         "fzaninotto/faker": "^1.9",
         "jms/serializer-bundle": "^3.3",
         "knpuniversity/oauth2-client-bundle": "^1.28",
+        "league/flysystem-gridfs": "^1.0",
         "league/oauth2-github": "^2.0",
         "nelmio/api-doc-bundle": "^3.4",
         "nelmio/cors-bundle": "^1.5",
+        "oneup/flysystem-bundle": "^3.3",
         "symfony/asset": "4.4.*",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
@@ -31,7 +34,10 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "ext-mongo": "1.6.16"
+        }
     },
     "autoload": {
         "psr-4": {
