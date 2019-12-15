@@ -119,9 +119,9 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         return $qa->createBug(
             $this->faker->randomElement($developers),
             $tracker,
-            $this->faker->title,
+            $this->faker->realText(mt_rand(10, 160)),
             BugPriorityType::getRandomValue(),
-            $this->faker->realText(mt_rand(10, 200)),
+            $this->faker->realText(mt_rand(100, 400)),
             $this->faker->randomElement($browserCases),
             $this->faker->randomElement($resolutionCases),
             $this->faker->randomElement($localesCases)
