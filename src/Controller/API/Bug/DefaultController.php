@@ -11,7 +11,6 @@
 namespace App\Controller\API\Bug;
 
 use App\Entity\Bug;
-use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use App\Repository\TrackerRepository;
@@ -86,9 +85,8 @@ class DefaultController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        $tracker = $this->getTracker($id);
-
-        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker->getProject());
+        $tracker   = $this->getTracker($id);
+        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker);
 
         /** @var ApiUser $author */
         $author = $this->getUser();
@@ -159,7 +157,7 @@ class DefaultController extends AbstractController
 
         $bug       = $this->getBug($id);
         $tracker   = $bug->getTracker();
-        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker->getProject());
+        $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker);
 
         $bug->updateFromRequest($request, $developer);
 
@@ -216,13 +214,13 @@ class DefaultController extends AbstractController
 
     /**
      * @param int                 $id
-     * @param \App\Entity\Project $project
+     * @param \App\Entity\Tracker $tracker
      *
      * @return \App\Entity\Security\ApiUser
      */
-    private function getDeveloper(int $id, Project $project): ApiUser
+    private function getDeveloper(int $id, Tracker $tracker): ApiUser
     {
-        $users = $project->getDevelopers()->filter(function (ApiUser $user) use ($id) {
+        $users = $tracker->getDevelopers()->filter(function (ApiUser $user) use ($id) {
             return $user->isDeveloper() && $user->getId() === $id;
         });
 

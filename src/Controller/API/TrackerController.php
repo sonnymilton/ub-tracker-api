@@ -87,7 +87,7 @@ class TrackerController extends AbstractController
      * @SWG\Parameter(
      *     name="Tracker requset",
      *     in="body",
-     *     @Model(type=CreateTrackerRequest::class)
+     *     @Model(type=TrackerRequest::class)
      * )
      *
      * @SWG\Response(
@@ -136,12 +136,12 @@ class TrackerController extends AbstractController
      * @SWG\Parameter(
      *     name="Tracker requset",
      *     in="body",
-     *     @Model(type=CreateTrackerRequest::class)
+     *     @Model(type=TrackerRequest::class)
      * )
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Creates new tracker in specified project.",
+     *     description="Updates the tracker.",
      *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
