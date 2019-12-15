@@ -13,6 +13,7 @@ namespace App\Entity;
 use App\Entity\Security\ApiUser;
 use App\Request\Tracker\TrackerRequest;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -166,9 +167,9 @@ class Tracker
     }
 
     /**
-     * @return \App\Entity\Security\ApiUser[]|\Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getDevelopers(): ArrayCollection
+    public function getDevelopers(): Collection
     {
         return $this->developers;
     }
