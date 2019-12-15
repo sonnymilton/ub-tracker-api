@@ -30,6 +30,16 @@ services:
             MYSQL_PASSWORD:      ${MYSQL_PASSWORD}
 
 
+    mongo:
+        image:          mongo:4.2-bionic
+        container_name: ubtracker_mongo
+        volumes:
+            - ./docker/data/mongo:/data/db
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+
     php-fpm:
         build:
             context: ./docker/php-fpm
@@ -39,6 +49,7 @@ services:
         working_dir:    /usr/share/nginx/ubtracker
         links:
             - mysql
+            - mongo
         volumes:
             - ./bin:${APP_PATH}/bin
             - ./config:${APP_PATH}/config
@@ -55,6 +66,7 @@ services:
             APP_SECRET:             ${APP_SECRET}
             APP_PATH:               ${APP_PATH}
             DATABASE_URL:           ${DATABASE_URL}
+            MONGO_URL:              ${MONGO_URL}
             GITHUB_CLIENT_ID:       ${GITHUB_CLIENT_ID}
             GITHUB_CLIENT_SECRET:   ${GITHUB_CLIENT_SECRET}
             APP_LOGIN_CALLBACK_URL: ${APP_LOGIN_CALLBACK_URL}
