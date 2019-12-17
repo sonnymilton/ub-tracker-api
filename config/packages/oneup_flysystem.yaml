@@ -1,0 +1,14 @@
+# Read the documentation: https://github.com/1up-lab/OneupFlysystemBundle/tree/master/Resources/doc/index.md
+oneup_flysystem:
+    adapters:
+        default_adapter:
+            local:
+                directory: '%kernel.cache_dir%/flysystem'
+        gridfs_adapter:
+            gridfs:
+                client: app.gridfs_client
+
+    filesystems:
+        default_filesystem:
+            adapter: gridfs_adapter
+            alias:   League\Flysystem\Filesystem

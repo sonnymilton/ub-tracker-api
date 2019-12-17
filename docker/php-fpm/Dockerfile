@@ -4,9 +4,13 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
     build-essential locales acl mailutils wget zip unzip \
     gnupg gnupg1 gnupg2 \
+    libcurl4-openssl-dev pkg-config libssl-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring  \
     && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+    && docker-php-ext-enable xdebug \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
 
 COPY conf.d/xdebug.ini $PHP_INI_DIR/conf.d
 ARG XDEBUG_REMOTE_PORT
