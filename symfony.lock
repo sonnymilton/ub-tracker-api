@@ -260,6 +260,9 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "ramsey/uuid": {
+        "version": "3.9.2"
+    },
     "symfony/asset": {
         "version": "v4.3.1"
     },
