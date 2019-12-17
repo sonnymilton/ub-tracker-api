@@ -14,6 +14,7 @@ use App\Request\Image\ImageRequest;
 use App\Response\ResourceResponse;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
+use Ramsey\Uuid\Uuid;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -85,7 +86,7 @@ class ImageController extends AbstractController
         }
 
         $stream = fopen($image->getRealPath(), 'r');
-        $path   = uniqid();
+        $path   = Uuid::uuid4();
 
         $this->filesystem->writeStream($path, $stream, [
             'mimetype' => $image->getMimeType(),
