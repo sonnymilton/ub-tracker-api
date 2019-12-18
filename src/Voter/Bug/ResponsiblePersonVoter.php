@@ -18,7 +18,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ResponsiblePersonVoter extends AbstractBugVoter
 {
     const CANT_BE_REPRODUCED = 'cant_be_reproduced';
-    const SEND_TO_DISCUSS = 'send_to_discuss';
     const SEND_TO_VERIFY = 'send_to_verify';
 
     /**
@@ -28,7 +27,6 @@ class ResponsiblePersonVoter extends AbstractBugVoter
     {
         return parent::supports($attribute, $subject) && in_array($attribute, [
             self::CANT_BE_REPRODUCED,
-            self::SEND_TO_DISCUSS,
             self::SEND_TO_VERIFY,
         ]);
     }
