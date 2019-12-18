@@ -96,8 +96,16 @@ class TrackerController extends AbstractController
      *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
+     *     response="400",
+     *     description="Invalid request data."
+     * )
+     * @SWG\Response(
      *     response="404",
      *     description="Project not found."
+     * )
+     * @SWG\Response(
+     *     response="422",
+     *     description="Unable to process entity"
      * )
      *
      * @return JsonResponse
@@ -145,8 +153,16 @@ class TrackerController extends AbstractController
      *     @SWG\Schema(ref="#/definitions/Tracker")
      * )
      * @SWG\Response(
+     *     response="400",
+     *     description="Invalid request data."
+     * )
+     * @SWG\Response(
      *     response="404",
      *     description="Project not found."
+     * )
+     * @SWG\Response(
+     *     response="422",
+     *     description="Unable to process entity"
      * )
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
