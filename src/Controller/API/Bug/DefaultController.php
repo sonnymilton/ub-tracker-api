@@ -225,7 +225,7 @@ class DefaultController extends AbstractController
         });
 
         if ($users->isEmpty()) {
-            throw new NotFoundHttpException('Developer not found in this project');
+            throw new NotFoundHttpException('Developer not found in the tracker');
         }
 
         return $users->first();
