@@ -211,6 +211,9 @@ class Bug
         $this->title             = $request->getTitle();
         $this->description       = $request->getDescription();
         $this->priority          = $request->getPriority();
+        $this->browsers          = $request->getBrowsers();
+        $this->resolutions       = $request->getResolutions();
+        $this->locales           = $request->getLocales();
         $this->responsiblePerson = $responsiblePerson;
     }
 
