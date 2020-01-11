@@ -15,6 +15,7 @@ use App\Entity\Security\ApiUser;
 use App\Request\Bug\UpdateBugRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
 
@@ -22,6 +23,8 @@ use Swagger\Annotations as SWG;
  * Class Bug
  *
  * @ORM\Entity(repositoryClass="App\Repository\BugRepository")
+ *
+ * @Gedmo\Loggable
  *
  * @JMS\ExclusionPolicy("ALL")
  */
@@ -44,6 +47,8 @@ class Bug
      *
      * @ORM\Column()
      *
+     * @Gedmo\Versioned()
+     *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
@@ -53,6 +58,8 @@ class Bug
      * @var string|null
      *
      * @ORM\Column(type="text")
+     *
+     * @Gedmo\Versioned()
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_details"})
@@ -64,6 +71,8 @@ class Bug
      *
      * @ORM\Column(type="BugStatusType")
      *
+     * @Gedmo\Versioned()
+     *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
@@ -73,6 +82,8 @@ class Bug
      * @var string
      *
      * @ORM\Column(type="BugPriorityType")
+     *
+     * @Gedmo\Versioned()
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
@@ -91,6 +102,8 @@ class Bug
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
      *
+     * @Gedmo\Versioned()
+     *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
      *
@@ -102,6 +115,8 @@ class Bug
      * @var ApiUser
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Security\ApiUser")
+     *
+     * @Gedmo\Versioned()
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
@@ -125,6 +140,8 @@ class Bug
      *
      * @ORM\Column(type="simple_array", nullable=true)
      *
+     * @Gedmo\Versioned()
+     *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
@@ -135,6 +152,8 @@ class Bug
      *
      * @ORM\Column(type="simple_array", nullable=true)
      *
+     * @Gedmo\Versioned()
+     *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
      */
@@ -144,6 +163,8 @@ class Bug
      * @var array|null
      *
      * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @Gedmo\Versioned()
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"bug_list", "bug_details"})
