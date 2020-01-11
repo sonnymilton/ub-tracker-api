@@ -13,10 +13,14 @@ namespace App\Controller\API\Bug;
 use App\Entity\Bug;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
+use App\Log\Bug\BugLogEntryAdapterFactory;
 use App\Repository\TrackerRepository;
 use App\Request\Bug\CreateBugRequest;
 use App\Request\Bug\UpdateBugRequest;
 use App\Serializer\AutoserializationTrait;
+use Gedmo\Loggable\Entity\LogEntry;
+use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -197,6 +201,39 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @Route("/bug/{id}/history/",  name="history", methods={"GET"})
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Returns bug's revision history."
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Bug not found."
+     * )
+     *
+     * @param int                                    $id
+     * @param \App\Log\Bug\BugLogEntryAdapterFactory $logEntryAdapterFactory
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function historyAction(int $id, BugLogEntryAdapterFactory $logEntryAdapterFactory): JsonResponse
+    {
+        $bug        = $this->getBug($id);
+        $logEntries = $this->getLogEntryRepository()->getLogEntries($bug);
+
+        return JsonResponse::fromJsonString(
+            $this->serializer->serialize(
+                $logEntryAdapterFactory->createAdapters($logEntries),
+                'json',
+                SerializationContext::create()->setGroups([
+                    'Default',
+                    'user_list',
+                ]))
+        );
+    }
+
+    /**
      * @param int $id
      *
      * @return \App\Entity\Bug|object
@@ -261,5 +298,13 @@ class DefaultController extends AbstractController
     private function getTrackerRepository(): TrackerRepository
     {
         return $this->getDoctrine()->getRepository(Tracker::class);
+    }
+
+    /**
+     * @return \Gedmo\Loggable\Entity\Repository\LogEntryRepository
+     */
+    private function getLogEntryRepository(): LogEntryRepository
+    {
+        return $this->getDoctrine()->getRepository(LogEntry::class);
     }
 }
