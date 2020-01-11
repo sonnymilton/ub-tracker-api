@@ -35,22 +35,25 @@ class ReturnVoter extends AbstractBugVoter
     }
 
     /**
-     * @param string $attribute
-     * @param \App\Entity\Bug  $subject
+     * @param string          $attribute
+     * @param \App\Entity\Bug $subject
      *
      * @return bool
      */
     public function supports($attribute, $subject)
     {
-        return parent::supports($attribute, $subject) &&
-            $attribute === 'return';
+        return parent::supports($attribute, $subject) && $attribute === 'return';
     }
 
     /**
-     * @inheritDoc
+     * @param string                                                               $attribute
+     * @param \App\Entity\Bug                                                      $subject
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     *
+     * @return bool
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        return $subject->getStatus() === BugStatusType::TO_VERIFY && $this->security->isGranted('ROLE_QA');
+        return $this->security->isGranted('ROLE_QA') && $subject->isActive();
     }
 }
