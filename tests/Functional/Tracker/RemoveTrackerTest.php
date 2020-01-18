@@ -23,12 +23,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class RemoveTrackerTest extends AbstractApiTest
 {
-    public function testNotAdminCantDeleteTracker(): void
+    public function testNotQaCantDeleteTracker(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = self::$client;
-        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
+        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['developer']);
         $client->catchExceptions(false);
 
         $client->request(Request::METHOD_DELETE, sprintf('/api/tracker/%d/', $this->getExistingTrackerId()));
@@ -41,7 +41,7 @@ class RemoveTrackerTest extends AbstractApiTest
     public function testDeleteTracker(): void
     {
         $client = self::$client;
-        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['admin']);
+        $client->setServerParameter(self::AUTH_PARAMETER_NAME, self::$roleTokenMap['qa']);
 
         $client->request(Request::METHOD_DELETE, sprintf('/api/tracker/%d/', $this->getExistingTrackerId()));
 
