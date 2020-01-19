@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\API;
+namespace App\Controller;
 
 use App\Request\Image\ImageRequest;
 use App\Response\ResourceResponse;
@@ -27,8 +27,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Image controller
- *
- * @Route("/image", name="image_")
  *
  * @SWG\Tag(name="Image")
  */
@@ -50,7 +48,7 @@ class ImageController extends AbstractController
     }
 
     /**
-     * @Route("/", name="upload", methods={"POST"})
+     * @Route("/api/image/", name="api_image_upload", methods={"POST"})
      *
      * @param \App\Request\Image\ImageRequest $request
      *
@@ -94,12 +92,12 @@ class ImageController extends AbstractController
 
         return new JsonResponse([
             'id'       => $path,
-            'resource' => $this->generateUrl('api_image_show', ['id' => $path], UrlGeneratorInterface::ABSOLUTE_URL),
+            'resource' => $this->generateUrl('image_show', ['id' => $path], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 
     /**
-     * @Route("/{id}/", name="show", methods={"GET"})
+     * @Route("/image/{id}/", name="image_show", methods={"GET"})
      *
      * @param string $id
      *

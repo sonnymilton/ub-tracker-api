@@ -4,6 +4,10 @@ api:
     prefix:      /api
     name_prefix: api_
 
+image:
+    resource: ../../src/Controller/ImageController.php
+    type:     annotation
+
 login:
     resource:    ../../src/Controller/Login/
     type:        annotation
