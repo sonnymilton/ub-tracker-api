@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Log\Bug;
+namespace App\Log\BugReport;
 
 use DateTimeInterface;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Bug log entry adapter
+ * BugReport log entry adapter
  *
  * @JMS\ExclusionPolicy(policy="all")
  */
-class BugLogEntryAdapter
+class BugReportLogEntryAdapter
 {
     /**
      * @var string
@@ -93,7 +93,7 @@ class BugLogEntryAdapter
     /**
      * @return \DateTimeInterface
      */
-    public function getLoggedAt(): \DateTimeInterface
+    public function getLoggedAt(): DateTimeInterface
     {
         return $this->loggedAt;
     }

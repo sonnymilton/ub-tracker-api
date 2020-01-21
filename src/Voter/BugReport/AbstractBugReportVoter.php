@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Voter\Bug;
+namespace App\Voter\BugReport;
 
-use App\Entity\Bug;
+use App\Entity\BugReport\BugReport;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Abstract bug voter
+ * Abstract bug report voter
  */
-abstract class AbstractBugVoter extends Voter
+abstract class AbstractBugReportVoter extends Voter
 {
     /**
      * @param string $attribute
@@ -26,6 +26,6 @@ abstract class AbstractBugVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        return $subject instanceof Bug;
+        return $subject instanceof BugReport;
     }
 }

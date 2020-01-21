@@ -11,12 +11,13 @@
 namespace App\Request;
 
 use Fesor\RequestObject\RequestObject;
+use LogicException;
 use Throwable;
 
 /**
  * Request is not resolved exception
  */
-final class RequestObjectIsNotResolvedException extends \LogicException
+final class RequestObjectIsNotResolvedException extends LogicException
 {
     /**
      * @var RequestObject

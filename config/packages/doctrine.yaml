@@ -8,8 +8,8 @@ doctrine:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
         types:
-            BugPriorityType:    App\DBAL\Types\BugPriorityType
-            BugStatusType:      App\DBAL\Types\BugStatusType
+            BugReportPriorityType:    App\DBAL\Types\BugReportPriorityType
+            BugReportStatusType:      App\DBAL\Types\BugReportStatusType
 
 
         url:            '%env(resolve:DATABASE_URL)%'

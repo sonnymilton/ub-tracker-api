@@ -10,9 +10,9 @@
 
 namespace App\Controller\API;
 
-use App\Entity\Bug;
+use App\Entity\BugReport\BugReport;
 use App\Entity\Comment;
-use App\Repository\BugRepository;
+use App\Repository\BugReportRepository;
 use App\Repository\CommentRepository;
 use App\Request\Comment\CommentRequest;
 use App\Serializer\AutoserializationTrait;
@@ -55,16 +55,16 @@ class CommentController extends AbstractController
     }
 
     /**
-     * @Route("/bug/{id}/comment/", name="create", methods={"POST"})
+     * @Route("/bug_report/{id}/comment/", name="create", methods={"POST"})
      *
      * @SWG\Response(
      *     response="201",
-     *     description="Creates comment for bug.",
+     *     description="Creates comment for bug report.",
      *     @Model(type=Comment::class, groups=CommentController::DETAILS_SERIALIZATION_GROUPS)
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Bug not found."
+     *     description="BugReport report not found."
      * )
      *
      * @SWG\Parameter(
@@ -84,10 +84,10 @@ class CommentController extends AbstractController
     public function createAction(int $id, CommentRequest $request): JsonResponse
     {
         /** @var \App\Entity\Security\ApiUser $author */
-        $author = $this->getUser();
-        $bug    = $this->getBug($id);
+        $author    = $this->getUser();
+        $bugReport = $this->getBugReport($id);
 
-        $comment = $author->createComment($bug, $request->getText());
+        $comment = $author->createComment($bugReport, $request->getText());
 
         $this->getEntityManager()->flush();
 
@@ -165,18 +165,18 @@ class CommentController extends AbstractController
     /**
      * @param int $id
      *
-     * @return \App\Entity\Bug
+     * @return \App\Entity\BugReport\BugReport
      */
-    private function getBug(int $id): Bug
+    private function getBugReport(int $id): BugReport
     {
-        /** @var Bug $bug */
-        $bug = $this->getBugRepository()->find($id);
+        /** @var \App\Entity\BugReport\BugReport $bugReport */
+        $bugReport = $this->getBugReportRepository()->find($id);
 
-        if (empty($bug)) {
-            throw new NotFoundHttpException('Bug not found.');
+        if (empty($bugReport)) {
+            throw new NotFoundHttpException('BugReport not found.');
         }
 
-        return $bug;
+        return $bugReport;
     }
 
     private function getComment(int $id): Comment
@@ -192,11 +192,11 @@ class CommentController extends AbstractController
     }
 
     /**
-     * @return \App\Repository\BugRepository
+     * @return \App\Repository\BugReportRepository
      */
-    private function getBugRepository(): BugRepository
+    private function getBugReportRepository(): BugReportRepository
     {
-        return $this->getDoctrine()->getRepository(Bug::class);
+        return $this->getDoctrine()->getRepository(BugReport::class);
     }
 
     /**

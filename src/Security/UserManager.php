@@ -14,6 +14,7 @@ use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
+use function openssl_random_pseudo_bytes;
 
 /**
  * User manager
@@ -45,7 +46,7 @@ class UserManager
         $user = $this->getUserRepository()->findOneBy(['email' => $resourceOwner->getEmail()]);
 
         if (empty($user)) {
-            $user = new ApiUser($resourceOwner->getNickname(), $resourceOwner->getEmail(), bin2hex(\openssl_random_pseudo_bytes(32)));
+            $user = new ApiUser($resourceOwner->getNickname(), $resourceOwner->getEmail(), bin2hex(openssl_random_pseudo_bytes(32)));
             $this->em->persist($user);
         }
 

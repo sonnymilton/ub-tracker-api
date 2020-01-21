@@ -10,8 +10,10 @@
 
 namespace App\Entity;
 
+use App\Entity\BugReport\BugReport;
 use App\Entity\Security\ApiUser;
 use App\Request\Tracker\TrackerRequest;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -88,16 +90,16 @@ class Tracker
     protected $links;
 
     /**
-     * @var ArrayCollection|Bug[]
+     * @var ArrayCollection|BugReport[]
      *
-     * @ORM\OneToMany(targetEntity="Bug", mappedBy="tracker", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\BugReport\BugReport", mappedBy="tracker", cascade={"persist", "remove"})
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"tracker_show"})
      *
-     * @SWG\Property(ref="#/definitions/Bug")
+     * @SWG\Property(ref="#/definitions/BugReport")
      */
-    protected $bugs;
+    protected $bugReports;
 
     /**
      * @var ApiUser
@@ -138,8 +140,8 @@ class Tracker
         $this->developers = new ArrayCollection($developers);
         $this->links      = $links;
         $this->closed     = false;
-        $this->startedAt  = new \DateTimeImmutable();
-        $this->bugs       = new ArrayCollection();
+        $this->startedAt  = new DateTimeImmutable();
+        $this->bugReports = new ArrayCollection();
     }
 
     /**
@@ -153,7 +155,7 @@ class Tracker
     /**
      * @return \DateTimeImmutable
      */
-    public function getStartedAt(): \DateTimeImmutable
+    public function getStartedAt(): DateTimeImmutable
     {
         return $this->startedAt;
     }
@@ -193,19 +195,19 @@ class Tracker
     }
 
     /**
-     * @param Bug $bug
+     * @param BugReport $bugReport
      */
-    public function addBug(Bug $bug): void
+    public function addBugReport(BugReport $bugReport): void
     {
-        $this->bugs->add($bug);
+        $this->bugReports->add($bugReport);
     }
 
     /**
-     * @param Bug $bug
+     * @param BugReport $bugReport
      */
-    public function removeBug(Bug $bug): void
+    public function removeBugReport(BugReport $bugReport): void
     {
-        $this->bugs->removeElement($bug);
+        $this->bugReports->removeElement($bugReport);
     }
 
     public function close(): void

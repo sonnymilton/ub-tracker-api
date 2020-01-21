@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\API\Bug;
+namespace App\Controller\API\BugReport;
 
-use App\Entity\Bug;
-use App\Repository\BugRepository;
+use App\Entity\BugReport\BugReport;
+use App\Repository\BugReportRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -22,11 +22,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Status controller
+ * BugReport report status controller
  *
- * @Route("/bug/{id}",  name="bug_change_status_")
+ * @Route("/bug_report/{id}",  name="bug_report_change_status_")
  *
- * @SWG\Tag(name="Bug")
+ * @SWG\Tag(name="Bug report")
  */
 class StatusController extends AbstractController
 {
@@ -50,12 +50,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to can't be reproduced",
-     *     @SWG\Schema(ref="#/definitions/Bug")
+     *     description="Changes bug report status to can't be reproduced",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only responsible can close the bug."
+     *     description="Only responsible can close the bug report."
      * )
      *
      * @param int $id
@@ -64,15 +64,15 @@ class StatusController extends AbstractController
      */
     public function cantBeReproducedAction(int $id): JsonResponse
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('cant_be_reproduced', $bug);
+        $this->denyAccessUnlessGranted('cant_be_reproduced', $bugReport);
 
-        $bug->cantBeReproduced();
+        $bugReport->cantBeReproduced();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -80,12 +80,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to close.",
-     *     @SWG\Schema(ref="#/definitions/Bug")
+     *     description="Changes bug report status to close.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only QA can close the bug.",
+     *     description="Only QA can close the bug report.",
      * )
      *
      * @param int $id
@@ -96,13 +96,13 @@ class StatusController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $bug->close();
+        $bugReport->close();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -110,12 +110,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to returned.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     description="Changes bug report status to returned.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only bugs that are sent for verify can be returned by QA."
+     *     description="Only bug reports that are sent for verify can be returned by QA."
      * )
      *
      * @param int $id
@@ -124,15 +124,15 @@ class StatusController extends AbstractController
      */
     public function returnAction(int $id): JsonResponse
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('return', $bug);
+        $this->denyAccessUnlessGranted('return', $bugReport);
 
-        $bug->bugReturn();
+        $bugReport->bugReturn();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -140,12 +140,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to verified.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     description="Changes bug report status to verified.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only bugs that are sent for verify can be verified by QA."
+     *     description="Only bug reports that are sent for verify can be verified by QA."
      * )
      *
      * @param $id
@@ -154,15 +154,15 @@ class StatusController extends AbstractController
      */
     public function verifyAction(int $id): JsonResponse
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('verify', $bug);
+        $this->denyAccessUnlessGranted('verify', $bugReport);
 
-        $bug->verify();
+        $bugReport->verify();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -170,12 +170,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to sent to discuss",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     description="Changes bug report status to sent to discuss",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only responsible person can send the bug to discuss"
+     *     description="Only responsible person can send the bug report to discuss"
      * )
      *
      * @param $id
@@ -184,15 +184,15 @@ class StatusController extends AbstractController
      */
     public function sendToDiscussAction(int $id)
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('send_to_discuss', $bug);
+        $this->denyAccessUnlessGranted('send_to_discuss', $bugReport);
 
-        $bug->sendToDiscuss();
+        $bugReport->sendToDiscuss();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -200,12 +200,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Changes bug status to sent to verify",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     description="Changes bug report status to sent to verify",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only responsible person can send the bug to verify"
+     *     description="Only responsible person can send the bug report to verify"
      * )
      *
      * @param int $id
@@ -214,15 +214,15 @@ class StatusController extends AbstractController
      */
     public function sendToVerifyAction(int $id)
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('send_to_verify', $bug);
+        $this->denyAccessUnlessGranted('send_to_verify', $bugReport);
 
-        $bug->sendToVerify();
+        $bugReport->sendToVerify();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
@@ -230,12 +230,12 @@ class StatusController extends AbstractController
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Re-opens closed bug.",
-     *     @Model(type=Bug::class, groups={"bug_details", "user_list", "tracker_list"})
+     *     description="Re-opens closed bug report.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="403",
-     *     description="Only closed or verified bugs can be returned"
+     *     description="Only closed or verified bug reports can be returned"
      * )
      *
      * @param int $id
@@ -244,27 +244,27 @@ class StatusController extends AbstractController
      */
     public function reopenAction(int $id): JsonResponse
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        $this->denyAccessUnlessGranted('reopen', $bug);
+        $this->denyAccessUnlessGranted('reopen', $bugReport);
 
-        $bug->reopen();
+        $bugReport->reopen();
 
         $this->getEntityManager()->flush();
 
-        return $this->createResponse($bug);
+        return $this->createResponse($bugReport);
     }
 
     /**
-     * @param \App\Entity\Bug $bug
+     * @param \App\Entity\BugReport\BugReport $bugReport
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    private function createResponse(Bug $bug): JsonResponse
+    private function createResponse(BugReport $bugReport): JsonResponse
     {
         return JsonResponse::fromJsonString(
-            $this->serializer->serialize($bug, 'json', SerializationContext::create()->setGroups([
-                'bug_details',
+            $this->serializer->serialize($bugReport, 'json', SerializationContext::create()->setGroups([
+                'bugreport_details',
                 'user_list',
                 'tracker_list',
                 'comment_list',
@@ -275,17 +275,17 @@ class StatusController extends AbstractController
     /**
      * @param int $id
      *
-     * @return \App\Entity\Bug|object
+     * @return \App\Entity\BugReport\BugReport|object
      */
-    private function getBug(int $id): Bug
+    private function getBugReport(int $id): BugReport
     {
-        $bug = $this->getBugRepository()->find($id);
+        $bugReport = $this->getBugReportRepository()->find($id);
 
-        if (empty($bug)) {
-            throw new NotFoundHttpException('Bug not found.');
+        if (empty($bugReport)) {
+            throw new NotFoundHttpException('BugReport not found.');
         }
 
-        return $bug;
+        return $bugReport;
     }
 
     /**
@@ -297,10 +297,10 @@ class StatusController extends AbstractController
     }
 
     /**
-     * @return \App\Repository\BugRepository
+     * @return \App\Repository\BugReportRepository
      */
-    private function getBugRepository(): BugRepository
+    private function getBugReportRepository(): BugReportRepository
     {
-        return $this->getDoctrine()->getRepository(Bug::class);
+        return $this->getDoctrine()->getRepository(BugReport::class);
     }
 }

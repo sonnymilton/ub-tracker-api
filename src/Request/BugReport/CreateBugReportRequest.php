@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Request\Bug;
+namespace App\Request\BugReport;
 
-use App\DBAL\Types\BugPriorityType;
+use App\DBAL\Types\BugReportPriorityType;
 use App\Request\JsonRequest;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Create bug request
+ * Create bug report request
  */
-class CreateBugRequest extends JsonRequest
+class CreateBugReportRequest extends JsonRequest
 {
     /**
      * @var string
@@ -77,7 +77,7 @@ class CreateBugRequest extends JsonRequest
         return new Assert\Collection([
             'title'             => new Assert\NotBlank(),
             'description'       => new Assert\NotNull(),
-            'priority'          => new Assert\Choice(['choices' => BugPriorityType::getChoices()]),
+            'priority'          => new Assert\Choice(['choices' => BugReportPriorityType::getChoices()]),
             'responsiblePerson' => [
                 new Assert\NotNull(),
                 new Assert\Type(['type' => 'integer']),

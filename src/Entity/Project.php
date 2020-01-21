@@ -12,6 +12,7 @@ namespace App\Entity;
 
 use App\Entity\Security\ApiUser;
 use App\Request\Project\ProjectRequest;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -118,7 +119,7 @@ class Project
     {
         $this->author    = $author;
         $this->title     = $title;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->trackers  = new ArrayCollection();
         $this->links     = $links;
         $this->locales   = $locales;
@@ -151,7 +152,7 @@ class Project
     /**
      * @return \DateTimeImmutable
      */
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

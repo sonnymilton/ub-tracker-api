@@ -8,23 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Voter\Bug;
+namespace App\Voter\BugReport;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Reopen voter
+ * Discuss voter
  */
-class ReopenVoter extends AbstractBugVoter
+class DiscussReportVoter extends AbstractBugReportVoter
 {
     /**
      * @var \Symfony\Component\Security\Core\Security
      */
-    protected $security;
+    private $security;
 
     /**
-     * ReopenVoter constructor.
+     * ReturnVoter constructor.
      *
      * @param \Symfony\Component\Security\Core\Security $security
      */
@@ -34,25 +34,26 @@ class ReopenVoter extends AbstractBugVoter
     }
 
     /**
-     * @param string $attribute
-     * @param mixed  $subject
+     * @param string                          $attribute
+     * @param \App\Entity\BugReport\BugReport $subject
      *
      * @return bool
      */
     public function supports($attribute, $subject)
     {
-        return parent::supports($attribute, $subject) && 'reopen' === $attribute;
+        return parent::supports($attribute, $subject) && $attribute === 'send_to_discuss';
     }
 
     /**
      * @param string                                                               $attribute
-     * @param \App\Entity\Bug                                                      $subject
+     * @param \App\Entity\BugReport\BugReport                                      $subject
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      *
-     * @return bool|void
+     * @return bool
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        return !$subject->isActive() && $this->security->isGranted('ROLE_QA');
+        return $subject->isActive() &&
+            ($this->security->isGranted('ROLE_QA') || $subject->getResponsiblePerson() === $token->getUser());
     }
 }

@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Controller\API\Bug;
+namespace App\Controller\API\BugReport;
 
-use App\Entity\Bug;
+use App\Entity\BugReport\BugReport;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
-use App\Log\Bug\BugLogEntryAdapterFactory;
+use App\Log\BugReport\BugReportLogEntryAdapterFactory;
 use App\Repository\TrackerRepository;
-use App\Request\Bug\CreateBugRequest;
-use App\Request\Bug\UpdateBugRequest;
+use App\Request\BugReport\CreateBugReportRequest;
+use App\Request\BugReport\UpdateBugReportRequest;
 use App\Serializer\AutoserializationTrait;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Entity\Repository\LogEntryRepository;
@@ -31,16 +31,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Default bug controller
+ * Default bug report controller
  *
- * @Route(name="bug_")
+ * @Route(name="bug_report_")
  *
- * @SWG\Tag(name="Bug")
+ * @SWG\Tag(name="Bug report")
  */
 class DefaultController extends AbstractController
 {
-    const LIST_SERIALIZATION_GROUPS    = ['bug_details', 'user_list', 'tracker_list'];
-    const DETAILS_SERIALIZATION_GROUPS = ['bug_details', 'user_list', 'tracker_list', 'comment_list'];
+    const LIST_SERIALIZATION_GROUPS    = ['bugreport_details', 'user_list', 'tracker_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['bugreport_details', 'user_list', 'tracker_list', 'comment_list'];
     use AutoserializationTrait;
 
     /**
@@ -59,12 +59,12 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/tracker/{id}/bug/", name="create", methods={"post"})
+     * @Route("/tracker/{id}/bug_report/", name="create", methods={"post"})
      *
      * @SWG\Response(
      *     response="201",
-     *     description="Creates bug.",
-     *     @SWG\Schema(ref="#/definitions/Bug")
+     *     description="Creates bug report.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="404",
@@ -72,20 +72,20 @@ class DefaultController extends AbstractController
      * )
      *
      * @SWG\Parameter(
-     *     name="Create bug request",
+     *     name="Create bug report request",
      *     required=true,
      *     in="body",
-     *     @Model(type=CreateBugRequest::class)
+     *     @Model(type=CreateBugReportRequest::class)
      * )
      *
-     * @param int                               $id
-     * @param \App\Request\Bug\CreateBugRequest $request
+     * @param int                                           $id
+     * @param \App\Request\BugReport\CreateBugReportRequest $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *
      * @throws \Exception
      */
-    public function createAction(int $id, CreateBugRequest $request): JsonResponse
+    public function createAction(int $id, CreateBugReportRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
@@ -95,24 +95,24 @@ class DefaultController extends AbstractController
         /** @var ApiUser $author */
         $author = $this->getUser();
 
-        $bug = $author->createBugFromRequest($request, $tracker, $developer);
+        $bugReportReport = $author->createBugReportFromRequest($request, $tracker, $developer);
 
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString($this->autoserialize($bug));
+        return JsonResponse::fromJsonString($this->autoserialize($bugReportReport));
     }
 
     /**
-     * @Route("/bug/{id}", name="show", methods={"get"})
+     * @Route("/bug_report/{id}", name="show", methods={"get"})
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Returns detailed info about the bug.",
-     *     @SWG\Schema(ref="#/definitions/Bug")
+     *     description="Returns detailed info about the bug report.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Bug not found.",
+     *     description="BugReport report not found.",
      * )
      *
      * @param int $id
@@ -121,22 +121,22 @@ class DefaultController extends AbstractController
      */
     public function showAction(int $id): JsonResponse
     {
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
-        return JsonResponse::fromJsonString($this->autoserialize($bug));
+        return JsonResponse::fromJsonString($this->autoserialize($bugReport));
     }
 
     /**
-     * @Route("/bug/{id}/", name="update", methods={"put"})
+     * @Route("/bug_report/{id}/", name="update", methods={"put"})
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Updates the bug.",
-     *     @SWG\Schema(ref="#/definitions/Bug")
+     *     description="Updates the bug report.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Bug or developer not found.",
+     *     description="BugReport report or developer not found.",
      * )
      * @SWG\Response(
      *     response="400",
@@ -144,42 +144,42 @@ class DefaultController extends AbstractController
      * )
      *
      * @SWG\Parameter(
-     *     name="Update bug request",
+     *     name="Update bug report request",
      *     required=true,
      *     in="body",
      *     @Model(type=UpdateBugRequest::class)
      * )
      *
-     * @param int                               $id
-     * @param \App\Request\Bug\UpdateBugRequest $request
+     * @param int                                           $id
+     * @param \App\Request\BugReport\UpdateBugReportRequest $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function updateAction(int $id, UpdateBugRequest $request): JsonResponse
+    public function updateAction(int $id, UpdateBugReportRequest $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        $bug       = $this->getBug($id);
-        $tracker   = $bug->getTracker();
+        $bugReport = $this->getBugReport($id);
+        $tracker   = $bugReport->getTracker();
         $developer = $this->getDeveloper($request->getResponsiblePerson(), $tracker);
 
-        $bug->updateFromRequest($request, $developer);
+        $bugReport->updateFromRequest($request, $developer);
 
         $this->getDoctrine()->getManager()->flush();
 
-        return JsonResponse::fromJsonString($this->autoserialize($bug));
+        return JsonResponse::fromJsonString($this->autoserialize($bugReport));
     }
 
     /**
-     * @Route("/bug/{id}/", name="delete", methods={"delete"})
+     * @Route("/bug_report/{id}/", name="delete", methods={"delete"})
      *
      * @SWG\Response(
      *     response="204",
-     *     description="Removes the bug."
+     *     description="Removes the bug report."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Bug not found."
+     *     description="BugReport report not found."
      * )
      *
      * @param int $id
@@ -190,37 +190,37 @@ class DefaultController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_QA');
 
-        $bug = $this->getBug($id);
+        $bugReport = $this->getBugReport($id);
 
         $em = $this->getDoctrine()->getManager();
 
-        $em->remove($bug);
+        $em->remove($bugReport);
         $em->flush();
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * @Route("/bug/{id}/history/",  name="history", methods={"GET"})
+     * @Route("/bug_report/{id}/history/",  name="history", methods={"GET"})
      *
      * @SWG\Response(
      *     response="200",
-     *     description="Returns bug's revision history."
+     *     description="Returns bug report's revision history."
      * )
      * @SWG\Response(
      *     response="404",
-     *     description="Bug not found."
+     *     description="BugReport report not found."
      * )
      *
-     * @param int                                    $id
-     * @param \App\Log\Bug\BugLogEntryAdapterFactory $logEntryAdapterFactory
+     * @param int                                                $id
+     * @param \App\Log\BugReport\BugReportLogEntryAdapterFactory $logEntryAdapterFactory
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function historyAction(int $id, BugLogEntryAdapterFactory $logEntryAdapterFactory): JsonResponse
+    public function historyAction(int $id, BugReportLogEntryAdapterFactory $logEntryAdapterFactory): JsonResponse
     {
-        $bug        = $this->getBug($id);
-        $logEntries = $this->getLogEntryRepository()->getLogEntries($bug);
+        $bugReport  = $this->getBugReport($id);
+        $logEntries = $this->getLogEntryRepository()->getLogEntries($bugReport);
 
         return JsonResponse::fromJsonString(
             $this->serializer->serialize(
@@ -236,17 +236,17 @@ class DefaultController extends AbstractController
     /**
      * @param int $id
      *
-     * @return \App\Entity\Bug|object
+     * @return \App\Entity\BugReport\BugReport|object
      */
-    private function getBug(int $id): Bug
+    private function getBugReport(int $id): BugReport
     {
-        $bug = $this->getBugRepository()->find($id);
+        $bugReport = $this->getBugReportRepository()->find($id);
 
-        if (empty($bug)) {
-            throw new NotFoundHttpException('Bug not found.');
+        if (empty($bugReport)) {
+            throw new NotFoundHttpException('BugReport not found.');
         }
 
-        return $bug;
+        return $bugReport;
     }
 
     /**
@@ -285,11 +285,11 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @return \App\Repository\BugRepository
+     * @return \App\Repository\BugReportRepository
      */
-    private function getBugRepository()
+    private function getBugReportRepository()
     {
-        return $this->getDoctrine()->getRepository(Bug::class);
+        return $this->getDoctrine()->getRepository(BugReport::class);
     }
 
     /**

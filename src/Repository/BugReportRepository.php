@@ -13,8 +13,8 @@ namespace App\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Bug repository
+ * BugReport repository
  */
-class BugRepository extends EntityRepository
+class BugReportRepository extends EntityRepository
 {
 }

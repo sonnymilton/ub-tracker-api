@@ -8,11 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Entity;
+namespace App\Entity\BugReport;
 
-use App\DBAL\Types\BugStatusType;
+use App\DBAL\Types\BugReportStatusType;
+use App\Entity\Comment;
 use App\Entity\Security\ApiUser;
-use App\Request\Bug\UpdateBugRequest;
+use App\Entity\Tracker;
+use App\Request\BugReport\UpdateBugReportRequest;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -20,15 +23,15 @@ use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
 
 /**
- * Class Bug
+ * Class BugReport
  *
- * @ORM\Entity(repositoryClass="App\Repository\BugRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\BugReportRepository")
  *
  * @Gedmo\Loggable
  *
  * @JMS\ExclusionPolicy("ALL")
  */
-class Bug
+class BugReport
 {
     /**
      * @var int
@@ -38,7 +41,7 @@ class Bug
      * @ORM\GeneratedValue()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $id;
 
@@ -50,7 +53,7 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $title;
 
@@ -62,38 +65,38 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_details"})
+     * @JMS\Groups(groups={"bugreport_details"})
      */
     protected $description;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="BugStatusType")
+     * @ORM\Column(type="BugReportStatusType")
      *
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $status;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="BugPriorityType")
+     * @ORM\Column(type="BugReportPriorityType")
      *
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $priority;
 
     /**
      * @var Tracker
      *
-     * @ORM\ManyToOne(targetEntity="Tracker", inversedBy="bugs")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Tracker", inversedBy="bugReports")
      */
     protected $tracker;
 
@@ -105,7 +108,7 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      *
      * @SWG\Property(ref="#/definitions/UserFromList")
      */
@@ -119,7 +122,7 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      *
      * @SWG\Property(ref="#/definitions/UserFromList")
      */
@@ -131,7 +134,7 @@ class Bug
      * @ORM\Column(type="datetime_immutable")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $createdAt;
 
@@ -143,7 +146,7 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $browsers;
 
@@ -155,7 +158,7 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $resolutions;
 
@@ -167,24 +170,24 @@ class Bug
      * @Gedmo\Versioned()
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_list", "bug_details"})
+     * @JMS\Groups(groups={"bugreport_list", "bugreport_details"})
      */
     protected $locales;
 
     /**
      * @var ArrayCollection|\App\Entity\Comment[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="bug", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="bugReport", cascade={"persist", "remove"})
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"bug_details"})
+     * @JMS\Groups(groups={"bugreport_details"})
      *
      * @SWG\Property(type="array", @SWG\Items(ref="#/definitions/Comment"))
      */
     protected $comments;
 
     /**
-     * Bug constructor.
+     * BugReport constructor.
      *
      * @param ApiUser    $author
      * @param Tracker    $tracker
@@ -218,16 +221,16 @@ class Bug
         $this->browsers          = $browsers;
         $this->resolutions       = $resolutions;
         $this->locales           = $locales;
-        $this->status            = BugStatusType::NEW;
-        $this->createdAt         = new \DateTimeImmutable();
+        $this->status            = BugReportStatusType::NEW;
+        $this->createdAt         = new DateTimeImmutable();
         $this->comments          = new ArrayCollection();
     }
 
     /**
-     * @param \App\Request\Bug\UpdateBugRequest $request
-     * @param \App\Entity\Security\ApiUser      $responsiblePerson
+     * @param \App\Request\BugReport\UpdateBugReportRequest $request
+     * @param \App\Entity\Security\ApiUser                  $responsiblePerson
      */
-    public function updateFromRequest(UpdateBugRequest $request, ApiUser $responsiblePerson)
+    public function updateFromRequest(UpdateBugReportRequest $request, ApiUser $responsiblePerson)
     {
         $this->title             = $request->getTitle();
         $this->description       = $request->getDescription();
@@ -371,41 +374,41 @@ class Bug
      */
     public function isActive(): bool
     {
-        return BugStatusType::VERIFIED !== $this->status && BugStatusType::CLOSED !== $this->status;
+        return BugReportStatusType::VERIFIED !== $this->status && BugReportStatusType::CLOSED !== $this->status;
     }
 
     public function cantBeReproduced(): void
     {
-        $this->status = BugStatusType::CANT_REPRODUCE;
+        $this->status = BugReportStatusType::CANT_REPRODUCE;
     }
 
     public function close(): void
     {
-        $this->status = BugStatusType::CLOSED;
+        $this->status = BugReportStatusType::CLOSED;
     }
 
     public function bugReturn(): void
     {
-        $this->status = BugStatusType::RETURNED;
+        $this->status = BugReportStatusType::RETURNED;
     }
 
     public function verify(): void
     {
-        $this->status = BugStatusType::VERIFIED;
+        $this->status = BugReportStatusType::VERIFIED;
     }
 
     public function reopen(): void
     {
-        $this->status = BugStatusType::NEW;
+        $this->status = BugReportStatusType::NEW;
     }
 
     public function sendToVerify(): void
     {
-        $this->status = BugStatusType::TO_VERIFY;
+        $this->status = BugReportStatusType::TO_VERIFY;
     }
 
     public function sendToDiscuss(): void
     {
-        $this->status = BugStatusType::TO_BE_DISCUSSED;
+        $this->status = BugReportStatusType::TO_BE_DISCUSSED;
     }
 }

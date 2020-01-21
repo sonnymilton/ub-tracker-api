@@ -13,9 +13,9 @@ namespace App\DBAL\Types;
 use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 
 /**
- * Class BugStatusType
+ * Class BugReportStatusType
  */
-final class BugStatusType extends AbstractEnumType
+final class BugReportStatusType extends AbstractEnumType
 {
     public const CANT_REPRODUCE  = 'cant_reproduce';
     public const CLOSED          = 'closed';
@@ -26,12 +26,12 @@ final class BugStatusType extends AbstractEnumType
     public const VERIFIED        = 'verified';
 
     protected static $choices = [
-        self::CANT_REPRODUCE  => 'bug_status.cant_reproduce',
-        self::CLOSED          => 'bug_status.closed',
-        self::NEW             => 'bug_status.new',
-        self::TO_BE_DISCUSSED => 'bug_status.to_be_discussed',
-        self::TO_VERIFY       => 'bug_status.to_verify',
-        self::RETURNED        => 'bug_status.returned',
-        self::VERIFIED        => 'bug_status.verified',
+        self::CANT_REPRODUCE  => 'bugreport_status.cant_reproduce',
+        self::CLOSED          => 'bugreport_status.closed',
+        self::NEW             => 'bugreport_status.new',
+        self::TO_BE_DISCUSSED => 'bugreport_status.to_be_discussed',
+        self::TO_VERIFY       => 'bugreport_status.to_verify',
+        self::RETURNED        => 'bugreport_status.returned',
+        self::VERIFIED        => 'bugreport_status.verified',
     ];
 }

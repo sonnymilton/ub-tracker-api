@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Log\Bug;
+namespace App\Log\BugReport;
 
 use App\Entity\Security\ApiUser;
 use App\Repository\Security\ApiUserRepository;
@@ -16,9 +16,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Loggable\Entity\LogEntry;
 
 /**
- * Bug log entry adapter factory
+ * BugReport log entry adapter factory
  */
-final class BugLogEntryAdapterFactory
+final class BugReportLogEntryAdapterFactory
 {
     /**
      * @var \Doctrine\ORM\EntityManagerInterface
@@ -38,11 +38,11 @@ final class BugLogEntryAdapterFactory
     /**
      * @param \Gedmo\Loggable\Entity\LogEntry $logEntry
      *
-     * @return \App\Log\Bug\BugLogEntryAdapter
+     * @return \App\Log\BugReport\BugReportLogEntryAdapter
      */
-    public function createAdapter(LogEntry $logEntry): BugLogEntryAdapter
+    public function createAdapter(LogEntry $logEntry): BugReportLogEntryAdapter
     {
-        return new BugLogEntryAdapter(
+        return new BugReportLogEntryAdapter(
             $logEntry->getAction(),
             $logEntry->getLoggedAt(),
             $logEntry->getObjectId(),
@@ -55,7 +55,7 @@ final class BugLogEntryAdapterFactory
     /**
      * @param array|LogEntry[] $logEntries
      *
-     * @return array|\App\Log\Bug\BugLogEntryAdapter[]
+     * @return array|\App\Log\BugReport\BugReportLogEntryAdapter[]
      */
     public function createAdapters(array $logEntries): array
     {
@@ -79,8 +79,8 @@ final class BugLogEntryAdapterFactory
             return $data;
         };
 
-        return array_map(function (LogEntry $logEntry) use ($usersByUsernames, $resolveData): BugLogEntryAdapter {
-            return new BugLogEntryAdapter(
+        return array_map(function (LogEntry $logEntry) use ($usersByUsernames, $resolveData): BugReportLogEntryAdapter {
+            return new BugReportLogEntryAdapter(
                 $logEntry->getAction(),
                 $logEntry->getLoggedAt(),
                 $logEntry->getObjectId(),

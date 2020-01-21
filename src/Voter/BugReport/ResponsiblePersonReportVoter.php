@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Voter\Bug;
+namespace App\Voter\BugReport;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Responsible person voter
  */
-class ResponsiblePersonVoter extends AbstractBugVoter
+class ResponsiblePersonReportVoter extends AbstractBugReportVoter
 {
     const CANT_BE_REPRODUCED = 'cant_be_reproduced';
-    const SEND_TO_VERIFY = 'send_to_verify';
+    const SEND_TO_VERIFY     = 'send_to_verify';
 
     /**
      * @inheritDoc
@@ -26,14 +26,14 @@ class ResponsiblePersonVoter extends AbstractBugVoter
     protected function supports($attribute, $subject)
     {
         return parent::supports($attribute, $subject) && in_array($attribute, [
-            self::CANT_BE_REPRODUCED,
-            self::SEND_TO_VERIFY,
-        ]);
+                self::CANT_BE_REPRODUCED,
+                self::SEND_TO_VERIFY,
+            ]);
     }
 
     /**
      * @param string                                                               $attribute
-     * @param \App\Entity\Bug                                                      $subject
+     * @param \App\Entity\BugReport\BugReport                                      $subject
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      *
      * @return bool|void

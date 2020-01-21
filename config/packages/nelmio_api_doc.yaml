@@ -22,13 +22,13 @@ nelmio_api_doc:
     models:
         names:
             -
-                alias:             Bug
-                type:              App\Entity\Bug
-                groups: !php/const App\Controller\API\Bug\DefaultController::DETAILS_SERIALIZATION_GROUPS
+                alias:             BugReport
+                type:              App\Entity\BugReport\BugReport
+                groups: !php/const App\Controller\API\BugReport\DefaultController::DETAILS_SERIALIZATION_GROUPS
             -
-                alias:             BugFromList
-                type:              App\Entity\Bug
-                groups: !php/const App\Controller\API\Bug\DefaultController::LIST_SERIALIZATION_GROUPS
+                alias:             BugReportFromList
+                type:              App\Entity\BugReport\BugReport
+                groups: !php/const App\Controller\API\BugReport\DefaultController::LIST_SERIALIZATION_GROUPS
 
 
             -

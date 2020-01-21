@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\DBAL\Types\BugPriorityType;
-use App\Entity\Bug;
+use App\DBAL\Types\BugReportPriorityType;
+use App\Entity\BugReport\BugReport;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -66,13 +66,13 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         }
 
         for ($i = 0; $i <= 20; $i++) {
-            $bug = $this->generateBug($qaUser, $developers, $tracker);
+            $bugReport = $this->generateBugReport($qaUser, $developers, $tracker);
 
             for ($j = 0; $j <= mt_rand(0, 10); $j++) {
                 /** @var ApiUser $user */
                 $user = $this->faker->randomElement($users);
 
-                $user->createComment($bug, $this->faker->realText(mt_rand(20, 200)));
+                $user->createComment($bugReport, $this->faker->realText(mt_rand(20, 200)));
             }
         }
 
@@ -86,11 +86,11 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
      * @param array|\App\Entity\Security\ApiUser[] $developers
      * @param \App\Entity\Tracker                  $tracker
      *
-     * @return \App\Entity\Bug
+     * @return \App\Entity\BugReport\BugReport
      *
      * @throws \Exception
      */
-    protected function generateBug(ApiUser $qa, array $developers, Tracker $tracker): Bug
+    protected function generateBugReport(ApiUser $qa, array $developers, Tracker $tracker): BugReport
     {
         $localesCases = [
             ['ru'],
@@ -116,11 +116,11 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             [],
         ];
 
-        return $qa->createBug(
+        return $qa->createBugReport(
             $this->faker->randomElement($developers),
             $tracker,
             $this->faker->realText(mt_rand(10, 160)),
-            BugPriorityType::getRandomValue(),
+            BugReportPriorityType::getRandomValue(),
             $this->faker->realText(mt_rand(100, 400)),
             $this->faker->randomElement($browserCases),
             $this->faker->randomElement($resolutionCases),

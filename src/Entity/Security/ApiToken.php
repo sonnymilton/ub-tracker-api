@@ -10,6 +10,7 @@
 
 namespace App\Entity\Security;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -53,7 +54,7 @@ class ApiToken
     public function __construct()
     {
         $this->value     = bin2hex(openssl_random_pseudo_bytes(32));
-        $this->expiresAt = new \DateTimeImmutable('tomorrow');
+        $this->expiresAt = new DateTimeImmutable('tomorrow');
     }
 
     /**
@@ -67,7 +68,7 @@ class ApiToken
     /**
      * @return \DateTimeImmutable
      */
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ?DateTimeImmutable
     {
         return $this->expiresAt;
     }

@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Voter\Bug;
+namespace App\Voter\BugReport;
 
-use App\DBAL\Types\BugStatusType;
+use App\DBAL\Types\BugReportStatusType;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
  * Verify voter
  */
-class VerifyVoter extends AbstractBugVoter
+class VerifyReportVoter extends AbstractBugReportVoter
 {
     /**
      * @var \Symfony\Component\Security\Core\Security
@@ -44,13 +44,13 @@ class VerifyVoter extends AbstractBugVoter
 
     /**
      * @param string                                                               $attribute
-     * @param \App\Entity\Bug                                                      $subject
+     * @param \App\Entity\BugReport\BugReport                                      $subject
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      *
      * @return bool|void
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        return $subject->getStatus() === BugStatusType::TO_VERIFY && $this->security->isGranted('ROLE_QA');
+        return $subject->getStatus() === BugReportStatusType::TO_VERIFY && $this->security->isGranted('ROLE_QA');
     }
 }

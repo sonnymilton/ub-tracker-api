@@ -12,9 +12,7 @@ namespace App\Request\Project;
 
 use App\Entity\Project\Links;
 use App\Request\JsonRequest;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

@@ -12,6 +12,7 @@ namespace App\Request;
 
 use Fesor\RequestObject\RequestObject;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Throwable;
 
 /**
  * Unable to process request object exception
@@ -32,7 +33,7 @@ final class UnableToProcessRequestObjectException extends UnprocessableEntityHtt
      * @param int                                $code
      * @param array                              $headers
      */
-    public function __construct(RequestObject $requestObject, string $message = null, \Throwable $previous = null, int $code = 0, array $headers = [])
+    public function __construct(RequestObject $requestObject, string $message = null, Throwable $previous = null, int $code = 0, array $headers = [])
     {
         $this->requestObject = $requestObject;
         parent::__construct($message, $previous, $code, $headers);

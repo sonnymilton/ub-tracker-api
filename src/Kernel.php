@@ -2,6 +2,7 @@
 
 namespace App;
 
+use function dirname;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
@@ -12,7 +13,6 @@ use Symfony\Component\Routing\RouteCollectionBuilder;
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
-
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
     public function registerBundles(): iterable
@@ -27,7 +27,7 @@ class Kernel extends BaseKernel
 
     public function getProjectDir(): string
     {
-        return \dirname(__DIR__);
+        return dirname(__DIR__);
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void

@@ -10,12 +10,13 @@
 
 namespace App\Entity\Security;
 
-use App\Entity\Bug;
+use App\Entity\BugReport\BugReport;
 use App\Entity\Comment;
 use App\Entity\Project;
 use App\Entity\Tracker;
-use App\Request\Bug\CreateBugRequest;
+use App\Request\BugReport\CreateBugReportRequest;
 use App\Request\Comment\CommentRequest;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -225,7 +226,7 @@ class ApiUser implements UserInterface
      */
     public function validateToken(string $token): bool
     {
-        return $this->token->getExpiresAt() >= new \DateTimeImmutable() && $token == $this->token->getValue();
+        return $this->token->getExpiresAt() >= new DateTimeImmutable() && $token == $this->token->getValue();
     }
 
     /**
@@ -277,11 +278,11 @@ class ApiUser implements UserInterface
      * @param array|null $resolutions
      * @param array|null $locales
      *
-     * @return Bug
+     * @return BugReport
      *
      * @throws \Exception
      */
-    public function createBug(
+    public function createBugReport(
         ApiUser $responsiblePerson,
         Tracker $tracker,
         string $title,
@@ -290,8 +291,8 @@ class ApiUser implements UserInterface
         array $browsers = null,
         array $resolutions = null,
         array $locales = null
-    ): Bug {
-        $bug = new Bug(
+    ): BugReport {
+        $bugReport = new BugReport(
             $this,
             $tracker,
             $responsiblePerson,
@@ -302,23 +303,23 @@ class ApiUser implements UserInterface
             $resolutions,
             $locales
         );
-        $tracker->addBug($bug);
+        $tracker->addBugReport($bugReport);
 
-        return $bug;
+        return $bugReport;
     }
 
     /**
-     * @param \App\Request\Bug\CreateBugRequest $request
-     * @param \App\Entity\Tracker               $tracker
-     * @param \App\Entity\Security\ApiUser      $responsiblePerson
+     * @param \App\Request\BugReport\CreateBugReportRequest $request
+     * @param \App\Entity\Tracker                           $tracker
+     * @param \App\Entity\Security\ApiUser                  $responsiblePerson
      *
-     * @return \App\Entity\Bug
+     * @return \App\Entity\BugReport\BugReport
      *
      * @throws \Exception
      */
-    public function createBugFromRequest(CreateBugRequest $request, Tracker $tracker, ApiUser $responsiblePerson): Bug
+    public function createBugReportFromRequest(CreateBugReportRequest $request, Tracker $tracker, ApiUser $responsiblePerson): BugReport
     {
-        return $this->createBug(
+        return $this->createBugReport(
             $responsiblePerson,
             $tracker,
             $request->getTitle(),
@@ -331,31 +332,31 @@ class ApiUser implements UserInterface
     }
 
     /**
-     * @param \App\Entity\Bug $bug
-     * @param string          $text
+     * @param \App\Entity\BugReport\BugReport $bugReport
+     * @param string                          $text
      *
      * @return \App\Entity\Comment
      *
      * @throws \Exception
      */
-    public function createComment(Bug $bug, string $text): Comment
+    public function createComment(BugReport $bugReport, string $text): Comment
     {
-        $comment = new Comment($this, $bug, $text);
-        $bug->addComment($comment);
+        $comment = new Comment($this, $bugReport, $text);
+        $bugReport->addComment($comment);
 
         return $comment;
     }
 
     /**
      * @param \App\Request\Comment\CommentRequest $request
-     * @param \App\Entity\Bug                     $bug
+     * @param \App\Entity\BugReport\BugReport     $bugReport
      *
      * @return \App\Entity\Comment
      *
      * @throws \Exception
      */
-    public function createCommentFromRequest(CommentRequest $request, Bug $bug): Comment
+    public function createCommentFromRequest(CommentRequest $request, BugReport $bugReport): Comment
     {
-        return $this->createComment($bug, $request->getText());
+        return $this->createComment($bugReport, $request->getText());
     }
 }

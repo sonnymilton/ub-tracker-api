@@ -13,9 +13,9 @@ namespace App\DBAL\Types;
 use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 
 /**
- * Class BugPriorityType
+ * Class BugReportPriorityType
  */
-final class BugPriorityType extends AbstractEnumType
+final class BugReportPriorityType extends AbstractEnumType
 {
     public const CRITICAL = 'critical';
     public const MAJOR    = 'major';
@@ -23,9 +23,9 @@ final class BugPriorityType extends AbstractEnumType
     public const NORMAL   = 'normal';
 
     protected static $choices = [
-        self::CRITICAL => 'bug_priority.critical',
-        self::MAJOR    => 'bug_priority.major',
-        self::MINOR    => 'bug_priority.minor',
-        self::NORMAL   => 'bug_priority.normal',
+        self::CRITICAL => 'bugreport_priority.critical',
+        self::MAJOR    => 'bugreport_priority.major',
+        self::MINOR    => 'bugreport_priority.minor',
+        self::NORMAL   => 'bugreport_priority.normal',
     ];
 }

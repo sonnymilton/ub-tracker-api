@@ -10,7 +10,9 @@
 
 namespace App\Entity;
 
+use App\Entity\BugReport\BugReport;
 use App\Entity\Security\ApiUser;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -69,27 +71,27 @@ class Comment
     protected $createdAt;
 
     /**
-     * @var \App\Entity\Bug
+     * @var \App\Entity\BugReport\BugReport
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Bug", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="App\Entity\BugReport\BugReport", inversedBy="comments")
      */
-    protected $bug;
+    protected $bugReport;
 
     /**
      * Comment constructor.
      *
-     * @param \App\Entity\Security\ApiUser $author
-     * @param \App\Entity\Bug              $bug
-     * @param string                       $text
+     * @param \App\Entity\Security\ApiUser    $author
+     * @param \App\Entity\BugReport\BugReport $bugReport
+     * @param string                          $text
      *
      * @throws \Exception
      */
-    public function __construct(ApiUser $author, Bug $bug, string $text)
+    public function __construct(ApiUser $author, BugReport $bugReport, string $text)
     {
         $this->author    = $author;
-        $this->bug       = $bug;
+        $this->bugReport = $bugReport;
         $this->text      = $text;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     /**
@@ -119,7 +121,7 @@ class Comment
     /**
      * @return \DateTimeImmutable
      */
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
