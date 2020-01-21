@@ -101,11 +101,8 @@ class ProjectController extends AbstractController
     /**
      * @Route("/", methods={"post"}, name="create")
      *
-     * @param \App\Controller\API\CreateProjectRequest $request
+     * @param \App\Request\Project\ProjectRequest $request
      *
-     * @return JsonResponse
-     *
-     * @throws \Exception
      * @SWG\Response(
      *     response="201",
      *     description="Creates a project.",
@@ -124,9 +121,12 @@ class ProjectController extends AbstractController
      *     name="Create project request.",
      *     in="body",
      *     allowEmptyValue=false,
-     *     @Model(type=CreateProjectRequest::class)
+     *     @Model(type=ProjectRequest::class)
      * )
+     *                                                    *
+     * @return JsonResponse
      *
+     * @throws \Exception
      */
     public function createAction(ProjectRequest $request): JsonResponse
     {
@@ -172,7 +172,7 @@ class ProjectController extends AbstractController
      *     name="Update project request",
      *     in="body",
      *     allowEmptyValue=false,
-     *     @Model(type=UpdateProjectRequest::class)
+     *     @Model(type=ProjectRequest::class)
      * )
      */
     public function updateAction(int $id, ProjectRequest $request): JsonResponse
