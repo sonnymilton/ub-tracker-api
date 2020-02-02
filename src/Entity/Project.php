@@ -101,7 +101,7 @@ class Project
      * @ORM\Column(type="simple_array")
      *
      * @JMS\Expose()
-     * @JMS\Groups(groups={"project_details"})
+     * @JMS\Groups(groups={"project_list", "project_details"})
      */
     protected $locales;
 
