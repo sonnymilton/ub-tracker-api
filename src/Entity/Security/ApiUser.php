@@ -133,7 +133,8 @@ class ApiUser implements UserInterface
      *
      * @JMS\VirtualProperty(name="roles")
      * @JMS\Expose()
-     * @JMS\Groups(groups={"user_details"})
+     * @JMS\Groups(groups={"user_list", "user_details"})
+     * @JMS\Type("array<string>")
      *
      * @return array
      */
