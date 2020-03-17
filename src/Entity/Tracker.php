@@ -66,11 +66,7 @@ class Tracker
     /**
      * @var ArrayCollection|ApiUser[]
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", cascade={"persist"})
-     * @ORM\JoinTable(name="users_trackers",
-     *      joinColumns={@ORM\JoinColumn(name="project_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToMany(targetEntity="App\Entity\Security\ApiUser", mappedBy="trackers", cascade={"persist"})
      *
      * @JMS\Expose()
      * @JMS\Groups(groups={"tracker_show"})

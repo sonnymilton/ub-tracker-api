@@ -17,6 +17,7 @@ use App\Entity\Tracker;
 use App\Request\BugReport\CreateBugReportRequest;
 use App\Request\Comment\CommentRequest;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -105,6 +106,18 @@ class ApiUser implements UserInterface
     protected $code;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tracker", inversedBy="developers")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"user_details"})
+     *
+     * @SWG\Property(ref="#/definitions/TrackerFromList")
+     */
+    protected $trackers;
+
+    /**
      * ApiUser constructor.
      *
      * @param string     $username
@@ -185,6 +198,14 @@ class ApiUser implements UserInterface
     public function getSalt(): string
     {
         return $this->salt;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|Tracker[]
+     */
+    public function getTrackers(): ArrayCollection
+    {
+        return $this->trackers;
     }
 
     /**
@@ -270,6 +291,29 @@ class ApiUser implements UserInterface
     }
 
     /**
+     * @param \App\Request\BugReport\CreateBugReportRequest $request
+     * @param \App\Entity\Tracker                           $tracker
+     * @param \App\Entity\Security\ApiUser                  $responsiblePerson
+     *
+     * @return \App\Entity\BugReport\BugReport
+     *
+     * @throws \Exception
+     */
+    public function createBugReportFromRequest(CreateBugReportRequest $request, Tracker $tracker, ApiUser $responsiblePerson): BugReport
+    {
+        return $this->createBugReport(
+            $responsiblePerson,
+            $tracker,
+            $request->getTitle(),
+            $request->getPriority(),
+            $request->getDescription(),
+            $request->getBrowsers(),
+            $request->getResolutions(),
+            $request->getLocales()
+        );
+    }
+
+    /**
      * @param ApiUser    $responsiblePerson
      * @param Tracker    $tracker
      * @param string     $title
@@ -310,26 +354,16 @@ class ApiUser implements UserInterface
     }
 
     /**
-     * @param \App\Request\BugReport\CreateBugReportRequest $request
-     * @param \App\Entity\Tracker                           $tracker
-     * @param \App\Entity\Security\ApiUser                  $responsiblePerson
+     * @param \App\Request\Comment\CommentRequest $request
+     * @param \App\Entity\BugReport\BugReport     $bugReport
      *
-     * @return \App\Entity\BugReport\BugReport
+     * @return \App\Entity\Comment
      *
      * @throws \Exception
      */
-    public function createBugReportFromRequest(CreateBugReportRequest $request, Tracker $tracker, ApiUser $responsiblePerson): BugReport
+    public function createCommentFromRequest(CommentRequest $request, BugReport $bugReport): Comment
     {
-        return $this->createBugReport(
-            $responsiblePerson,
-            $tracker,
-            $request->getTitle(),
-            $request->getPriority(),
-            $request->getDescription(),
-            $request->getBrowsers(),
-            $request->getResolutions(),
-            $request->getLocales()
-        );
+        return $this->createComment($bugReport, $request->getText());
     }
 
     /**
@@ -346,18 +380,5 @@ class ApiUser implements UserInterface
         $bugReport->addComment($comment);
 
         return $comment;
-    }
-
-    /**
-     * @param \App\Request\Comment\CommentRequest $request
-     * @param \App\Entity\BugReport\BugReport     $bugReport
-     *
-     * @return \App\Entity\Comment
-     *
-     * @throws \Exception
-     */
-    public function createCommentFromRequest(CommentRequest $request, BugReport $bugReport): Comment
-    {
-        return $this->createComment($bugReport, $request->getText());
     }
 }
