@@ -227,6 +227,9 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "ocramius/package-versions": {
+        "version": "1.5.1"
+    },
     "oneup/flysystem-bundle": {
         "version": "3.0",
         "recipe": {
