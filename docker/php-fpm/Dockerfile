@@ -11,13 +11,19 @@ RUN apt-get update \
     && pecl install mongodb \
     && docker-php-ext-enable mongodb
 
+COPY docker/php-fpm/conf.d/xdebug.ini $PHP_INI_DIR/conf.d
 
-COPY conf.d/xdebug.ini $PHP_INI_DIR/conf.d
 ARG XDEBUG_REMOTE_PORT
-RUN echo "xdebug.remote_port = $XDEBUG_REMOTE_PORT" >> $PHP_INI_DIR/conf.d/xdebug.ini && cat $PHP_INI_DIR/conf.d/xdebug.ini
 
+RUN echo "xdebug.remote_port = $XDEBUG_REMOTE_PORT" >> $PHP_INI_DIR/conf.d/xdebug.ini && cat $PHP_INI_DIR/conf.d/xdebug.ini
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
+
+ARG APP_PATH
+ARG APP_ENV
+
+COPY . $APP_PATH
+RUN composer install -d $APP_PATH && composer dump-env $APP_ENV -d $APP_PATH
 
 RUN rm -rf /var/lib/apt/lists/* \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \

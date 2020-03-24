@@ -23,11 +23,6 @@ services:
         command:
             - "--default-authentication-plugin=mysql_native_password"
             - "--lower_case_table_names=1"
-        environment:
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-            MYSQL_DATABASE:      ${MYSQL_DATABASE}
-            MYSQL_USER:          ${MYSQL_USER}
-            MYSQL_PASSWORD:      ${MYSQL_PASSWORD}
 
 
     mongo:
@@ -35,16 +30,15 @@ services:
         container_name: ubtracker_mongo
         volumes:
             - ./docker/data/mongo:/data/db
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-
 
     php-fpm:
         build:
-            context: ./docker/php-fpm
+            context:    .
+            dockerfile: ./docker/php-fpm/Dockerfile
             args:
                 XDEBUG_REMOTE_PORT:     ${XDEBUG_REMOTE_PORT}
+                APP_PATH:               ${APP_PATH}
+                APP_ENV:                ${APP_ENV}
         container_name: ubtracker_php
         working_dir:    /usr/share/nginx/ubtracker
         links:
@@ -59,15 +53,3 @@ services:
             - ./composer.json:${APP_PATH}/composer.json
             - ./composer.lock:${APP_PATH}/composer.lock
             - ./symfony.lock:${APP_PATH}/symfony.lock
-
-        environment:
-            XDEBUG_REMOTE_PORT:     ${XDEBUG_REMOTE_PORT}
-            APP_ENV:                ${APP_ENV}
-            APP_SECRET:             ${APP_SECRET}
-            APP_PATH:               ${APP_PATH}
-            DATABASE_URL:           ${DATABASE_URL}
-            MONGO_URL:              ${MONGO_URL}
-            GITHUB_CLIENT_ID:       ${GITHUB_CLIENT_ID}
-            GITHUB_CLIENT_SECRET:   ${GITHUB_CLIENT_SECRET}
-            APP_LOGIN_CALLBACK_URL: ${APP_LOGIN_CALLBACK_URL}
-            CORS_ALLOW_ORIGIN:      ${CORS_ALLOW_ORIGIN}
