@@ -12,6 +12,7 @@ namespace App\Entity\BugReport;
 
 use App\DBAL\Types\BugReportStatusType;
 use App\Entity\Comment;
+use App\Entity\Project;
 use App\Entity\Security\ApiUser;
 use App\Entity\Tracker;
 use App\Request\BugReport\UpdateBugReportRequest;
@@ -30,6 +31,10 @@ use Swagger\Annotations as SWG;
  * @Gedmo\Loggable
  *
  * @JMS\ExclusionPolicy("ALL")
+ *
+ * @SWG\Definition(
+ *     @SWG\Property(property="project", ref="#/definitions/ProjectFromList")
+ * )
  */
 class BugReport
 {
@@ -97,6 +102,11 @@ class BugReport
      * @var Tracker
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Tracker", inversedBy="bugReports")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bugreport_details"})
+     *
+     * @SWG\Property(ref="#/definitions/TrackerFromList")
      */
     protected $tracker;
 
@@ -287,6 +297,18 @@ class BugReport
     public function getTracker(): Tracker
     {
         return $this->tracker;
+    }
+
+    /**
+     * @return \App\Entity\Project
+     *
+     * @JMS\VirtualProperty(name="project")
+     * @JMS\Expose()
+     * @JMS\Groups(groups={"bugreport_details"})
+     */
+    public function getProject(): Project
+    {
+        return $this->tracker->getProject();
     }
 
     /**

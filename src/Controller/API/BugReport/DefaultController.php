@@ -40,7 +40,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     const LIST_SERIALIZATION_GROUPS    = ['bugreport_details', 'user_list', 'tracker_list'];
-    const DETAILS_SERIALIZATION_GROUPS = ['bugreport_details', 'user_list', 'tracker_list', 'comment_list'];
+    const DETAILS_SERIALIZATION_GROUPS = ['bugreport_details', 'project_list', 'user_list', 'tracker_list', 'comment_list'];
+
     use AutoserializationTrait;
 
     /**
