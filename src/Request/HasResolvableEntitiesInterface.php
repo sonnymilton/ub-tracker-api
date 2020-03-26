@@ -10,12 +10,12 @@
 
 namespace App\Request;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Resolvable interface
  */
-interface ResolvableInterface
+interface HasResolvableEntitiesInterface
 {
     /**
      * @return bool
@@ -23,7 +23,7 @@ interface ResolvableInterface
     function isResolved(): bool;
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectManager
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      */
-    function resolve(ObjectManager $entityManager): void;
+    function resolve(EntityManagerInterface $entityManager): void;
 }

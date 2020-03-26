@@ -12,10 +12,11 @@ namespace App\Request\Tracker;
 
 use App\Entity\Security\ApiUser;
 use App\Request\JsonRequest;
-use App\Request\ResolvableInterface;
+use App\Request\HasResolvableEntitiesInterface;
 use App\Request\ResolvableTrait;
 use App\Request\UnableToProcessRequestObjectException;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Create tracker request
  */
-class TrackerRequest extends JsonRequest implements ResolvableInterface
+class TrackerRequest extends JsonRequest implements HasResolvableEntitiesInterface
 {
     use ResolvableTrait;
 
@@ -87,7 +88,7 @@ class TrackerRequest extends JsonRequest implements ResolvableInterface
     /**
      * @inheritDoc
      */
-    function resolve(ObjectManager $entityManager): void
+    function resolve(EntityManagerInterface $entityManager): void
     {
         if (null === $this->developers) {
             $this->resolved   = true;

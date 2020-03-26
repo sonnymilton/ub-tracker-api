@@ -79,6 +79,30 @@ class TrackerController extends AbstractController
     }
 
     /**
+     * @param int $id
+     *
+     * @return \App\Entity\Tracker|object
+     */
+    private function getTracker(int $id): Tracker
+    {
+        $tracker = $this->getTrackerRepository()->find($id);
+
+        if (empty($tracker)) {
+            throw new NotFoundHttpException('Tracker not found.');
+        }
+
+        return $tracker;
+    }
+
+    /**
+     * @return \App\Repository\TrackerRepository
+     */
+    private function getTrackerRepository(): TrackerRepository
+    {
+        return $this->getDoctrine()->getRepository(Tracker::class);
+    }
+
+    /**
      * @Route("/project/{id}/tracker/", name="create_tracker", methods={"post"})
      *
      * @param int                                 $id
@@ -121,18 +145,40 @@ class TrackerController extends AbstractController
         /** @var ApiUser $user */
         $user = $this->getUser();
 
-        $em = $this->getDoctrine()->getManager();
-        $request->resolve($em);
-
         $tracker = $user->createTracker(
             $project,
             $request->getDevelopers(),
             $request->getLinks()
         );
 
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
 
         return JsonResponse::fromJsonString($this->autoserialize($tracker), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \App\Entity\Project|object
+     */
+    private function getProject(int $id): Project
+    {
+        $project = $this->getProjectRepository()->find($id);
+
+        if (empty($project)) {
+            throw new NotFoundHttpException('Project not found.');
+        }
+
+        return $project;
+    }
+
+    /**
+     * @return \App\Repository\ProjectRepository
+     */
+    private function getProjectRepository()
+    {
+        return $this->getDoctrine()->getRepository(Project::class);
     }
 
     /**
@@ -172,12 +218,9 @@ class TrackerController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_QA');
 
         $tracker = $this->getTracker($id);
-
-        $em = $this->getDoctrine()->getManager();
-        $request->resolve($em);
-
         $tracker->updateFromRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
 
         return JsonResponse::fromJsonString($this->autoserialize($tracker));
@@ -268,53 +311,5 @@ class TrackerController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return JsonResponse::fromJsonString($this->autoserialize($tracker));
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return \App\Entity\Tracker|object
-     */
-    private function getTracker(int $id): Tracker
-    {
-        $tracker = $this->getTrackerRepository()->find($id);
-
-        if (empty($tracker)) {
-            throw new NotFoundHttpException('Tracker not found.');
-        }
-
-        return $tracker;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return \App\Entity\Project|object
-     */
-    private function getProject(int $id): Project
-    {
-        $project = $this->getProjectRepository()->find($id);
-
-        if (empty($project)) {
-            throw new NotFoundHttpException('Project not found.');
-        }
-
-        return $project;
-    }
-
-    /**
-     * @return \App\Repository\TrackerRepository
-     */
-    private function getTrackerRepository(): TrackerRepository
-    {
-        return $this->getDoctrine()->getRepository(Tracker::class);
-    }
-
-    /**
-     * @return \App\Repository\ProjectRepository
-     */
-    private function getProjectRepository()
-    {
-        return $this->getDoctrine()->getRepository(Project::class);
     }
 }
