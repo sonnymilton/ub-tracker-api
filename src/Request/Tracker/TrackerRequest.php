@@ -98,10 +98,10 @@ class TrackerRequest extends JsonRequest implements HasResolvableEntitiesInterfa
         }
 
         $userRepository   = $entityManager->getRepository(ApiUser::class);
-        $exceptedCount    = count($this->developers);
+        $expectedCount    = count($this->developers);
         $this->developers = $userRepository->getUsersByIds($this->developers);
 
-        if ($exceptedCount !== count($this->developers)) {
+        if ($expectedCount !== count($this->developers)) {
             throw new NotFoundHttpException('Developer(s) not found');
         }
 
