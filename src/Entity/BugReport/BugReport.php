@@ -19,6 +19,7 @@ use App\Request\BugReport\UpdateBugReportRequest;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 use Swagger\Annotations as SWG;
@@ -432,5 +433,10 @@ class BugReport
     public function sendToDiscuss(): void
     {
         $this->status = BugReportStatusType::TO_BE_DISCUSSED;
+    }
+
+    public function undoStatusChange(LogEntry $logEntry): void
+    {
+        $this->status = $logEntry->getData()['status'];
     }
 }

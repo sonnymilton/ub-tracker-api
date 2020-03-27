@@ -12,12 +12,14 @@ namespace App\Controller\API\BugReport;
 
 use App\Entity\BugReport\BugReport;
 use App\Repository\BugReportRepository;
+use Doctrine\Common\Collections\Criteria;
+use Gedmo\Loggable\Entity\LogEntry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -256,6 +258,40 @@ class StatusController extends AbstractController
     }
 
     /**
+     * @Route("/undo_status_change/", name="undo", methods={"PATCH"})
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="Cancels last bug report's status change.",
+     *     @SWG\Schema(ref="#/definitions/BugReport")
+     * )
+     * @SWG\Response(
+     *     response="403",
+     *     description="Only the user, who last changed status can undo this action"
+     * )
+     *
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function undoAction(int $id): JsonResponse
+    {
+        $bugReport    = $this->getBugReport($id);
+        $bugReportLog = $this->getLatestLogEntry($bugReport);
+
+        $this->denyAccessUnlessGranted('undo', $bugReportLog);
+
+        $bugReport->undoStatusChange($bugReportLog);
+
+        $this->getEntityManager()->flush();
+
+        return $this->createResponse($bugReport);
+    }
+
+    /**
      * @param \App\Entity\BugReport\BugReport $bugReport
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -286,6 +322,39 @@ class StatusController extends AbstractController
         }
 
         return $bugReport;
+    }
+
+    /**
+     * @param \App\Entity\BugReport\BugReport $bugReport
+     *
+     * @return \Gedmo\Loggable\Entity\LogEntry
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    private function getLatestLogEntry(BugReport $bugReport): LogEntry
+    {
+        /** @var \Doctrine\ORM\QueryBuilder $qb */
+        $qb = $this
+            ->getEntityManager()
+            ->getRepository(LogEntry::class)
+            ->createQueryBuilder('log_entry');
+
+        $result = $qb->where('log_entry.objectClass = :object_class')
+            ->andWhere('log_entry.objectId = :object_id')
+            ->orderBy('log_entry.loggedAt', Criteria::DESC)
+            ->setParameter('object_class', BugReport::class)
+            ->setParameter('object_id', $bugReport->getId())
+            ->setMaxResults(1)
+            ->setFirstResult(1)
+            ->getQuery()
+            ->getResult();
+
+        if (empty($result)) {
+            throw new ConflictHttpException('Unable to undo status change');
+        }
+
+        return reset($result);
     }
 
     /**
